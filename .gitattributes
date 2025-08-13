@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+# Toujours texte
+*.yml  text
+*.yaml text
+*.java text
+*.kt   text
+*.kts  text
+*.gradle text
+*.md   text
+*.properties text
+*.gitignore text
+*.gitattributes text
