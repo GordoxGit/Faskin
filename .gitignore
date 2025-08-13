@@ -1,0 +1,38 @@
+# Gradle / IDE
+.gradle/
+build/
+out/
+.idea/
+*.iml
+
+# Binaires & artefacts (interdits au repo)
+*.jar
+*.class
+*.war
+*.ear
+*.zip
+*.7z
+*.rar
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+*.dat
+*.mp3
+*.wav
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# OS
+.DS_Store
+Thumbs.db

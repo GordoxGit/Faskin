@@ -1,0 +1,18 @@
+# skinview — configuration par défaut
+# Rappel: le dépôt doit rester 100% TEXTE (pas de binaires).
+
+apply:
+  update-on-join: true        # sera utilisé aux tickets suivants
+  refresh-tablist: true
+
+cache:
+  ttl-seconds: 3600
+  max-entries: 500
+
+lookups:
+  allow-premium-name: true
+  allow-textures-url: true
+  allow-unsigned: true
+
+logging:
+  level: INFO

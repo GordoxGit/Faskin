@@ -1,0 +1,10 @@
+prefix: "&6[skinview]&r "
+
+help:
+  - "&6=== &eSkinView &7(v%version%) &6==="
+  - "&e/skinview help &7: Affiche cette aide"
+  - "&e/skinview reload &7: Recharge la configuration & messages &8(perm: skinview.admin)"
+
+reloaded: "&aConfiguration rechargée."
+no-permission: "&cVous n'avez pas la permission."
+unknown-subcommand: "&cSous-commande inconnue. &7Essayez &e/skinview help&7."
