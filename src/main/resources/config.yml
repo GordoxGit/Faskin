@@ -1,8 +1,5 @@
-# skinview — configuration par défaut
-# Rappel: le dépôt doit rester 100% TEXTE (pas de binaires).
-
 apply:
-  update-on-join: true        # sera utilisé aux tickets suivants
+  update-on-join: true
   refresh-tablist: true
   protocollib-enable: true
 
@@ -15,5 +12,8 @@ lookups:
   allow-textures-url: true
   allow-unsigned: true
 
-logging:
-  level: INFO
+storage:
+  type: YAML
+  file: "data/skins.yml"
+  ttl-seconds: 86400  # 24h
+

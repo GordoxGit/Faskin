@@ -58,6 +58,8 @@ Le JAR buildé avec `-PwithPlib=true` active automatiquement le chemin ProtocolL
 ## Comportement (auto-apply premium au join)
 - Si `apply.update-on-join: true` et que le pseudo du joueur existe chez Mojang,
   le skin est résolu **async** et appliqué **main-thread**.
+- À chaque apply réussi, l'entrée est **persistée** dans `storage.file` (YAML) avec TTL.
+- À la reconnexion, si l'entrée du store est valide, le skin est appliqué immédiatement sans recontacter Mojang.
 - Spigot: nécessite ProtocolLib (voir ci-dessus) pour que le skin soit visible par les autres joueurs.
 - Option `apply.refresh-tablist: true` pour un léger hide/show (meilleure propagation client).
 
@@ -67,13 +69,22 @@ apply:
   update-on-join: true
   refresh-tablist: true
   protocollib-enable: true
+cache:
+  ttl-seconds: 3600
+  max-entries: 500
 lookups:
   allow-premium-name: true
+  allow-textures-url: true
+  allow-unsigned: true
+storage:
+  type: YAML
+  file: "data/skins.yml"
+  ttl-seconds: 86400
 ```
 
 ## Résolution de skins
 Service interne `SkinResolver` : résolution Mojang (pseudo premium) ou URL `textures.minecraft.net`.
-I/O **asynchrones** via `HttpClient` Java 21, cache TTL en mémoire avec purge périodique.
+I/O **asynchrones** via `HttpClient` Java 21, cache TTL mémoire + **persistance YAML**.
 Commande d'admin pour tester :
 
 ```
@@ -88,6 +99,11 @@ Tout est async, aucun blocage du tick.
 - `/skinview reload` — recharge config/messages (perm skinview.admin)
 - `/skinview resolve name <Premium>` — test résolution Mojang (perm skinview.admin)
 - `/skinview resolve url <textures.minecraft.net/...>` — test résolution par URL (perm skinview.admin)
+- `/skinview use <Premium> [joueur]` — applique un skin premium et le persiste
+- `/skinview url <textures.minecraft.net/...> [joueur]` — applique via URL
+- `/skinview clear [joueur]` — supprime l'entrée de cache
+- `/skinview cache get [joueur]` — applique depuis le store
+- `/skinview cache clear [joueur]` — efface l'entrée du store
 - Aliases: `/skin`, `/sv`.
 
 ## Permissions

@@ -13,12 +13,20 @@ public final class SkinTabCompleter implements TabCompleter {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
             out.add("help");
+            out.add("use");
+            out.add("url");
+            out.add("clear");
             if (sender.hasPermission("skinview.admin")) {
-                out.add("reload"); out.add("resolve");
+                out.add("reload");
+                out.add("resolve");
+                out.add("cache");
             }
         } else if (args.length == 2 && "resolve".equalsIgnoreCase(args[0]) && sender.hasPermission("skinview.admin")) {
             out.add("name"); out.add("url");
+        } else if (args.length == 2 && "cache".equalsIgnoreCase(args[0]) && sender.hasPermission("skinview.admin")) {
+            out.add("get"); out.add("clear");
         }
         return out;
     }
 }
+

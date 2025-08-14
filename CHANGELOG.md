@@ -5,6 +5,11 @@
 - resolver: extraction value/signature du sessionserver Mojang
 - feature: `SkinApplierProtocolLib` réécrit le `GameProfile` (ProtocolLib, paquets PLAYER_INFO)
 - plugin: sélection d'applier via réflexion (ProtocolLib → Paper → no-op)
+- persistance: nouveau `YamlSkinStore` (plugins/skinview/data/skins.yml) avec TTL configurable
+- service: `SkinService` sauvegarde après apply et permet `applyFromStore(...)`
+- listener: auto-apply prioritaire depuis le store puis fallback Mojang
+- commandes: `/skinview cache get|clear` pour interagir avec le store
+- config: section `storage.*` (type, fichier, ttl-seconds)
 
 ## 0.4.2
 - Fix: `JsonUtils` — chaînes regex corrigées (échappement des guillemets et backslashes en Java). La compilation CI ne plante plus.
