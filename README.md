@@ -1,6 +1,6 @@
 # skinview (Heneria)
 
-![Version](https://img.shields.io/badge/version-0.5.1-blue)
+![Version](https://img.shields.io/badge/version-0.5.3-blue)
 
 Plugin Spigot **1.21** (Java 21) — gestion future de skins pour serveurs offline/cracked.
 
@@ -78,6 +78,9 @@ lookups:
   allow-premium-name: true
   allow-textures-url: true
   allow-unsigned: true
+  url:
+    resolve-signature: true
+    signature-ttl-seconds: 86400
 storage:
   type: YAML
   file: "data/skins.yml"
@@ -87,6 +90,7 @@ storage:
 ## Résolution de skins
 Service interne `SkinResolver` : résolution Mojang (pseudo premium) ou URL `textures.minecraft.net`.
 I/O **asynchrones** via `HttpClient` Java 21, cache TTL mémoire + **persistance YAML**.
+`/skinview url` tente de récupérer la propriété `value+signature` signée via Mojang (best-effort) si `lookups.url.resolve-signature` est activé.
 Commande d'admin pour tester :
 
 ```
@@ -131,6 +135,12 @@ Tickets suivants : application via PlayerProfile, persistance, auto-apply au joi
 
 ## Changelog
 
+- **0.5.3**
+  - `/skinview url` tente de récupérer `value+signature` signée via Mojang (UUID → sessionserver).
+  - Nouveaux réglages `lookups.url.resolve-signature` et `signature-ttl-seconds`.
+  - Fallback clair si signature introuvable.
+- **0.5.2**
+  - Ajout : rate-limiting, backoff, circuit-breaker et métriques pour Mojang.
 - **0.5.1**
   - Ajout opt-in / opt-out par joueur pour l’application auto des skins.
   - Ajout commande `/skinview debug` (état applier, cache, opt-outs, hits).

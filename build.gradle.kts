@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.5.2" // Ticket 8: network resilience
+version = "0.5.3" // URL → signed profile
 
 repositories {
     mavenCentral()

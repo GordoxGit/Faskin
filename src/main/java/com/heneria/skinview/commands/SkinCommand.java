@@ -168,6 +168,11 @@ public final class SkinCommand implements CommandExecutor {
             long thr = dbg.mojangThrottled();
             String circuit = dbg.circuitState().name();
             long lastFail = dbg.lastFailureTime();
+            boolean sig = dbg.urlResolveSignature();
+            long sigHits = dbg.signatureCacheHits();
+            long sigMiss = dbg.signatureCacheMisses();
+            long sigLast = dbg.signatureLastAttempt();
+            String sigErr = dbg.signatureLastError();
             long up = dbg.uptimeSeconds();
             String ver = dbg.version();
             if (sender instanceof Player p) {
@@ -183,6 +188,8 @@ public final class SkinCommand implements CommandExecutor {
                         .append(Component.text(String.valueOf(optouts), NamedTextColor.WHITE)));
                 a.sendMessage(Component.text("Mojang: ", NamedTextColor.YELLOW)
                         .append(Component.text("hits=" + hits + " ok=" + suc + " fail=" + fail + " retry=" + retry + " thr=" + thr + " circuit=" + circuit + " lastFail=" + lastFail, NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("URL.sign: ", NamedTextColor.YELLOW)
+                        .append(Component.text("enabled=" + sig + " hits=" + sigHits + " miss=" + sigMiss + " last=" + sigLast + " err=" + sigErr, NamedTextColor.WHITE)));
                 a.sendMessage(Component.text("Version: ", NamedTextColor.YELLOW)
                         .append(Component.text(ver + ", uptime=" + up + "s", NamedTextColor.WHITE)));
             } else {
@@ -192,6 +199,7 @@ public final class SkinCommand implements CommandExecutor {
                 sender.sendMessage("store=" + storeEntries + " entries ttl=" + storeTtl + "s file=" + storeSize + "B");
                 sender.sendMessage("opt-outs=" + optouts);
                 sender.sendMessage("mojang hits=" + hits + " ok=" + suc + " fail=" + fail + " retry=" + retry + " thr=" + thr + " circuit=" + circuit + " lastFail=" + lastFail);
+                sender.sendMessage("url.sign enabled=" + sig + " hits=" + sigHits + " miss=" + sigMiss + " last=" + sigLast + " err=" + sigErr);
                 sender.sendMessage("version=" + ver + " uptime=" + up + "s");
             }
             return true;

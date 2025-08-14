@@ -59,6 +59,36 @@ public final class DebugInfoProvider {
         return fs == null ? 0 : fs.countOptOuts();
     }
 
+    public boolean urlResolveSignature() {
+        if (plugin.resolver() instanceof MojangSkinResolver r)
+            return r.signatureResolver().isEnabled();
+        return false;
+    }
+
+    public long signatureCacheHits() {
+        if (plugin.resolver() instanceof MojangSkinResolver r)
+            return r.signatureResolver().cacheHits();
+        return 0L;
+    }
+
+    public long signatureCacheMisses() {
+        if (plugin.resolver() instanceof MojangSkinResolver r)
+            return r.signatureResolver().cacheMisses();
+        return 0L;
+    }
+
+    public long signatureLastAttempt() {
+        if (plugin.resolver() instanceof MojangSkinResolver r)
+            return r.signatureResolver().lastAttemptEpochSeconds();
+        return 0L;
+    }
+
+    public String signatureLastError() {
+        if (plugin.resolver() instanceof MojangSkinResolver r)
+            return r.signatureResolver().lastError();
+        return null;
+    }
+
     public String version() { return plugin.getDescription().getVersion(); }
 
     public long uptimeSeconds() { return (System.currentTimeMillis() - startMillis) / 1000L; }

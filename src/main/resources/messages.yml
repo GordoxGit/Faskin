@@ -26,6 +26,8 @@ resolve-fail: "&cÉchec de résolution: %error%"
 apply-start: "&7Application du skin à &f%player%&7..."
 apply-ok: "&aSkin appliqué à &f%player%&7 (&f%model%&7)."
 apply-fail: "&cÉchec application skin: %error%"
+signature-found: "&aSignature Mojang récupérée pour l'URL donnée."
+signature-missing: "&eSignature introuvable pour cette URL; application non signée."
 
 clear-ok: "&aCache vidé pour &f%player%&7."
 clear-fail: "&cAucune entrée à effacer: %error%"
