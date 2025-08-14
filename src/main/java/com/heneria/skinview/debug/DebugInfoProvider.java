@@ -1,24 +1,29 @@
 package com.heneria.skinview.debug;
 
 import com.heneria.skinview.SkinviewPlugin;
+import com.heneria.skinview.metrics.MetricsCollector;
+import com.heneria.skinview.net.CircuitBreaker;
 import com.heneria.skinview.service.impl.MojangSkinResolver;
 import com.heneria.skinview.store.FlagStore;
 import com.heneria.skinview.store.YamlSkinStore;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /** Collects runtime metrics for /skinview debug. */
 public final class DebugInfoProvider {
 
     private final SkinviewPlugin plugin;
-    private final AtomicLong mojangHits = new AtomicLong();
     private final long startMillis = System.currentTimeMillis();
 
     public DebugInfoProvider(SkinviewPlugin plugin) { this.plugin = plugin; }
 
-    public void incrementMojangHits() { mojangHits.incrementAndGet(); }
+    private MetricsCollector metrics() { return plugin.metrics(); }
 
-    public long mojangHits() { return mojangHits.get(); }
+    public long mojangHits() { return metrics().hits(); }
+    public long mojangSuccesses() { return metrics().successes(); }
+    public long mojangFailures() { return metrics().failures(); }
+    public long mojangRetries() { return metrics().retries(); }
+    public long mojangThrottled() { return metrics().throttled(); }
+    public CircuitBreaker.State circuitState() { return metrics().circuitState(); }
+    public long lastFailureTime() { return metrics().lastFailureTimestamp(); }
 
     public String applierName() {
         String name = plugin.applier().getClass().getSimpleName();

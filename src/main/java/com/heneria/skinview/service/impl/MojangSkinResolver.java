@@ -9,10 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
+import com.heneria.skinview.net.HttpClientWrapper;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,10 +22,9 @@ import java.util.regex.Pattern;
 public final class MojangSkinResolver implements SkinResolver {
     private static final Pattern NAME = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
     private static final String HOST_TEXTURES = "textures.minecraft.net";
-    private static final Duration TIMEOUT = Duration.ofSeconds(5);
 
     private final SkinviewPlugin plugin;
-    private final HttpClient http;
+    private final HttpClientWrapper http;
 
     private volatile long ttlMillis;
     private volatile int maxEntries;
@@ -41,9 +37,9 @@ public final class MojangSkinResolver implements SkinResolver {
 
     private BukkitTask purgeTask;
 
-    public MojangSkinResolver(SkinviewPlugin plugin) {
+    public MojangSkinResolver(SkinviewPlugin plugin, HttpClientWrapper http) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
-        this.http = HttpClient.newBuilder().connectTimeout(TIMEOUT).followRedirects(HttpClient.Redirect.NORMAL).build();
+        this.http = http;
         reloadSettings();
         startPurge();
     }
@@ -59,11 +55,7 @@ public final class MojangSkinResolver implements SkinResolver {
         if (ce != null && !ce.isExpired()) return resolveByUuid(ce.value());
 
         final String url = "https://api.mojang.com/users/profiles/minecraft/" + key;
-        HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(TIMEOUT)
-                .header("User-Agent", "skinview/" + plugin.getDescription().getVersion())
-                .GET().build();
-        plugin.debug().incrementMojangHits();
-        return http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+        return http.asyncGet(URI.create(url))
                 .thenCompose(resp -> {
                     if (resp.statusCode() != 200)
                         return CompletableFuture.failedFuture(new IllegalStateException("Mojang name lookup failed (" + resp.statusCode() + ")"));
@@ -93,11 +85,7 @@ public final class MojangSkinResolver implements SkinResolver {
         if (ce != null && !ce.isExpired()) return CompletableFuture.completedFuture(ce.value());
 
         final String url = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuidNoDash;
-        HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(TIMEOUT)
-                .header("User-Agent", "skinview/" + plugin.getDescription().getVersion())
-                .GET().build();
-        plugin.debug().incrementMojangHits();
-        return http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
+        return http.asyncGet(URI.create(url))
                 .thenApply(resp -> {
                     if (resp.statusCode() != 200)
                         throw new CompletionException(new IllegalStateException("Sessionserver failed (" + resp.statusCode() + ")"));

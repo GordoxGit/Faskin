@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.5.1" // Ticket 7: opt-out + debug command
+version = "0.5.2" // Ticket 8: network resilience
 
 repositories {
     mavenCentral()
@@ -15,6 +15,7 @@ dependencies {
     compileOnly("net.kyori:adventure-api:4.17.0")
     compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
     // ProtocolLib: activé seulement si -PwithPlib=true (voir plus bas)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
 }
 
 java {
@@ -32,6 +33,8 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.release.set(21)
 }
+
+tasks.test { useJUnitPlatform() }
 
 /* ====== Anti-binaires: scanne uniquement les fichiers *versionnés* par Git ====== */
 val forbiddenBinaryExtensions = listOf(

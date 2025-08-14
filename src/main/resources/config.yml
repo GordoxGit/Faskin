@@ -17,3 +17,17 @@ storage:
   file: "data/skins.yml"
   ttl-seconds: 86400  # 24h
 
+mojang:
+  rate:
+    requests_per_minute: 120   # default
+    burst: 20                  # nombre tokens max stockés
+  retries:
+    max_retries: 5
+    base_delay_ms: 500        # backoff base
+    max_delay_ms: 30000       # backoff max
+    jitter: 0.2               # +/- 20% jitter
+  circuit:
+    failure_threshold: 5      # échecs consécutifs pour ouvrir
+    open_duration_ms: 60000   # durée open par défaut (60s)
+    half_open_probe_count: 2  # tentatives en half-open
+
