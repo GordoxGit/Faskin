@@ -162,6 +162,12 @@ public final class SkinCommand implements CommandExecutor {
             long storeTtl = dbg.storeTtlSeconds();
             int optouts = dbg.optOutCount();
             long hits = dbg.mojangHits();
+            long suc = dbg.mojangSuccesses();
+            long fail = dbg.mojangFailures();
+            long retry = dbg.mojangRetries();
+            long thr = dbg.mojangThrottled();
+            String circuit = dbg.circuitState().name();
+            long lastFail = dbg.lastFailureTime();
             long up = dbg.uptimeSeconds();
             String ver = dbg.version();
             if (sender instanceof Player p) {
@@ -175,8 +181,8 @@ public final class SkinCommand implements CommandExecutor {
                         .append(Component.text(storeEntries + " entries, ttl=" + storeTtl + "s, file=" + storeSize + "B", NamedTextColor.WHITE)));
                 a.sendMessage(Component.text("Opt-outs: ", NamedTextColor.YELLOW)
                         .append(Component.text(String.valueOf(optouts), NamedTextColor.WHITE)));
-                a.sendMessage(Component.text("Mojang hits: ", NamedTextColor.YELLOW)
-                        .append(Component.text(String.valueOf(hits), NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Mojang: ", NamedTextColor.YELLOW)
+                        .append(Component.text("hits=" + hits + " ok=" + suc + " fail=" + fail + " retry=" + retry + " thr=" + thr + " circuit=" + circuit + " lastFail=" + lastFail, NamedTextColor.WHITE)));
                 a.sendMessage(Component.text("Version: ", NamedTextColor.YELLOW)
                         .append(Component.text(ver + ", uptime=" + up + "s", NamedTextColor.WHITE)));
             } else {
@@ -185,7 +191,7 @@ public final class SkinCommand implements CommandExecutor {
                 sender.sendMessage("cache=" + cacheSize + " entries ttl=" + cacheTtl + "s");
                 sender.sendMessage("store=" + storeEntries + " entries ttl=" + storeTtl + "s file=" + storeSize + "B");
                 sender.sendMessage("opt-outs=" + optouts);
-                sender.sendMessage("mojang-hits=" + hits);
+                sender.sendMessage("mojang hits=" + hits + " ok=" + suc + " fail=" + fail + " retry=" + retry + " thr=" + thr + " circuit=" + circuit + " lastFail=" + lastFail);
                 sender.sendMessage("version=" + ver + " uptime=" + up + "s");
             }
             return true;

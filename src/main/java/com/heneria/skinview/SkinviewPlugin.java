@@ -2,16 +2,21 @@ package com.heneria.skinview;
 
 import com.heneria.skinview.commands.SkinCommand;
 import com.heneria.skinview.commands.SkinTabCompleter;
+import com.heneria.skinview.debug.DebugInfoProvider;
 import com.heneria.skinview.listener.InteractListener;
 import com.heneria.skinview.listener.JoinListener;
 import com.heneria.skinview.listener.SkinAutoApplyJoinListener;
-import com.heneria.skinview.store.FlagStore;
-import com.heneria.skinview.debug.DebugInfoProvider;
+import com.heneria.skinview.metrics.MetricsCollector;
+import com.heneria.skinview.net.BackoffStrategy;
+import com.heneria.skinview.net.CircuitBreaker;
+import com.heneria.skinview.net.HttpClientWrapper;
+import com.heneria.skinview.net.RateLimiter;
 import com.heneria.skinview.service.SkinApplier;
 import com.heneria.skinview.service.SkinResolver;
 import com.heneria.skinview.service.SkinService;
 import com.heneria.skinview.service.impl.MojangSkinResolver;
 import com.heneria.skinview.service.impl.PaperSkinApplier;
+import com.heneria.skinview.store.FlagStore;
 import com.heneria.skinview.store.SkinStore;
 import com.heneria.skinview.store.YamlSkinStore;
 import org.bukkit.Bukkit;
@@ -36,6 +41,8 @@ public final class SkinviewPlugin extends JavaPlugin {
     private FlagStore flagStore;
     private DebugInfoProvider debug;
     private BukkitAudiences adventure;
+    private MetricsCollector metrics;
+    private HttpClientWrapper httpWrapper;
 
     @Override
     public void onEnable() {
@@ -60,9 +67,32 @@ public final class SkinviewPlugin extends JavaPlugin {
         pm.registerEvents(new SkinAutoApplyJoinListener(this), this);
 
         this.flagStore = new FlagStore(this);
+        this.metrics = new MetricsCollector();
         this.debug = new DebugInfoProvider(this);
         this.adventure = BukkitAudiences.create(this);
-        this.resolver = new MojangSkinResolver(this);
+
+        FileConfiguration c = getConfig();
+        int rpm = c.getInt("mojang.rate.requests_per_minute", 120);
+        int burst = c.getInt("mojang.rate.burst", 20);
+        int maxRetries = c.getInt("mojang.retries.max_retries", 5);
+        long baseDelay = c.getLong("mojang.retries.base_delay_ms", 500);
+        long maxDelay = c.getLong("mojang.retries.max_delay_ms", 30000);
+        double jitter = c.getDouble("mojang.retries.jitter", 0.2);
+        int failThresh = c.getInt("mojang.circuit.failure_threshold", 5);
+        long openDur = c.getLong("mojang.circuit.open_duration_ms", 60000);
+        int probe = c.getInt("mojang.circuit.half_open_probe_count", 2);
+
+        RateLimiter rl = new RateLimiter(rpm, burst);
+        BackoffStrategy backoff = new BackoffStrategy(baseDelay, maxDelay, jitter);
+        CircuitBreaker cb = new CircuitBreaker(failThresh, openDur, probe, metrics);
+        java.net.http.HttpClient http = java.net.http.HttpClient.newBuilder()
+                .connectTimeout(java.time.Duration.ofSeconds(5))
+                .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)
+                .build();
+        String ua = "skinview/" + getDescription().getVersion();
+        this.httpWrapper = new HttpClientWrapper(http, rl, backoff, cb, metrics, maxRetries, getLogger(), ua);
+
+        this.resolver = new MojangSkinResolver(this, httpWrapper);
         this.applier = chooseApplier();
         this.store = new YamlSkinStore(this);
         this.skinService = new SkinService(this, resolver, applier, store);
@@ -77,6 +107,7 @@ public final class SkinviewPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (resolver != null) { resolver.shutdown(); resolver = null; }
+        if (httpWrapper != null) { httpWrapper.shutdown(); httpWrapper = null; }
         if (adventure != null) { adventure.close(); adventure = null; }
         if (applier != null) {
             try {
@@ -148,5 +179,6 @@ public final class SkinviewPlugin extends JavaPlugin {
     public FlagStore flagStore() { return flagStore; }
     public DebugInfoProvider debug() { return debug; }
     public BukkitAudiences adventure() { return adventure; }
+    public MetricsCollector metrics() { return metrics; }
 }
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.2
+- Ajout : rate-limiting pour requêtes Mojang (token-bucket configurable).
+- Ajout : backoff exponentiel + jitter pour retries.
+- Ajout : circuit-breaker pour éviter d’overloader le réseau lors de pannes.
+- Ajout : métriques (hits, successes, failures, retries, throttled) et exposition via /skinview debug.
+- Logs FINE activables pour debugging réseau.
+
 ## 0.5.1
 - Ajout : système Opt-in / Opt-out par joueur pour l’application automatique des skins.
 - Ajout : commande /skinview debug (affiche état du plugin : applier, cache, opt-outs, hits).
