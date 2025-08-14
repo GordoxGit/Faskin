@@ -5,6 +5,8 @@ import com.heneria.skinview.commands.SkinTabCompleter;
 import com.heneria.skinview.listener.InteractListener;
 import com.heneria.skinview.listener.JoinListener;
 import com.heneria.skinview.listener.SkinAutoApplyJoinListener;
+import com.heneria.skinview.store.FlagStore;
+import com.heneria.skinview.debug.DebugInfoProvider;
 import com.heneria.skinview.service.SkinApplier;
 import com.heneria.skinview.service.SkinResolver;
 import com.heneria.skinview.service.SkinService;
@@ -18,6 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 
 import java.io.File;
 import java.util.List;
@@ -30,6 +33,9 @@ public final class SkinviewPlugin extends JavaPlugin {
     private SkinService skinService;
     private SkinApplier applier;
     private SkinStore store;
+    private FlagStore flagStore;
+    private DebugInfoProvider debug;
+    private BukkitAudiences adventure;
 
     @Override
     public void onEnable() {
@@ -53,6 +59,9 @@ public final class SkinviewPlugin extends JavaPlugin {
         pm.registerEvents(new InteractListener(this), this);
         pm.registerEvents(new SkinAutoApplyJoinListener(this), this);
 
+        this.flagStore = new FlagStore(this);
+        this.debug = new DebugInfoProvider(this);
+        this.adventure = BukkitAudiences.create(this);
         this.resolver = new MojangSkinResolver(this);
         this.applier = chooseApplier();
         this.store = new YamlSkinStore(this);
@@ -68,6 +77,7 @@ public final class SkinviewPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (resolver != null) { resolver.shutdown(); resolver = null; }
+        if (adventure != null) { adventure.close(); adventure = null; }
         if (applier != null) {
             try {
                 if (applier.getClass().getName().endsWith("SkinApplierProtocolLib")) {
@@ -133,5 +143,10 @@ public final class SkinviewPlugin extends JavaPlugin {
 
     public SkinResolver resolver() { return resolver; }
     public SkinService skinService() { return skinService; }
+    public SkinApplier applier() { return applier; }
+    public SkinStore store() { return store; }
+    public FlagStore flagStore() { return flagStore; }
+    public DebugInfoProvider debug() { return debug; }
+    public BukkitAudiences adventure() { return adventure; }
 }
 

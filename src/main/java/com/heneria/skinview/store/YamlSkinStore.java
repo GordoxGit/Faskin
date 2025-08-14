@@ -66,6 +66,10 @@ public final class YamlSkinStore implements SkinStore {
     @Override
     public long ttlSeconds() { return ttlSec; }
 
+    public int entryCount() { return cache.size(); }
+
+    public long fileSizeBytes() { return file.exists() ? file.length() : 0L; }
+
     /* ====== I/O YAML ====== */
 
     private void load() {

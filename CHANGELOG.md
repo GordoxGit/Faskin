@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1
+- Ajout : système Opt-in / Opt-out par joueur pour l’application automatique des skins.
+- Ajout : commande /skinview debug (affiche état du plugin : applier, cache, opt-outs, hits).
+- Corrections mineures et stabilisation I/O async.
+
 ## 0.5.0
 - modèle: `SkinDescriptor` étendu (`textures.value` + `signature`)
 - resolver: extraction value/signature du sessionserver Mojang

@@ -1,6 +1,6 @@
 name: skinview
 main: com.heneria.skinview.SkinviewPlugin
-version: ${version}
+version: 0.5.1
 api-version: "1.21"
 author: Heneria
 website: https://heneria.example
