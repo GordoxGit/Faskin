@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.4.1" // CI sans ProtocolLib par défaut (build optionnel avec -PwithPlib)
+version = "0.4.2" // fix: JsonUtils (échappement regex corrigé)
 
 repositories {
     mavenCentral()
@@ -20,11 +20,12 @@ java {
     toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
     withSourcesJar()
 }
-
 tasks.processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     filesMatching("plugin.yml") { expand("version" to project.version) }
 }
 
+tasks.withType<AbstractCopyTask> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 tasks.jar { archiveBaseName.set("skinview") }
 
 tasks.withType<JavaCompile> {

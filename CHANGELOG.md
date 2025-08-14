@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.2
+- Fix: `JsonUtils` — chaînes regex corrigées (échappement des guillemets et backslashes en Java). La compilation CI ne plante plus.
+
 ## 0.4.1
 - Build: option **`-PwithPlib`** pour compiler/inclure les classes ProtocolLib uniquement à la demande.
 - CI: passe sans tenter de résoudre ProtocolLib (aucune dépendance par défaut).

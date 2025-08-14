@@ -98,6 +98,9 @@ Tout est async, aucun blocage du tick.
 
 ## Roadmap
 Tickets suivants : application via PlayerProfile, persistance, auto-apply au join, fallback TAB.
+### Notes techniques
+- 0.4.2: correction des chaînes regex dans `JsonUtils` (échappement Java corrigé).
+
 ## Mises à jour
 À chaque ticket, mettre à jour :
 - `build.gradle.kts` (dépendances/versions)
