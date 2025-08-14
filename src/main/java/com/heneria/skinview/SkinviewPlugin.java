@@ -4,8 +4,11 @@ import com.heneria.skinview.commands.SkinCommand;
 import com.heneria.skinview.commands.SkinTabCompleter;
 import com.heneria.skinview.listener.InteractListener;
 import com.heneria.skinview.listener.JoinListener;
+import com.heneria.skinview.service.SkinApplier;
 import com.heneria.skinview.service.SkinResolver;
 import com.heneria.skinview.service.impl.MojangSkinResolver;
+import com.heneria.skinview.service.impl.SkinApplierProtocolLib;
+import com.heneria.skinview.service.impl.SkinApplierReflection;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,6 +24,7 @@ public final class SkinviewPlugin extends JavaPlugin {
 
     private FileConfiguration messages;
     private SkinResolver resolver;
+    private SkinApplier applier;
 
     @Override
     public void onEnable() {
@@ -48,6 +52,14 @@ public final class SkinviewPlugin extends JavaPlugin {
         // Service resolver (async + cache)
         this.resolver = new MojangSkinResolver(this);
 
+        boolean plibEnabled = getConfig().getBoolean("apply.protocollib-enable", true)
+                && Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;
+        if (plibEnabled) {
+            this.applier = new SkinApplierProtocolLib(this);
+        } else {
+            this.applier = new SkinApplierReflection(this);
+        }
+
         final long dtMs = (System.nanoTime() - t0) / 1_000_000;
         getLogger().info(String.format(
             "skinview v%s enabled in %d ms (Java %s, API %s)",
@@ -57,6 +69,10 @@ public final class SkinviewPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (applier != null) {
+            applier.shutdown();
+            applier = null;
+        }
         if (resolver != null) {
             resolver.shutdown();
             resolver = null;
@@ -91,4 +107,5 @@ public final class SkinviewPlugin extends JavaPlugin {
     }
 
     public SkinResolver resolver() { return resolver; }
+    public SkinApplier applier() { return applier; }
 }

@@ -4,6 +4,7 @@ version: ${version}
 api-version: "1.21"
 author: Heneria
 website: https://heneria.example
+softdepend: [ProtocolLib]
 
 commands:
   skinview:

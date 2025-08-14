@@ -33,12 +33,14 @@ Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Spigot 1.21.x.
 ### Compatibilité API (Spigot vs Paper)
 - Spigot 1.21 fournit `PlayerProfile` + `PlayerTextures#setSkin(URL)` pour manipuler des **profils**, pas le profil du **joueur en ligne**.
 - L’application live du skin sur le joueur en ligne via `Player#setPlayerProfile(...)` est **spécifique à Paper**.
-- Plugin: tente l’apply via **réflexion**. Sur Spigot pur, l’API **ne permet pas** l’apply live → voir Ticket suivant pour un chemin **ProtocolLib/NMS** si nécessaire.
-Réfs: Javadocs Spigot (PlayerTextures) et Paper (Player#setPlayerProfile).
+- Pour Spigot pur, l’apply live nécessite **ProtocolLib** (`apply.protocollib-enable: true` et plugin présent). Sans ProtocolLib → log info, aucun apply live.
+- Plugin: tente l’apply via **réflexion** (Paper) ou via **ProtocolLib**.
+  Réfs: Javadocs Spigot (PlayerTextures), Paper (Player#setPlayerProfile) et ProtocolLib.
 
 ## Comportement (auto-apply premium au join)
 - Si `apply.update-on-join: true` et que le pseudo du joueur existe chez Mojang,
-  le skin est résolu **async** et appliqué **main-thread** via `PlayerProfile`.
+  le skin est résolu **async** et appliqué **main-thread**.
+- Spigot: nécessite ProtocolLib (voir ci-dessus) pour que le skin soit visible par les autres joueurs.
 - Option `apply.refresh-tablist: true` pour un léger hide/show (meilleure propagation client).
 
 ## Config (extrait pertinent)
@@ -46,6 +48,7 @@ Réfs: Javadocs Spigot (PlayerTextures) et Paper (Player#setPlayerProfile).
 apply:
   update-on-join: true
   refresh-tablist: true
+  protocollib-enable: true
 lookups:
   allow-premium-name: true
 ```

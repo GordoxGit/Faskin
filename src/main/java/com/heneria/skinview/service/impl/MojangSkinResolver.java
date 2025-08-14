@@ -101,15 +101,16 @@ public final class MojangSkinResolver implements SkinResolver {
                 .thenApply(resp -> {
                     if (resp.statusCode() != 200)
                         throw new CompletionException(new IllegalStateException("Sessionserver failed (" + resp.statusCode() + ")"));
-                    final Optional<String> b64 = JsonUtils.findFirstValuePropertyBase64(resp.body());
-                    if (b64.isEmpty()) throw new CompletionException(new IllegalStateException("textures property missing"));
-                    final String texJson = new String(Base64.getDecoder().decode(b64.get()));
-                    final Optional<String> skinUrl = JsonUtils.findSkinUrl(texJson);
-                    if (skinUrl.isEmpty()) throw new CompletionException(new IllegalStateException("SKIN.url missing"));
-                    final Optional<String> model = JsonUtils.findSkinModel(texJson);
-                    SkinDescriptor sd = new SkinDescriptor(URI.create(skinUrl.get()), SkinModel.fromMetadata(model.orElse(null)));
-                    putUuidSkin(uuidNoDash, sd);
-                    return sd;
+                      final Optional<String> b64 = JsonUtils.findFirstValuePropertyBase64(resp.body());
+                      if (b64.isEmpty()) throw new CompletionException(new IllegalStateException("textures property missing"));
+                      final Optional<String> sig = JsonUtils.findFirstValuePropertySignature(resp.body());
+                      final String texJson = new String(Base64.getDecoder().decode(b64.get()));
+                      final Optional<String> skinUrl = JsonUtils.findSkinUrl(texJson);
+                      if (skinUrl.isEmpty()) throw new CompletionException(new IllegalStateException("SKIN.url missing"));
+                      final Optional<String> model = JsonUtils.findSkinModel(texJson);
+                      SkinDescriptor sd = new SkinDescriptor(URI.create(skinUrl.get()), SkinModel.fromMetadata(model.orElse(null)), b64.get(), sig.orElse(null));
+                      putUuidSkin(uuidNoDash, sd);
+                      return sd;
                 });
     }
 

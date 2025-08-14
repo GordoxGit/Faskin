@@ -3,16 +3,18 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.3.2" // Spigot 1.21 - auto-apply premium skins on join
+version = "0.4.0" // Spigot 1.21 - ProtocolLib live skin apply
 
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/") // ok de laisser, mais non utilisé
+    maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
 }
 
 dependencies {
     // ===== Spigot 1.21 (PAS Paper) =====
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT") // optionnel
     // Option B (si annotations JetBrains nécessaires):
     // compileOnly("org.jetbrains:annotations:24.1.0")
     // (supprimer toute dépendance paper-api si présente)

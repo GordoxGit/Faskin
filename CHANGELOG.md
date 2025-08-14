@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+- build: dépendance optionnelle ProtocolLib (repo dmulloy2) + bump version.
+- feature: resolver remonte désormais `value` base64 et `signature` signée.
+- feature: `SkinApplierProtocolLib` pour apply live des skins premium sur Spigot offline (PLAYER_INFO_UPDATE).
+- config: nouveau toggle `apply.protocollib-enable` (par défaut true).
+- doc: README mis à jour (ProtocolLib requis sur Spigot, limites & toggles).
+
 ## 0.3.2
 - build: suppression des annotations JetBrains dans `SkinCommand` (compilation CI OK sans dépendance).
 - compat: remplacement de l’appel direct à `Player#setPlayerProfile(...)` par **réflexion** (compile-safe Spigot).
