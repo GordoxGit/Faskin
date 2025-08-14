@@ -1,6 +1,6 @@
 # HeneriaCore
 
-Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.5.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.6.
 
 Important:
 - Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
@@ -24,3 +24,7 @@ HC-04 introduces a basic `SkinService` able to apply signed textures either via 
 ### HC-05 network layer
 
 Adds an asynchronous `HttpClientWrapper` with token bucket rate limiting, exponential backoff, circuit breaker and metrics collection. Configuration lives under `mojang` in `config.yml`.
+
+### Claim flow
+
+HC-06 introduces a simple claim system to prove ownership of a Mojang account. Use `/heneria claim start <name>` to generate a tokenized skin image and `/heneria claim check <id>` to verify.

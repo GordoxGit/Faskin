@@ -2,3 +2,8 @@
 prefix: "&7[Heneria]&r "
 skin:
   applier-missing: "&cNo skin applier available; texture stored"
+claim:
+  start: "&aClaim started. Token: {id}"
+  check-success: "&aClaim verified."
+  check-fail: "&cClaim failed."
+  cancel: "&eClaim cancelled."
