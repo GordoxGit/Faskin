@@ -20,3 +20,6 @@ gradlew.bat
 # OS
 .DS_Store
 Thumbs.db
+
+# libs locaux (non versionnés) pour builds optionnels
+local-libs/

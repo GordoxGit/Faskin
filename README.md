@@ -8,12 +8,25 @@ Plugin Spigot **1.21** (Java 21) — gestion future de skins pour serveurs offli
 - Les artefacts (JAR…) sont générés dans `build/` et **ne doivent pas** être commit.
 - La CI installe Gradle côté runner.
 
-## Build (Gradle **sans wrapper** par défaut)
+## Builds
 Prérequis: **Java 21** et **Gradle 8.10+** installés localement.
-```bash
-gradle clean check
-gradle build
-```
+
+- **CI (par défaut)** — sans ProtocolLib :
+  ```bash
+  gradle clean check
+  gradle build
+  ```
+
+- **Build local (ProtocolLib via repo)** :
+  ```bash
+  gradle -PwithPlib=true clean build
+  ```
+
+- **Build local (ProtocolLib via JAR local non commité)** :
+  1. placer `ProtocolLib.jar` dans `local-libs/` (ignoré par git)
+  2. ```bash
+     gradle -PwithPlib=true -PwithPlibLocal=local-libs/ProtocolLib.jar clean build
+     ```
 
 ### Option: wrapper local (non versionné)
 Si tu veux un wrapper sur ta machine, tu peux le générer puis **ne pas** le committer:
@@ -26,6 +39,10 @@ Important : ne pousse aucun des fichiers du wrapper (`gradle/`, `gradlew`, `grad
 
 ## Installation
 Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Spigot 1.21.x.
+
+### Serveur
+Spigot 1.21 + offline-mode : pour l’apply live des skins, installe ProtocolLib côté serveur.
+Le JAR buildé avec `-PwithPlib=true` active automatiquement le chemin ProtocolLib (softdepend), sinon fallback.
 
 ## Plateforme
 - **Spigot 1.21** (pas Paper). API utilisée : `PlayerProfile` / `PlayerTextures` (aucun NMS).

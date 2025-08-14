@@ -3,21 +3,17 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.4.0" // Spigot 1.21 - ProtocolLib live skin apply
+version = "0.4.1" // CI sans ProtocolLib par défaut (build optionnel avec -PwithPlib)
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/") // ok de laisser, mais non utilisé
-    maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+    // Garder, utile pour Spigot API
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    // ===== Spigot 1.21 (PAS Paper) =====
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT") // optionnel
-    // Option B (si annotations JetBrains nécessaires):
-    // compileOnly("org.jetbrains:annotations:24.1.0")
-    // (supprimer toute dépendance paper-api si présente)
+    // ProtocolLib: AJOUTÉ UNIQUEMENT SI -PwithPlib=true (voir plus bas)
 }
 
 java {
@@ -36,7 +32,7 @@ tasks.withType<JavaCompile> {
     options.release.set(21)
 }
 
-/* ====== Anti-binaires (scan fichiers *versionnés* uniquement) ====== */
+/* ====== CI: scan binaire limité aux fichiers **versionnés** ====== */
 val forbiddenBinaryExtensions = listOf(
     "jar","class","war","ear","zip","7z","rar",
     "pdf","png","jpg","jpeg","gif","webp","ico","bmp","svg",
@@ -46,8 +42,7 @@ val forbiddenBinaryExtensions = listOf(
 
 tasks.register("checkNoBinariesTracked") {
     group = "verification"
-    description = "Échoue si des binaires sont *versionnés* (git ls-files)."
-
+    description = "Echoue si des binaires *versionnés* (git ls-files) sont présents."
     doLast {
         val exts = forbiddenBinaryExtensions.toSet()
         val offenders = mutableListOf<String>()
@@ -69,7 +64,6 @@ tasks.register("checkNoBinariesTracked") {
             }
         }
 
-        // 1) Essaye d'utiliser 'git ls-files --cached -z' (ne liste *que* les fichiers suivis)
         try {
             val out = ByteArrayOutputStream()
             project.exec {
@@ -80,8 +74,7 @@ tasks.register("checkNoBinariesTracked") {
             val files = out.toString("UTF-8").split('\u0000')
             scanPaths(files)
         } catch (e: Exception) {
-            // 2) Fallback (sans git) : avertit et scanne *répertoire* minimal (src/resources/scripts)
-            logger.warn("git indisponible: fallback scan workspace (src/, resources/, scripts/) — installez Git pour un contrôle strict.")
+            logger.warn("git indisponible: fallback scan minimal (src/, resources/, scripts/)")
             val roots = listOf("src", "resources", "scripts").map { project.file(it) }.filter { it.exists() }
             roots.forEach { root ->
                 root.walkTopDown().forEach { f ->
@@ -95,7 +88,7 @@ tasks.register("checkNoBinariesTracked") {
             val msg = buildString {
                 appendLine("Interdit: fichiers binaires *versionnés* détectés :")
                 offenders.sorted().forEach { appendLine(" - $it") }
-                appendLine("Le dépôt doit rester 100% TEXTE. Gardez vos wrappers/artefacts en local, non commité.")
+                appendLine("Dépôt 100% TEXTE. Wrappers/artefacts/JARs locaux non commités.")
             }
             throw GradleException(msg)
         }
@@ -103,3 +96,31 @@ tasks.register("checkNoBinariesTracked") {
 }
 
 tasks.named("check") { dependsOn("checkNoBinariesTracked") }
+
+/* ====== OPTION ProtocolLib: activée seulement si -PwithPlib=true ====== */
+val withPlib = providers.gradleProperty("withPlib").isPresent
+val withPlibLocal = providers.gradleProperty("withPlibLocal").orNull // chemin vers un .jar local
+
+sourceSets {
+    val main by getting {
+        java {
+            // Src principal toujours présent
+            setSrcDirs(listOf("src/main/java"))
+            // Ajoute les classes ProtocolLib uniquement si flag activé
+            if (withPlib) srcDir("src/with-plib/java")
+        }
+        resources.srcDir("src/main/resources")
+    }
+}
+
+if (withPlib) {
+    // Dépendance compileOnly vers ProtocolLib, au choix: repo ou jar local
+    if (withPlibLocal != null) {
+        println("Using local ProtocolLib jar: $withPlibLocal")
+        dependencies { compileOnly(files(withPlibLocal)) }
+    } else {
+        println("Using remote ProtocolLib repository")
+        repositories { maven("https://repo.dmulloy2.net/repository/public/") }
+        dependencies { compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT") }
+    }
+}
