@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+- build: `checkNoBinariesTracked` remplace `checkNoBinaries` — scan basé sur `git ls-files` (uniquement fichiers versionnés).
+- doc: README mis à jour (wrapper local OK si non commité).
+
 ## 0.2.0
 - Service de résolution de skins Mojang/URL async via `HttpClient`
 - Cache TTL mémoire avec purge périodique

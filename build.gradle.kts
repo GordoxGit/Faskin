@@ -1,7 +1,9 @@
+import java.io.ByteArrayOutputStream
+
 plugins { java }
 
 group = "com.heneria"
-version = "0.2.0" // Ticket 2: resolver async + cache
+version = "0.2.1" // fix: scan seulement des fichiers git-trackés
 
 repositories {
     mavenCentral()
@@ -29,7 +31,7 @@ tasks.withType<JavaCompile> {
     options.release.set(21)
 }
 
-/* ====== Anti-binaires (bloquant) — aucune whitelist ====== */
+/* ====== Anti-binaires (scan fichiers *versionnés* uniquement) ====== */
 val forbiddenBinaryExtensions = listOf(
     "jar","class","war","ear","zip","7z","rar",
     "pdf","png","jpg","jpeg","gif","webp","ico","bmp","svg",
@@ -37,35 +39,62 @@ val forbiddenBinaryExtensions = listOf(
     "mp3","wav","flac","mp4","mov","avi","mkv","webm"
 )
 
-tasks.register("checkNoBinaries") {
+tasks.register("checkNoBinariesTracked") {
     group = "verification"
-    description = "Échoue si des binaires sont présents dans le repo."
+    description = "Échoue si des binaires sont *versionnés* (git ls-files)."
+
     doLast {
         val exts = forbiddenBinaryExtensions.toSet()
-        val offenders = mutableListOf<File>()
-        fileTree(project.rootDir) {
-            exclude(".git/**", ".gradle/**", ".idea/**", "out/**", "build/**", "target/**")
-        }.files.forEach { f ->
-            if (!f.isFile) return@forEach
-            val ext = f.name.substringAfterLast('.', "").lowercase()
-            val byExt = ext in exts
-            var byHeur = false
-            if (!byExt) {
-                val bytes = f.readBytes()
-                val limit = kotlin.math.min(bytes.size, 4096)
-                var i = 0
-                while (i < limit) { if (bytes[i] == 0.toByte()) { byHeur = true; break }; i++ }
+        val offenders = mutableListOf<String>()
+
+        fun scanPaths(paths: List<String>) {
+            paths.filter { it.isNotBlank() }.forEach { rel ->
+                val f = project.file(rel)
+                if (!f.isFile) return@forEach
+                val ext = rel.substringAfterLast('.', "").lowercase()
+                val byExt = ext in exts
+                var byHeur = false
+                if (!byExt) {
+                    val bytes = f.readBytes()
+                    val limit = kotlin.math.min(bytes.size, 4096)
+                    var i = 0
+                    while (i < limit) { if (bytes[i] == 0.toByte()) { byHeur = true; break }; i++ }
+                }
+                if (byExt || byHeur) offenders += rel
             }
-            if (byExt || byHeur) offenders += f
         }
+
+        // 1) Essaye d'utiliser 'git ls-files --cached -z' (ne liste *que* les fichiers suivis)
+        try {
+            val out = ByteArrayOutputStream()
+            project.exec {
+                commandLine("git", "ls-files", "--cached", "-z")
+                isIgnoreExitValue = false
+                standardOutput = out
+            }
+            val files = out.toString("UTF-8").split('\u0000')
+            scanPaths(files)
+        } catch (e: Exception) {
+            // 2) Fallback (sans git) : avertit et scanne *répertoire* minimal (src/resources/scripts)
+            logger.warn("git indisponible: fallback scan workspace (src/, resources/, scripts/) — installez Git pour un contrôle strict.")
+            val roots = listOf("src", "resources", "scripts").map { project.file(it) }.filter { it.exists() }
+            roots.forEach { root ->
+                root.walkTopDown().forEach { f ->
+                    val rel = project.rootDir.toPath().relativize(f.toPath()).toString().replace('\\','/')
+                    scanPaths(listOf(rel))
+                }
+            }
+        }
+
         if (offenders.isNotEmpty()) {
             val msg = buildString {
-                appendLine("Interdit: fichiers binaires détectés :")
-                offenders.sortedBy { it.path }.forEach { appendLine(" - ${it.path}") }
-                appendLine("Dépôt 100% TEXTE. Supprimez-les.")
+                appendLine("Interdit: fichiers binaires *versionnés* détectés :")
+                offenders.sorted().forEach { appendLine(" - $it") }
+                appendLine("Le dépôt doit rester 100% TEXTE. Gardez vos wrappers/artefacts en local, non commité.")
             }
             throw GradleException(msg)
         }
     }
 }
-tasks.check { dependsOn("checkNoBinaries") }
+
+tasks.named("check") { dependsOn("checkNoBinariesTracked") }
