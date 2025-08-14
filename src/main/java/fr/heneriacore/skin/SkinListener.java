@@ -13,10 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SkinListener implements Listener {
     private final SkinService skinService;
+    private final fr.heneriacore.prefs.PreferencesManager prefs;
     private final Map<UUID, SignedTexture> pending = new ConcurrentHashMap<>();
 
-    public SkinListener(SkinService skinService) {
+    public SkinListener(SkinService skinService, fr.heneriacore.prefs.PreferencesManager prefs) {
         this.skinService = skinService;
+        this.prefs = prefs;
     }
 
     @EventHandler
@@ -33,10 +35,14 @@ public class SkinListener implements Listener {
     public void onAuthPostLogin(AuthPostLoginEvent event) {
         SignedTexture st = pending.remove(event.getUuid());
         if (st != null) {
-            Player player = Bukkit.getPlayer(event.getUuid());
-            if (player != null) {
-                skinService.applySigned(player, st);
-            }
+            prefs.isOptedOut(event.getUuid()).thenAccept(out -> {
+                if (!out) {
+                    Player player = Bukkit.getPlayer(event.getUuid());
+                    if (player != null) {
+                        skinService.applySigned(player, st);
+                    }
+                }
+            });
         }
     }
 }

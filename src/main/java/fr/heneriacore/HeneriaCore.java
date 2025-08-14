@@ -5,7 +5,10 @@ import fr.heneriacore.auth.PasswordHasher;
 import fr.heneriacore.db.SQLiteManager;
 import fr.heneriacore.cmd.AuthCommand;
 import fr.heneriacore.cmd.ClaimCommand;
+import fr.heneriacore.cmd.PreferencesCommand;
+import fr.heneriacore.cmd.DebugCommand;
 import fr.heneriacore.claim.ClaimManager;
+import fr.heneriacore.prefs.PreferencesManager;
 import fr.heneriacore.premium.NameToUuidResolver;
 import fr.heneriacore.premium.PremiumDetector;
 import fr.heneriacore.premium.SessionProfileResolver;
@@ -20,8 +23,9 @@ public final class HeneriaCore extends JavaPlugin {
     private AuthManager authManager;
     private PremiumDetector premiumDetector;
     private TextureCache textureCache;
-    private SkinService skinService;
+    private SkinServiceImpl skinService;
     private ClaimManager claimManager;
+    private PreferencesManager preferencesManager;
 
     @Override
     public void onEnable() {
@@ -34,6 +38,9 @@ public final class HeneriaCore extends JavaPlugin {
         PasswordHasher hasher = new PasswordHasher();
         long ttl = getConfig().getLong("auth.session-ttl-seconds", 86400L);
         authManager = new AuthManager(this, sqliteManager, hasher, ttl);
+        boolean optDefault = getConfig().getBoolean("preferences.optout_default", false);
+        boolean autoApplyDefault = getConfig().getBoolean("preferences.default_auto_apply_skin", true);
+        preferencesManager = new PreferencesManager(sqliteManager, optDefault, autoApplyDefault);
 
         if (getConfig().getBoolean("premium.enable", true)) {
             long timeout = getConfig().getLong("premium.probe.timeout-ms", 3000L);
@@ -44,26 +51,29 @@ public final class HeneriaCore extends JavaPlugin {
             Level level = Level.parse(getConfig().getString("premium.log-level", "INFO"));
             NameToUuidResolver nameRes = new NameToUuidResolver(timeout);
             SessionProfileResolver profileRes = new SessionProfileResolver(timeout, fetchSig);
-            premiumDetector = new PremiumDetector(this, nameRes, profileRes, authManager, rpm, burst, autoLogin, level);
+            premiumDetector = new PremiumDetector(this, nameRes, profileRes, authManager, rpm, burst, autoLogin, level, preferencesManager);
             getServer().getPluginManager().registerEvents(premiumDetector, this);
         }
 
         long claimTtl = getConfig().getLong("claim.ttl-seconds", 900L);
         claimManager = new ClaimManager(this, claimTtl);
         ClaimCommand claimCmd = new ClaimCommand(this, claimManager);
-        AuthCommand authCmd = new AuthCommand(this, claimCmd);
-        getCommand("heneria").setExecutor(authCmd);
-        getCommand("heneria").setTabCompleter(authCmd);
-        getServer().getScheduler().runTaskTimerAsynchronously(this, claimManager::cleanupExpired, 20L, 20L * 60);
 
         long skinTtl = getConfig().getLong("skin.cache-ttl-seconds", 86400L);
         boolean protoEnable = getConfig().getBoolean("skin.protocollib-enable", true);
         boolean refreshTablist = getConfig().getBoolean("skin.refresh-tablist", true);
         textureCache = new TextureCache(this, skinTtl);
-        skinService = new SkinServiceImpl(this, textureCache, protoEnable, refreshTablist);
+        skinService = new SkinServiceImpl(this, textureCache, protoEnable, refreshTablist, preferencesManager);
         if (getConfig().getBoolean("skin.apply-on-login", true)) {
-            getServer().getPluginManager().registerEvents(new SkinListener(skinService), this);
+            getServer().getPluginManager().registerEvents(new SkinListener(skinService, preferencesManager), this);
         }
+
+        PreferencesCommand prefsCmd = new PreferencesCommand(this, preferencesManager);
+        DebugCommand debugCmd = new DebugCommand(this, sqliteManager, preferencesManager, skinService, textureCache);
+        AuthCommand authCmd = new AuthCommand(this, claimCmd, prefsCmd, debugCmd);
+        getCommand("heneria").setExecutor(authCmd);
+        getCommand("heneria").setTabCompleter(authCmd);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, claimManager::cleanupExpired, 20L, 20L * 60);
     }
 
     @Override
@@ -77,11 +87,9 @@ public final class HeneriaCore extends JavaPlugin {
         getLogger().info("HeneriaCore stopped.");
     }
 
-    public AuthManager getAuthManager() {
-        return authManager;
-    }
+    public AuthManager getAuthManager() { return authManager; }
 
-    public ClaimManager getClaimManager() {
-        return claimManager;
-    }
+    public ClaimManager getClaimManager() { return claimManager; }
+
+    public PreferencesManager getPreferencesManager() { return preferencesManager; }
 }

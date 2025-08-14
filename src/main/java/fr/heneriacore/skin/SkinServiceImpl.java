@@ -14,11 +14,13 @@ public class SkinServiceImpl implements SkinService {
     private final TextureCache cache;
     private final SkinApplier applier;
     private final boolean refreshTablist;
+    private final fr.heneriacore.prefs.PreferencesManager prefs;
 
-    public SkinServiceImpl(Plugin plugin, TextureCache cache, boolean enableProtocolLib, boolean refreshTablist) {
+    public SkinServiceImpl(Plugin plugin, TextureCache cache, boolean enableProtocolLib, boolean refreshTablist, fr.heneriacore.prefs.PreferencesManager prefs) {
         this.plugin = plugin;
         this.cache = cache;
         this.refreshTablist = refreshTablist;
+        this.prefs = prefs;
         this.applier = detectApplier(enableProtocolLib);
     }
 
@@ -41,24 +43,29 @@ public class SkinServiceImpl implements SkinService {
     @Override
     public CompletableFuture<Void> applySigned(Player target, SignedTexture texture) {
         UUID uuid = target.getUniqueId();
-        Optional<SignedTexture> current = cache.get(uuid);
-        if (current.isPresent() && SkinUtils.same(current.get(), texture)) {
-            return CompletableFuture.completedFuture(null);
-        }
-        cache.put(uuid, texture);
-        if (applier == null) {
-            return CompletableFuture.completedFuture(null);
-        }
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            try {
-                applier.apply(plugin, target, texture, refreshTablist);
-                future.complete(null);
-            } catch (Exception e) {
-                future.completeExceptionally(e);
+        return prefs.isOptedOut(uuid).thenCompose(out -> {
+            if (out) {
+                return CompletableFuture.completedFuture(null);
             }
+            Optional<SignedTexture> current = cache.get(uuid);
+            if (current.isPresent() && SkinUtils.same(current.get(), texture)) {
+                return CompletableFuture.completedFuture(null);
+            }
+            cache.put(uuid, texture);
+            if (applier == null) {
+                return CompletableFuture.completedFuture(null);
+            }
+            CompletableFuture<Void> future = new CompletableFuture<>();
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                try {
+                    applier.apply(plugin, target, texture, refreshTablist);
+                    future.complete(null);
+                } catch (Exception e) {
+                    future.completeExceptionally(e);
+                }
+            });
+            return future;
         });
-        return future;
     }
 
     @Override
@@ -73,5 +80,9 @@ public class SkinServiceImpl implements SkinService {
         if (applier != null) {
             applier.shutdown();
         }
+    }
+
+    public String getApplierName() {
+        return applier == null ? "none" : applier.getClass().getSimpleName();
     }
 }

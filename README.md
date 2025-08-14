@@ -1,6 +1,6 @@
 # HeneriaCore
 
-Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.6.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.7.
 
 Important:
 - Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
@@ -28,3 +28,7 @@ Adds an asynchronous `HttpClientWrapper` with token bucket rate limiting, expone
 ### Claim flow
 
 HC-06 introduces a simple claim system to prove ownership of a Mojang account. Use `/heneria claim start <name>` to generate a tokenized skin image and `/heneria claim check <id>` to verify.
+
+### Preferences and debug
+
+HC-07 adds per-player opt-in/out preferences controlling automatic skin application and claim flows. Players can use `/heneria optout`, `/heneria optin` and `/heneria prefs`. Admins can inspect runtime state with `/heneria debug`.

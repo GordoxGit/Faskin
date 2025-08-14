@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 public class SQLiteManager {
     private final ExecutorService executor;
     private String jdbcUrl;
+    private File dbFile;
 
     public SQLiteManager(int threads) {
         this.executor = Executors.newFixedThreadPool(threads);
@@ -28,6 +29,7 @@ public class SQLiteManager {
             if (dbFile.getParentFile() != null && !dbFile.getParentFile().exists()) {
                 dbFile.getParentFile().mkdirs();
             }
+            this.dbFile = dbFile;
             this.jdbcUrl = "jdbc:sqlite:" + dbFile.getAbsolutePath();
             runMigrations();
         } catch (IOException e) {
@@ -69,5 +71,9 @@ public class SQLiteManager {
 
     public void close() {
         executor.shutdownNow();
+    }
+
+    public File getDbFile() {
+        return dbFile;
     }
 }

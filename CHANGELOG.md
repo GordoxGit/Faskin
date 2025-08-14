@@ -21,3 +21,8 @@
 ## 0.0.6
 - Introduce claim flow with tokenized skin verification.
 - Add ClaimManager, commands and configuration.
+
+## 0.0.7
+- Add per-player opt-in/out preferences stored in SQLite.
+- Implement `/heneria optin`, `/heneria optout`, `/heneria prefs` and admin `/heneria debug`.
+- Skip auto skin apply, auto-login and claim flows when players opt out.

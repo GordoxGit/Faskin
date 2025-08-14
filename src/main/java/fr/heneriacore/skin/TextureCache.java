@@ -35,6 +35,10 @@ public class TextureCache {
         cache.put(uuid, texture);
     }
 
+    public int size() {
+        return cache.size();
+    }
+
     public void flush() {
         YamlConfiguration yaml = new YamlConfiguration();
         for (Map.Entry<UUID, SignedTexture> e : cache.entrySet()) {

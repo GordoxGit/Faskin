@@ -19,6 +19,7 @@ public class PremiumDetector implements Listener {
     private final NameToUuidResolver nameResolver;
     private final SessionProfileResolver profileResolver;
     private final PremiumAuthService authService;
+    private final fr.heneriacore.prefs.PreferencesManager prefs;
     private final TokenBucket rateLimiter;
     private final boolean autoLogin;
     private final Level logLevel;
@@ -28,7 +29,8 @@ public class PremiumDetector implements Listener {
     private final int maxRetries = 3;
 
     public PremiumDetector(Plugin plugin, NameToUuidResolver nameResolver, SessionProfileResolver profileResolver,
-                           PremiumAuthService authService, int rpm, int burst, boolean autoLogin, Level logLevel) {
+                           PremiumAuthService authService, int rpm, int burst, boolean autoLogin, Level logLevel,
+                           fr.heneriacore.prefs.PreferencesManager prefs) {
         this.plugin = plugin;
         this.nameResolver = nameResolver;
         this.profileResolver = profileResolver;
@@ -36,6 +38,7 @@ public class PremiumDetector implements Listener {
         this.rateLimiter = new TokenBucket(rpm, burst);
         this.autoLogin = autoLogin;
         this.logLevel = logLevel;
+        this.prefs = prefs;
     }
 
     public CompletableFuture<Optional<GameProfile>> detectByNameAsync(String name) {
@@ -84,7 +87,11 @@ public class PremiumDetector implements Listener {
             Bukkit.getScheduler().runTask(plugin, () ->
                     Bukkit.getPluginManager().callEvent(new PremiumLoginEvent(player, profile)));
             if (autoLogin) {
-                authService.autoLogin(UUID.fromString(profile.getUuid()), profile);
+                prefs.isOptedOut(player.getUniqueId()).thenAccept(out -> {
+                    if (!out) {
+                        authService.autoLogin(UUID.fromString(profile.getUuid()), profile);
+                    }
+                });
             }
         }));
     }

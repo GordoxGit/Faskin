@@ -45,3 +45,10 @@ claim:
   ttl-seconds: 900
   image-size: 64
   max-attempts: 3
+
+preferences:
+  default_auto_apply_skin: true
+  optout_default: false
+debug:
+  export_enabled: true
+  export_dir: "plugins/HeneriaCore/debug"
