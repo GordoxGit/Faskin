@@ -11,6 +11,9 @@ lookups:
   allow-premium-name: true
   allow-textures-url: true
   allow-unsigned: true
+  url:
+    resolve-signature: true
+    signature-ttl-seconds: 86400
 
 storage:
   type: YAML

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3
+- Amélioration : `/skinview url` tente désormais de récupérer la propriété `value+signature` officielle via Mojang (UUID → sessionserver) quand possible (best-effort).
+- Ajout : configuration `lookups.url.resolve-signature` et `signature-ttl-seconds`.
+- Fallback : si signature introuvable, comportement identique (apply unsigned) avec message explicite.
+
 ## 0.5.2
 - Ajout : rate-limiting pour requêtes Mojang (token-bucket configurable).
 - Ajout : backoff exponentiel + jitter pour retries.

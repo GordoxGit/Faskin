@@ -50,6 +50,8 @@ public final class SkinService {
                         applier.apply(target, sd);
                         store.put(target.getUniqueId(), sd);
                         ok(actor, "apply-ok", targetName, sd.model().name());
+                        if (sd.hasSignedTextures()) info(actor, "signature-found", null);
+                        else info(actor, "signature-missing", null);
                     } catch (Exception e) {
                         fail(actor, "apply-fail", e.getMessage());
                     }

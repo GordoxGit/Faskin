@@ -4,12 +4,14 @@ import com.heneria.skinview.SkinviewPlugin;
 import com.heneria.skinview.service.SkinDescriptor;
 import com.heneria.skinview.service.SkinModel;
 import com.heneria.skinview.service.SkinResolver;
+import com.heneria.skinview.resolver.TextureSignatureResolver;
 import com.heneria.skinview.util.JsonUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.net.URI;
 import com.heneria.skinview.net.HttpClientWrapper;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +27,7 @@ public final class MojangSkinResolver implements SkinResolver {
 
     private final SkinviewPlugin plugin;
     private final HttpClientWrapper http;
+    private final TextureSignatureResolver texResolver;
 
     private volatile long ttlMillis;
     private volatile int maxEntries;
@@ -40,6 +43,7 @@ public final class MojangSkinResolver implements SkinResolver {
     public MojangSkinResolver(SkinviewPlugin plugin, HttpClientWrapper http) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
         this.http = http;
+        this.texResolver = new TextureSignatureResolver(http);
         reloadSettings();
         startPurge();
     }
@@ -74,7 +78,13 @@ public final class MojangSkinResolver implements SkinResolver {
             URI u = URI.create(url);
             if (!HOST_TEXTURES.equalsIgnoreCase(u.getHost()))
                 return CompletableFuture.failedFuture(new IllegalArgumentException("Only textures.minecraft.net allowed"));
-            return CompletableFuture.completedFuture(new SkinDescriptor(u, SkinModel.STEVE, null, null));
+            return texResolver.resolveSignatureFromUrlAsync(u)
+                    .thenApply(opt -> new SkinDescriptor(
+                            u,
+                            SkinModel.STEVE,
+                            opt.map(TextureSignatureResolver.SignedTexture::value).orElse(null),
+                            opt.map(TextureSignatureResolver.SignedTexture::signature).orElse(null)
+                    ));
         } catch (Exception e) {
             return CompletableFuture.failedFuture(new IllegalArgumentException("Invalid textures URL", e));
         }
@@ -108,6 +118,9 @@ public final class MojangSkinResolver implements SkinResolver {
                             signature.get()
                     );
                     putUuidSkin(uuidNoDash, sd);
+                    String hash = TextureSignatureResolver.textureHash(sd.skinUrl());
+                    texResolver.remember(hash, uuidNoDash,
+                            new TextureSignatureResolver.SignedTexture(sd.texturesValueB64(), sd.texturesSignature(), Instant.now()));
                     return sd;
                 });
     }
@@ -124,6 +137,7 @@ public final class MojangSkinResolver implements SkinResolver {
         int max = maxEntries;
         if (name2uuid.size() > max) trim(name2uuid, max);
         if (uuid2skin.size() > max) trim(uuid2skin, max);
+        texResolver.purgeExpired();
     }
 
     private <T> void trim(ConcurrentHashMap<String, CacheEntry<T>> map, int max) {
@@ -151,6 +165,9 @@ public final class MojangSkinResolver implements SkinResolver {
         this.allowPremiumName = c.getBoolean("lookups.allow-premium-name", true);
         this.allowTexturesUrl = c.getBoolean("lookups.allow-textures-url", true);
         this.allowUnsigned = c.getBoolean("lookups.allow-unsigned", true);
+        boolean resolveSig = c.getBoolean("lookups.url.resolve-signature", true);
+        long sigTtl = c.getLong("lookups.url.signature-ttl-seconds", 86400);
+        texResolver.reload(resolveSig, sigTtl);
         plugin.getLogger().info(String.format("SkinResolver: ttl=%ds, max=%d, premium=%s, url=%s",
                 ttlSec, maxEntries, allowPremiumName, allowTexturesUrl));
     }
@@ -160,12 +177,15 @@ public final class MojangSkinResolver implements SkinResolver {
         if (purgeTask != null) { purgeTask.cancel(); purgeTask = null; }
         name2uuid.clear();
         uuid2skin.clear();
+        texResolver.purgeExpired();
     }
 
     /** number of entries across both caches */
     public int cacheSize() { return name2uuid.size() + uuid2skin.size(); }
 
     public long ttlMillis() { return ttlMillis; }
+
+    public TextureSignatureResolver signatureResolver() { return texResolver; }
 
     private record CacheEntry<T>(T value, long expiryMillis) {
         boolean isExpired() { return expiryMillis < System.currentTimeMillis(); }
