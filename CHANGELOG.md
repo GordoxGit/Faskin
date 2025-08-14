@@ -26,3 +26,8 @@
 - Add per-player opt-in/out preferences stored in SQLite.
 - Implement `/heneria optin`, `/heneria optout`, `/heneria prefs` and admin `/heneria debug`.
 - Skip auto skin apply, auto-login and claim flows when players opt out.
+
+## 0.0.8
+- Add production and release documentation.
+- Introduce release-with-plib workflow to bundle ProtocolLib.
+- Update version to 0.0.8 and provide release checklist.

@@ -1,11 +1,16 @@
 # HeneriaCore
 
-Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.7.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.8.
 
 Important:
 - Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
 - CI installs Gradle using gradle/setup-gradle.
 - Development: install Gradle 8.x locally or run `gradle wrapper` locally (do NOT commit generated jar).
+
+### Production
+
+See [docs/PRODUCTION.md](docs/PRODUCTION.md) for deploying on Spigot or Paper and FAQs on spoofing, opt-in and claim.
+
 
 ### Testing Mojang API locally
 
