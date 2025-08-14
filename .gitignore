@@ -17,38 +17,6 @@ gradle/
 gradlew
 gradlew.bat
 
-# Binaires & médias (interdits au repo)
-*.jar
-*.class
-*.war
-*.ear
-*.zip
-*.7z
-*.rar
-*.pdf
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.webp
-*.ico
-*.bmp
-*.svg
-*.exe
-*.dll
-*.so
-*.dylib
-*.bin
-*.dat
-*.mp3
-*.wav
-*.flac
-*.mp4
-*.mov
-*.avi
-*.mkv
-*.webm
-
 # OS
 .DS_Store
 Thumbs.db
