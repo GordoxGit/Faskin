@@ -7,7 +7,6 @@ import com.heneria.skinview.listener.JoinListener;
 import com.heneria.skinview.service.SkinApplier;
 import com.heneria.skinview.service.SkinResolver;
 import com.heneria.skinview.service.impl.MojangSkinResolver;
-import com.heneria.skinview.service.impl.SkinApplierProtocolLib;
 import com.heneria.skinview.service.impl.SkinApplierReflection;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -55,7 +54,13 @@ public final class SkinviewPlugin extends JavaPlugin {
         boolean plibEnabled = getConfig().getBoolean("apply.protocollib-enable", true)
                 && Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;
         if (plibEnabled) {
-            this.applier = new SkinApplierProtocolLib(this);
+            try {
+                Class<?> clazz = Class.forName("com.heneria.skinview.service.impl.SkinApplierProtocolLib");
+                this.applier = (SkinApplier) clazz.getConstructor(SkinviewPlugin.class).newInstance(this);
+            } catch (Exception e) {
+                getLogger().info("ProtocolLib applier non présent (build sans PLib ?)");
+                this.applier = new SkinApplierReflection(this);
+            }
         } else {
             this.applier = new SkinApplierReflection(this);
         }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+- Build: option **`-PwithPlib`** pour compiler/inclure les classes ProtocolLib uniquement à la demande.
+- CI: passe sans tenter de résoudre ProtocolLib (aucune dépendance par défaut).
+- Doc: ajout du mode **JAR local** (`-PwithPlibLocal`), dossier `local-libs/` ignoré par git.
+
 ## 0.4.0
 - build: dépendance optionnelle ProtocolLib (repo dmulloy2) + bump version.
 - feature: resolver remonte désormais `value` base64 et `signature` signée.
