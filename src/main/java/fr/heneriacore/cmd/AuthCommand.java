@@ -17,10 +17,12 @@ import java.util.Optional;
 public class AuthCommand implements CommandExecutor, TabCompleter {
     private final HeneriaCore plugin;
     private final AuthManager auth;
+    private final ClaimCommand claimCommand;
 
-    public AuthCommand(HeneriaCore plugin) {
+    public AuthCommand(HeneriaCore plugin, ClaimCommand claimCommand) {
         this.plugin = plugin;
         this.auth = plugin.getAuthManager();
+        this.claimCommand = claimCommand;
     }
 
     @Override
@@ -34,6 +36,9 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         String sub = args[0].toLowerCase();
+        if (sub.equals("claim")) {
+            return claimCommand.onCommand(sender, command, label, args);
+        }
         switch (sub) {
             case "register" -> {
                 if (args.length < 2) {
@@ -82,7 +87,7 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
                             }
                         }));
             }
-            default -> player.sendMessage("Usage: /" + label + " register|login|logout");
+            default -> player.sendMessage("Usage: /" + label + " register|login|logout|claim");
         }
         return true;
     }
@@ -90,7 +95,10 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("register", "login", "logout");
+            return Arrays.asList("register", "login", "logout", "claim");
+        }
+        if (args.length >= 1 && args[0].equalsIgnoreCase("claim")) {
+            return claimCommand.onTabComplete(sender, command, alias, args);
         }
         return Collections.emptyList();
     }

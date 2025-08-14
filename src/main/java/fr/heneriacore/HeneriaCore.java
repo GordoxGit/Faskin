@@ -4,6 +4,8 @@ import fr.heneriacore.auth.AuthManager;
 import fr.heneriacore.auth.PasswordHasher;
 import fr.heneriacore.db.SQLiteManager;
 import fr.heneriacore.cmd.AuthCommand;
+import fr.heneriacore.cmd.ClaimCommand;
+import fr.heneriacore.claim.ClaimManager;
 import fr.heneriacore.premium.NameToUuidResolver;
 import fr.heneriacore.premium.PremiumDetector;
 import fr.heneriacore.premium.SessionProfileResolver;
@@ -19,6 +21,7 @@ public final class HeneriaCore extends JavaPlugin {
     private PremiumDetector premiumDetector;
     private TextureCache textureCache;
     private SkinService skinService;
+    private ClaimManager claimManager;
 
     @Override
     public void onEnable() {
@@ -45,9 +48,13 @@ public final class HeneriaCore extends JavaPlugin {
             getServer().getPluginManager().registerEvents(premiumDetector, this);
         }
 
-        AuthCommand authCmd = new AuthCommand(this);
+        long claimTtl = getConfig().getLong("claim.ttl-seconds", 900L);
+        claimManager = new ClaimManager(this, claimTtl);
+        ClaimCommand claimCmd = new ClaimCommand(this, claimManager);
+        AuthCommand authCmd = new AuthCommand(this, claimCmd);
         getCommand("heneria").setExecutor(authCmd);
         getCommand("heneria").setTabCompleter(authCmd);
+        getServer().getScheduler().runTaskTimerAsynchronously(this, claimManager::cleanupExpired, 20L, 20L * 60);
 
         long skinTtl = getConfig().getLong("skin.cache-ttl-seconds", 86400L);
         boolean protoEnable = getConfig().getBoolean("skin.protocollib-enable", true);
@@ -72,5 +79,9 @@ public final class HeneriaCore extends JavaPlugin {
 
     public AuthManager getAuthManager() {
         return authManager;
+    }
+
+    public ClaimManager getClaimManager() {
+        return claimManager;
     }
 }

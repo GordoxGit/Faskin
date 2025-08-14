@@ -1,14 +1,14 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
- version: "0.0.5"
+ version: "0.0.6"
 api-version: "1.21"
 description: "HeneriaCore - monolithic plugin (premium auth + auth-local + skins). Skeleton init."
 authors: ["OpenAI"]
  softdepend: ["ProtocolLib"]
 commands:
   heneria:
-    description: "Authentication commands"
-    usage: "/heneria <register|login|logout>"
+    description: "Authentication and claim commands"
+    usage: "/heneria <register|login|logout|claim>"
     permission: heneria.auth
 permissions:
   heneria.auth:
@@ -16,4 +16,19 @@ permissions:
     default: true
   heneria.auth.admin:
     description: "Admin auth permissions"
+    default: op
+  heneria.claim.start:
+    description: "Start a claim session"
+    default: true
+  heneria.claim.check:
+    description: "Check a claim session"
+    default: true
+  heneria.claim.cancel:
+    description: "Cancel a claim session"
+    default: op
+  heneria.claim.status:
+    description: "Get claim status"
+    default: true
+  heneria.claim.admin:
+    description: "Admin claim permissions"
     default: op

@@ -41,3 +41,7 @@ mojang:
     failure_threshold: 5
     open_duration_ms: 60000
     half_open_probe_count: 2
+claim:
+  ttl-seconds: 900
+  image-size: 64
+  max-attempts: 3

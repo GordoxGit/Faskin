@@ -17,3 +17,7 @@
 ## 0.0.5
 - Add HttpClientWrapper with rate limiter, backoff strategy, circuit breaker and metrics.
 - Expose metrics through DebugInfoProvider and extend configuration.
+
+## 0.0.6
+- Introduce claim flow with tokenized skin verification.
+- Add ClaimManager, commands and configuration.
