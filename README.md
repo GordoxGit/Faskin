@@ -1,7 +1,8 @@
 # HeneriaCore
 
-Minimal skeleton plugin for Heneria.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.1.
 
-## Development
-
-Install Gradle locally or run `gradle wrapper` to generate a wrapper. Do **not** commit `gradle-wrapper.jar`.
+Important:
+- Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
+- CI installs Gradle using gradle/setup-gradle.
+- Development: install Gradle 8.x locally or run `gradle wrapper` locally (do NOT commit generated jar).

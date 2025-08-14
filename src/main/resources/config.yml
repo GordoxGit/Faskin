@@ -1,3 +1,11 @@
-# HeneriaCore configuration placeholder
+# HeneriaCore configuration (squelette)
 general:
   require-auth: false
+premium:
+  enable: true
+  rate:
+    rpm: 120
+auth:
+  db: "data/heneria.db"
+skin:
+  apply-on-login: true

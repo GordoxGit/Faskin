@@ -2,8 +2,7 @@ import java.io.ByteArrayOutputStream
 
 plugins { java }
 
-group = "fr.tonpackage"
-version = "0.0.1" // URL → signed profile
+group = "fr.heneriacore"
 
 repositories {
     mavenCentral()
