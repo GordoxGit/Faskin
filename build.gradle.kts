@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.3.1" // Spigot 1.21 - auto-apply premium skins on join
+version = "0.3.2" // Spigot 1.21 - auto-apply premium skins on join
 
 repositories {
     mavenCentral()
@@ -13,6 +13,8 @@ repositories {
 dependencies {
     // ===== Spigot 1.21 (PAS Paper) =====
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    // Option B (si annotations JetBrains nécessaires):
+    // compileOnly("org.jetbrains:annotations:24.1.0")
     // (supprimer toute dépendance paper-api si présente)
 }
 
