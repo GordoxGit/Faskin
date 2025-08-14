@@ -1,2 +1,2 @@
 ## 0.0.1
-- init
+- Init: skeleton HeneriaCore (main class, plugin.yml, config.yml, CI).
