@@ -9,3 +9,7 @@
 ## 0.0.3
 - Add PremiumDetector (sessionserver probe) with rate limiting and backoff.
 - Integrate auto-login via PremiumAuthService and PremiumLoginEvent.
+
+## 0.0.4
+- Add SkinService with ProtocolLib and Paper reflection fallback.
+- Cache signed textures and apply them on AuthPostLoginEvent.

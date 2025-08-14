@@ -1,6 +1,6 @@
 # HeneriaCore
 
-Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.3.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.4.
 
 Important:
 - Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
@@ -16,3 +16,7 @@ python -m http.server 8080
 ```
 
 Serve JSON responses matching the Mojang API formats for `/users/profiles/minecraft/{name}` and `/session/minecraft/profile/{uuid}` to simulate premium accounts.
+
+### Skins
+
+HC-04 introduces a basic `SkinService` able to apply signed textures either via ProtocolLib or Paper reflection as a fallback.

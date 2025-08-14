@@ -20,5 +20,11 @@ auth:
   maxFailedAttempts: 5
   lockDurationSeconds: 300
   executor-threads: 2
-skin:
-  apply-on-login: true
+  skin:
+    protocollib-enable: true
+    cache-ttl-seconds: 86400
+    apply-on-login: true
+    refresh-tablist: true
+    storage:
+      type: sqlite # or yaml
+      file: data/heneria_skins.db
