@@ -1,5 +1,7 @@
 # skinview (Heneria)
 
+![Version](https://img.shields.io/badge/version-0.5.1-blue)
+
 Plugin Spigot **1.21** (Java 21) — gestion future de skins pour serveurs offline/cracked.
 
 ## Politique dépôt
@@ -104,6 +106,9 @@ Tout est async, aucun blocage du tick.
 - `/skinview clear [joueur]` — supprime l'entrée de cache
 - `/skinview cache get [joueur]` — applique depuis le store
 - `/skinview cache clear [joueur]` — efface l'entrée du store
+- `/skinview optout [joueur]` — désactive l'apply auto
+- `/skinview optin [joueur]` — réactive l'apply auto
+- `/skinview debug` — affiche les infos de debug
 - Aliases: `/skin`, `/sv`.
 
 ## Permissions
@@ -123,3 +128,9 @@ Tickets suivants : application via PlayerProfile, persistance, auto-apply au joi
 - `build.gradle.kts` (dépendances/versions)
 - `README.md` (sections concernées)
 - `CHANGELOG.md` (entrée détaillée)
+
+## Changelog
+
+- **0.5.1**
+  - Ajout opt-in / opt-out par joueur pour l’application auto des skins.
+  - Ajout commande `/skinview debug` (état applier, cache, opt-outs, hits).

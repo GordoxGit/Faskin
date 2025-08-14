@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.5.0" // Ticket 6: persistance YAML + auto-apply au join
+version = "0.5.1" // Ticket 7: opt-out + debug command
 
 repositories {
     mavenCentral()
@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("net.kyori:adventure-api:4.17.0")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
     // ProtocolLib: activé seulement si -PwithPlib=true (voir plus bas)
 }
 

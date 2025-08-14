@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public final class SkinCommand implements CommandExecutor {
 
@@ -122,6 +124,71 @@ public final class SkinCommand implements CommandExecutor {
                 sendPrefixed(sender, "cache-usage", "&eUsage: /skinview cache <get|clear> [joueur]");
                 return true;
             }
+        }
+
+        if ("optout".equalsIgnoreCase(args[0]) || "optin".equalsIgnoreCase(args[0])) {
+            boolean opt = "optout".equalsIgnoreCase(args[0]);
+            Player target = resolveTarget(sender, args, 1);
+            if (target == null) {
+                if (args.length >= 2) sendPrefixed(sender, "player-not-found", "&cJoueur introuvable: %player%".replace("%player%", args[1]));
+                else if (!(sender instanceof Player)) sendPrefixed(sender, "invalid-arg", "&cSpécifiez un joueur.");
+                return true;
+            }
+            if (!((sender instanceof Player p && p.equals(target)) || canTargetOthers(sender))) {
+                sendPrefixed(sender, "no-permission", "&cNo permission.");
+                return true;
+            }
+            plugin.flagStore().setOptOut(target.getUniqueId(), opt).whenComplete((v, ex) -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (ex != null) {
+                        sendPrefixed(sender, "opt-fail", "&cÉchec mise à jour: %error%".replace("%error%", ex.getMessage()));
+                    } else {
+                        String key = opt ? "optout-ok" : "optin-ok";
+                        String def = opt ? "&aAuto-apply désactivé pour &f%player%&a." : "&aAuto-apply activé pour &f%player%&a.";
+                        sendPrefixed(sender, key, def.replace("%player%", target.getName()));
+                    }
+                });
+            });
+            return true;
+        }
+
+        if ("debug".equalsIgnoreCase(args[0])) {
+            if (!sender.hasPermission("skinview.admin")) { sendPrefixed(sender, "no-permission", "&cNo permission."); return true; }
+            var dbg = plugin.debug();
+            int cacheSize = dbg.resolverCacheSize();
+            long cacheTtl = dbg.resolverTtlSeconds();
+            int storeEntries = dbg.storeEntries();
+            long storeSize = dbg.storeFileSize();
+            long storeTtl = dbg.storeTtlSeconds();
+            int optouts = dbg.optOutCount();
+            long hits = dbg.mojangHits();
+            long up = dbg.uptimeSeconds();
+            String ver = dbg.version();
+            if (sender instanceof Player p) {
+                var a = plugin.adventure().player(p);
+                a.sendMessage(Component.text("=== skinview debug ===", NamedTextColor.GOLD));
+                a.sendMessage(Component.text("Applier: ", NamedTextColor.YELLOW)
+                        .append(Component.text(dbg.applierName(), NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Cache: ", NamedTextColor.YELLOW)
+                        .append(Component.text(cacheSize + " entries, ttl=" + cacheTtl + "s", NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Store: ", NamedTextColor.YELLOW)
+                        .append(Component.text(storeEntries + " entries, ttl=" + storeTtl + "s, file=" + storeSize + "B", NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Opt-outs: ", NamedTextColor.YELLOW)
+                        .append(Component.text(String.valueOf(optouts), NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Mojang hits: ", NamedTextColor.YELLOW)
+                        .append(Component.text(String.valueOf(hits), NamedTextColor.WHITE)));
+                a.sendMessage(Component.text("Version: ", NamedTextColor.YELLOW)
+                        .append(Component.text(ver + ", uptime=" + up + "s", NamedTextColor.WHITE)));
+            } else {
+                sender.sendMessage("=== skinview debug ===");
+                sender.sendMessage("applier=" + dbg.applierName());
+                sender.sendMessage("cache=" + cacheSize + " entries ttl=" + cacheTtl + "s");
+                sender.sendMessage("store=" + storeEntries + " entries ttl=" + storeTtl + "s file=" + storeSize + "B");
+                sender.sendMessage("opt-outs=" + optouts);
+                sender.sendMessage("mojang-hits=" + hits);
+                sender.sendMessage("version=" + ver + " uptime=" + up + "s");
+            }
+            return true;
         }
 
         sendPrefixed(sender, "unknown-subcommand", "&cUnknown subcommand.");

@@ -62,7 +62,7 @@ public final class MojangSkinResolver implements SkinResolver {
         HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(TIMEOUT)
                 .header("User-Agent", "skinview/" + plugin.getDescription().getVersion())
                 .GET().build();
-
+        plugin.debug().incrementMojangHits();
         return http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
                 .thenCompose(resp -> {
                     if (resp.statusCode() != 200)
@@ -96,7 +96,7 @@ public final class MojangSkinResolver implements SkinResolver {
         HttpRequest req = HttpRequest.newBuilder(URI.create(url)).timeout(TIMEOUT)
                 .header("User-Agent", "skinview/" + plugin.getDescription().getVersion())
                 .GET().build();
-
+        plugin.debug().incrementMojangHits();
         return http.sendAsync(req, HttpResponse.BodyHandlers.ofString())
                 .thenApply(resp -> {
                     if (resp.statusCode() != 200)
@@ -173,6 +173,11 @@ public final class MojangSkinResolver implements SkinResolver {
         name2uuid.clear();
         uuid2skin.clear();
     }
+
+    /** number of entries across both caches */
+    public int cacheSize() { return name2uuid.size() + uuid2skin.size(); }
+
+    public long ttlMillis() { return ttlMillis; }
 
     private record CacheEntry<T>(T value, long expiryMillis) {
         boolean isExpired() { return expiryMillis < System.currentTimeMillis(); }

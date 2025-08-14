@@ -23,6 +23,10 @@ public final class SkinAutoApplyJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         if (!plugin.getConfig().getBoolean("apply.update-on-join", true)) return;
         final Player player = e.getPlayer();
+        if (plugin.flagStore().isOptedOut(player.getUniqueId())) {
+            plugin.getLogger().log(Level.FINE, "[skinview] Opt-out for " + player.getName());
+            return;
+        }
 
         // 1) Essayer le store (immédiat, main-thread)
         boolean applied = plugin.skinService().applyFromStore(Bukkit.getConsoleSender(), player);

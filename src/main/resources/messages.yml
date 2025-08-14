@@ -11,6 +11,9 @@ help:
   - "&e/skinview clear [joueur] &7: Vide le cache du joueur"
   - "&e/skinview cache get [joueur] &7: Tente l'apply depuis le cache &8(perm: skinview.admin)"
   - "&e/skinview cache clear [joueur] &7: Efface l'entrée du cache &8(perm: skinview.admin)"
+  - "&e/skinview optout [joueur] &7: Désactive l'apply auto"
+  - "&e/skinview optin [joueur] &7: Réactive l'apply auto"
+  - "&e/skinview debug &7: Infos de debug &8(perm: skinview.admin)"
 
 reloaded: "&aConfiguration rechargée."
 no-permission: "&cVous n'avez pas la permission."
@@ -31,4 +34,7 @@ player-not-found: "&cJoueur introuvable: &f%player%&7."
 invalid-arg: "&cArguments invalides."
 cache-usage: "&eUsage: /skinview cache <get|clear> [joueur]"
 cache-miss: "&eAucune entrée de cache valide."
+optout-ok: "&aAuto-apply désactivé pour &f%player%&a."
+optin-ok: "&aAuto-apply activé pour &f%player%&a."
+opt-fail: "&cÉchec mise à jour: %error%"
 
