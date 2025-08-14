@@ -29,9 +29,23 @@ Important : ne pousse aucun des fichiers du wrapper (`gradle/`, `gradlew`, `grad
 ## Installation
 Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Paper/Spigot 1.21.x.
 
+## Résolution de skins
+Service interne `SkinResolver` : résolution Mojang (pseudo premium) ou URL `textures.minecraft.net`.
+I/O **asynchrones** via `HttpClient` Java 21, cache TTL en mémoire avec purge périodique.
+Commande d'admin pour tester :
+
+```
+/skinview resolve name <Premium>
+/skinview resolve url <textures.minecraft.net/...>
+```
+
+Tout est async, aucun blocage du tick.
+
 ## Commandes
 - `/skinview help` — aide
 - `/skinview reload` — recharge config/messages (perm skinview.admin)
+- `/skinview resolve name <Premium>` — test résolution Mojang (perm skinview.admin)
+- `/skinview resolve url <textures.minecraft.net/...>` — test résolution par URL (perm skinview.admin)
 - Aliases: `/skin`, `/sv`.
 
 ## Permissions
@@ -42,7 +56,7 @@ Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Paper/Spigot 1.21.
 `config.yml` et `messages.yml` générés à la première exécution.
 
 ## Roadmap
-Tickets suivants : résolution Mojang (async + cache), application via PlayerProfile, persistance, auto-apply au join, fallback TAB.
+Tickets suivants : application via PlayerProfile, persistance, auto-apply au join, fallback TAB.
 ## Mises à jour
 À chaque ticket, mettre à jour :
 - `build.gradle.kts` (dépendances/versions)

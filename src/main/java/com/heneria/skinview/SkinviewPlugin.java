@@ -4,6 +4,8 @@ import com.heneria.skinview.commands.SkinCommand;
 import com.heneria.skinview.commands.SkinTabCompleter;
 import com.heneria.skinview.listener.InteractListener;
 import com.heneria.skinview.listener.JoinListener;
+import com.heneria.skinview.service.SkinResolver;
+import com.heneria.skinview.service.impl.MojangSkinResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,17 +20,16 @@ import java.util.logging.Level;
 public final class SkinviewPlugin extends JavaPlugin {
 
     private FileConfiguration messages;
+    private SkinResolver resolver;
 
     @Override
     public void onEnable() {
         final long t0 = System.nanoTime();
 
-        // Configs par défaut
         saveDefaultConfig();
         saveResource("messages.yml", false);
         reloadMessages();
 
-        // Commande principale
         final PluginCommand cmd = getCommand("skinview");
         if (cmd == null) {
             getLogger().severe("Commande /skinview introuvable (plugin.yml non packagé ?). Désactivation.");
@@ -38,10 +39,12 @@ public final class SkinviewPlugin extends JavaPlugin {
         cmd.setExecutor(new SkinCommand(this));
         cmd.setTabCompleter(new SkinTabCompleter());
 
-        // Listeners
         final PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(this), this);
         pm.registerEvents(new InteractListener(this), this);
+
+        // Service resolver (async + cache)
+        this.resolver = new MojangSkinResolver(this);
 
         final long dtMs = (System.nanoTime() - t0) / 1_000_000;
         getLogger().info(String.format(
@@ -52,16 +55,19 @@ public final class SkinviewPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (resolver != null) {
+            resolver.shutdown();
+            resolver = null;
+        }
         getLogger().info("skinview disabled.");
     }
 
-    public FileConfiguration messages() {
-        return this.messages;
-    }
+    public FileConfiguration messages() { return this.messages; }
 
     public void reloadAll() {
         reloadConfig();
         reloadMessages();
+        if (resolver != null) resolver.reloadSettings();
         getLogger().info("Configuration & messages rechargés.");
     }
 
@@ -71,16 +77,16 @@ public final class SkinviewPlugin extends JavaPlugin {
             this.messages = YamlConfiguration.loadConfiguration(file);
         } catch (Exception e) {
             getLogger().log(Level.WARNING, "Chargement messages.yml : " + e.getMessage(), e);
-            this.messages = getConfig(); // fallback minimal
+            this.messages = getConfig();
         }
     }
 
     public List<String> helpLines() {
         List<String> lines = messages().getStringList("help");
         final String ver = getDescription().getVersion();
-        for (int i = 0; i < lines.size(); i++) {
-            lines.set(i, lines.get(i).replace("%version%", ver));
-        }
+        for (int i = 0; i < lines.size(); i++) lines.set(i, lines.get(i).replace("%version%", ver));
         return lines;
     }
+
+    public SkinResolver resolver() { return resolver; }
 }

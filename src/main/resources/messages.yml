@@ -4,7 +4,13 @@ help:
   - "&6=== &eSkinView &7(v%version%) &6==="
   - "&e/skinview help &7: Affiche cette aide"
   - "&e/skinview reload &7: Recharge la configuration & messages &8(perm: skinview.admin)"
+  - "&e/skinview resolve name <Premium> &7: Teste la résolution Mojang &8(perm: skinview.admin)"
+  - "&e/skinview resolve url <textures.minecraft.net/...> &7: Teste la résolution par URL &8(perm: skinview.admin)"
 
 reloaded: "&aConfiguration rechargée."
 no-permission: "&cVous n'avez pas la permission."
 unknown-subcommand: "&cSous-commande inconnue. &7Essayez &e/skinview help&7."
+
+resolve-usage: "&eUsage: /skinview resolve <name|url> <value>"
+resolve-started: "&7Résolution en cours..."
+resolve-fail: "&cÉchec de résolution."
