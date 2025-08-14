@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+- Service de résolution de skins Mojang/URL async via `HttpClient`
+- Cache TTL mémoire avec purge périodique
+- Commande admin `/skinview resolve` pour tester les résolutions
+- Bump Gradle version du plugin à 0.2.0
+
 ## 0.1.4
 - Policy: Gradle conservé mais **Codex ne génère ni ne commit le wrapper**.
 - CI: Gradle 8.10.2 installé côté runner (pas de wrapper requis).

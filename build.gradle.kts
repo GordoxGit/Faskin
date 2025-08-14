@@ -1,7 +1,7 @@
 plugins { java }
 
 group = "com.heneria"
-version = "0.1.4" // Politique: pas de wrapper généré/commité par Codex
+version = "0.2.0" // Ticket 2: resolver async + cache
 
 repositories {
     mavenCentral()
@@ -31,7 +31,7 @@ tasks.withType<JavaCompile> {
 
 /* ====== Anti-binaires (bloquant) — aucune whitelist ====== */
 val forbiddenBinaryExtensions = listOf(
-    "jar","class","war","ear","zip","7z","rar",           // archives/classes
+    "jar","class","war","ear","zip","7z","rar",
     "pdf","png","jpg","jpeg","gif","webp","ico","bmp","svg",
     "exe","dll","so","dylib","bin","dat",
     "mp3","wav","flac","mp4","mov","avi","mkv","webm"
@@ -39,11 +39,10 @@ val forbiddenBinaryExtensions = listOf(
 
 tasks.register("checkNoBinaries") {
     group = "verification"
-    description = "Échoue si des binaires sont présents dans le repo (y compris tout wrapper Gradle)."
+    description = "Échoue si des binaires sont présents dans le repo."
     doLast {
         val exts = forbiddenBinaryExtensions.toSet()
         val offenders = mutableListOf<File>()
-
         fileTree(project.rootDir) {
             exclude(".git/**", ".gradle/**", ".idea/**", "out/**", "build/**", "target/**")
         }.files.forEach { f ->
@@ -59,13 +58,11 @@ tasks.register("checkNoBinaries") {
             }
             if (byExt || byHeur) offenders += f
         }
-
         if (offenders.isNotEmpty()) {
             val msg = buildString {
-                appendLine("Interdit: fichiers binaires détectés dans le dépôt :")
+                appendLine("Interdit: fichiers binaires détectés :")
                 offenders.sortedBy { it.path }.forEach { appendLine(" - ${it.path}") }
-                appendLine("Politique: dépôt 100% TEXTE. Pas de wrapper généré/commité par Codex.")
-                appendLine("Si un wrapper est nécessaire sur un poste, il doit rester LOCAL et NON versionné.")
+                appendLine("Dépôt 100% TEXTE. Supprimez-les.")
             }
             throw GradleException(msg)
         }
