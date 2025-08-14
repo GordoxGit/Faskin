@@ -3,29 +3,27 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.5.0" // feat: ProtocolLib signed skins applier
+version = "0.5.0" // Ticket 6: persistance YAML + auto-apply au join
 
 repositories {
     mavenCentral()
-    // Garder, utile pour Spigot API
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    // ProtocolLib: AJOUTÉ UNIQUEMENT SI -PwithPlib=true (voir plus bas)
+    // ProtocolLib: activé seulement si -PwithPlib=true (voir plus bas)
 }
 
 java {
     toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
     withSourcesJar()
 }
+
 tasks.processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     filesMatching("plugin.yml") { expand("version" to project.version) }
 }
 
-tasks.withType<AbstractCopyTask> { duplicatesStrategy = DuplicatesStrategy.INCLUDE }
 tasks.jar { archiveBaseName.set("skinview") }
 
 tasks.withType<JavaCompile> {
@@ -33,7 +31,7 @@ tasks.withType<JavaCompile> {
     options.release.set(21)
 }
 
-/* ====== CI: scan binaire limité aux fichiers **versionnés** ====== */
+/* ====== Anti-binaires: scanne uniquement les fichiers *versionnés* par Git ====== */
 val forbiddenBinaryExtensions = listOf(
     "jar","class","war","ear","zip","7z","rar",
     "pdf","png","jpg","jpeg","gif","webp","ico","bmp","svg",
@@ -43,7 +41,7 @@ val forbiddenBinaryExtensions = listOf(
 
 tasks.register("checkNoBinariesTracked") {
     group = "verification"
-    description = "Echoue si des binaires *versionnés* (git ls-files) sont présents."
+    description = "Échoue si des binaires *versionnés* (git ls-files) sont présents."
     doLast {
         val exts = forbiddenBinaryExtensions.toSet()
         val offenders = mutableListOf<String>()
@@ -89,33 +87,29 @@ tasks.register("checkNoBinariesTracked") {
             val msg = buildString {
                 appendLine("Interdit: fichiers binaires *versionnés* détectés :")
                 offenders.sorted().forEach { appendLine(" - $it") }
-                appendLine("Dépôt 100% TEXTE. Wrappers/artefacts/JARs locaux non commités.")
+                appendLine("Dépôt 100% TEXTE. Wrappers/artefacts locaux non commités.")
             }
             throw GradleException(msg)
         }
     }
 }
-
 tasks.named("check") { dependsOn("checkNoBinariesTracked") }
 
-/* ====== OPTION ProtocolLib: activée seulement si -PwithPlib=true ====== */
+/* ====== OPTION ProtocolLib (build serveur) ====== */
 val withPlib = providers.gradleProperty("withPlib").isPresent
-val withPlibLocal = providers.gradleProperty("withPlibLocal").orNull // chemin vers un .jar local
+val withPlibLocal = providers.gradleProperty("withPlibLocal").orNull
 
 sourceSets {
     val main by getting {
         java {
-            // Src principal toujours présent
             setSrcDirs(listOf("src/main/java"))
-            // Ajoute les classes ProtocolLib uniquement si flag activé
             if (withPlib) srcDir("src/with-plib/java")
         }
-        resources.srcDir("src/main/resources")
+        resources.setSrcDirs(listOf("src/main/resources"))
     }
 }
 
 if (withPlib) {
-    // Dépendance compileOnly vers ProtocolLib, au choix: repo ou jar local
     if (withPlibLocal != null) {
         println("Using local ProtocolLib jar: $withPlibLocal")
         dependencies { compileOnly(files(withPlibLocal)) }
@@ -125,3 +119,4 @@ if (withPlib) {
         dependencies { compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT") }
     }
 }
+

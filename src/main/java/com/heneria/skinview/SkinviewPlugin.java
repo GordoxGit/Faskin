@@ -4,10 +4,14 @@ import com.heneria.skinview.commands.SkinCommand;
 import com.heneria.skinview.commands.SkinTabCompleter;
 import com.heneria.skinview.listener.InteractListener;
 import com.heneria.skinview.listener.JoinListener;
+import com.heneria.skinview.listener.SkinAutoApplyJoinListener;
 import com.heneria.skinview.service.SkinApplier;
 import com.heneria.skinview.service.SkinResolver;
+import com.heneria.skinview.service.SkinService;
 import com.heneria.skinview.service.impl.MojangSkinResolver;
 import com.heneria.skinview.service.impl.PaperSkinApplier;
+import com.heneria.skinview.store.SkinStore;
+import com.heneria.skinview.store.YamlSkinStore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,7 +27,9 @@ public final class SkinviewPlugin extends JavaPlugin {
 
     private FileConfiguration messages;
     private SkinResolver resolver;
-    private SkinApplier applier; // <— conserver une référence pour shutdown
+    private SkinService skinService;
+    private SkinApplier applier;
+    private SkinStore store;
 
     @Override
     public void onEnable() {
@@ -45,14 +51,12 @@ public final class SkinviewPlugin extends JavaPlugin {
         final PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(this), this);
         pm.registerEvents(new InteractListener(this), this);
-        // +++ Auto-apply premium skins on join (Spigot)
-        pm.registerEvents(new com.heneria.skinview.listener.SkinAutoApplyJoinListener(this), this);
+        pm.registerEvents(new SkinAutoApplyJoinListener(this), this);
 
-        // Service resolver (async + cache)
         this.resolver = new MojangSkinResolver(this);
-
-        // Sélection d’applier (ProtocolLib si dispo + classe présente dans le JAR)
         this.applier = chooseApplier();
+        this.store = new YamlSkinStore(this);
+        this.skinService = new SkinService(this, resolver, applier, store);
 
         final long dtMs = (System.nanoTime() - t0) / 1_000_000;
         getLogger().info(String.format(
@@ -64,7 +68,6 @@ public final class SkinviewPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (resolver != null) { resolver.shutdown(); resolver = null; }
-        // Arrêt applier PLib si présent
         if (applier != null) {
             try {
                 if (applier.getClass().getName().endsWith("SkinApplierProtocolLib")) {
@@ -77,29 +80,27 @@ public final class SkinviewPlugin extends JavaPlugin {
     }
 
     private SkinApplier chooseApplier() {
-        // 1) ProtocolLib?
         boolean enablePlib = getConfig().getBoolean("apply.protocollib-enable", true);
         if (enablePlib && getServer().getPluginManager().getPlugin("ProtocolLib") != null) {
             try {
                 Class<?> c = Class.forName("com.heneria.skinview.service.impl.SkinApplierProtocolLib");
+                getLogger().info("[skinview] ProtocolLib applier actif.");
                 return (SkinApplier) c.getConstructor(SkinviewPlugin.class).newInstance(this);
             } catch (ClassNotFoundException ignored) {
-                getLogger().info("[skinview] Classe PLib absente du JAR (build sans -PwithPlib). Fallback.");
+                getLogger().info("[skinview] Classe PLib absente (build sans -PwithPlib). Fallback.");
             } catch (Exception e) {
                 getLogger().warning("[skinview] Echec init ProtocolLib applier: " + e.getMessage());
             }
         }
-        // 2) Paper via réflexion (si dispo)
         try {
-            // quick test: Player#setPlayerProfile existe ?
             org.bukkit.entity.Player.class.getMethod("setPlayerProfile", org.bukkit.profile.PlayerProfile.class);
             getLogger().info("[skinview] Applier Paper (reflection).");
             return new PaperSkinApplier(this);
         } catch (NoSuchMethodException ignored) {
             getLogger().info("[skinview] Spigot sans ProtocolLib: apply live non disponible (fallback).");
             return new SkinApplier() {
-                @Override public void apply(org.bukkit.entity.Player p, com.heneria.skinview.service.SkinDescriptor d) { /* no-op */ }
-                @Override public void clear(org.bukkit.entity.Player p) { /* no-op */ }
+                @Override public void apply(org.bukkit.entity.Player p, com.heneria.skinview.service.SkinDescriptor d) {}
+                @Override public void clear(org.bukkit.entity.Player p) {}
             };
         }
     }
@@ -131,5 +132,6 @@ public final class SkinviewPlugin extends JavaPlugin {
     }
 
     public SkinResolver resolver() { return resolver; }
-    public SkinApplier applier() { return applier; }
+    public SkinService skinService() { return skinService; }
 }
+
