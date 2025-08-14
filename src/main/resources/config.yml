@@ -28,3 +28,16 @@ auth:
     storage:
       type: sqlite # or yaml
       file: data/heneria_skins.db
+mojang:
+  rate:
+    requests_per_minute: 120
+    burst: 20
+  retries:
+    max_retries: 5
+    base_delay_ms: 500
+    max_delay_ms: 30000
+    jitter: 0.2
+  circuit:
+    failure_threshold: 5
+    open_duration_ms: 60000
+    half_open_probe_count: 2

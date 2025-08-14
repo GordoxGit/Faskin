@@ -1,6 +1,6 @@
 # HeneriaCore
 
-Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.4.
+Initial skeleton for HeneriaCore plugin (Spigot/Paper 1.21). Version 0.0.5.
 
 Important:
 - Do NOT commit gradle-wrapper.jar (gradle/wrapper/gradle-wrapper.jar).
@@ -20,3 +20,7 @@ Serve JSON responses matching the Mojang API formats for `/users/profiles/minecr
 ### Skins
 
 HC-04 introduces a basic `SkinService` able to apply signed textures either via ProtocolLib or Paper reflection as a fallback.
+
+### HC-05 network layer
+
+Adds an asynchronous `HttpClientWrapper` with token bucket rate limiting, exponential backoff, circuit breaker and metrics collection. Configuration lives under `mojang` in `config.yml`.
