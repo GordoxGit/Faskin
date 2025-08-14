@@ -3,8 +3,14 @@ general:
   require-auth: false
 premium:
   enable: true
-  rate:
-    rpm: 120
+  probe:
+    timeout-ms: 3000
+    rate:
+      requests_per_minute: 120
+      burst: 20
+  fetch-signature: true
+  autoLogin: true
+  log-level: INFO
 auth:
   db: "data/heneria.db"
   hash: "pbkdf2"
