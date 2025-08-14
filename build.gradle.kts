@@ -15,6 +15,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
     // ProtocolLib: activé seulement si -PwithPlib=true (voir plus bas)
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    implementation("org.xerial:sqlite-jdbc:3.46.0.0")
 }
 
 java {

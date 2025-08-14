@@ -7,5 +7,12 @@ premium:
     rpm: 120
 auth:
   db: "data/heneria.db"
+  hash: "pbkdf2"
+  salt-length: 16
+  session-ttl-seconds: 86400
+  autoLoginAfterRegister: true
+  maxFailedAttempts: 5
+  lockDurationSeconds: 300
+  executor-threads: 2
 skin:
   apply-on-login: true
