@@ -1,2 +1,4 @@
 # placeholder messages (Adventure support to be added later)
 prefix: "&7[Heneria]&r "
+skin:
+  applier-missing: "&cNo skin applier available; texture stored"

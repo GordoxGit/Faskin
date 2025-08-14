@@ -1,10 +1,10 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
-version: "0.0.3"
+ version: "0.0.4"
 api-version: "1.21"
 description: "HeneriaCore - monolithic plugin (premium auth + auth-local + skins). Skeleton init."
 authors: ["OpenAI"]
-softdepend: []   # ajouter ProtocolLib plus tard en softdepend si nécessaire
+ softdepend: ["ProtocolLib"]
 commands:
   heneria:
     description: "Authentication commands"

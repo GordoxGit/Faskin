@@ -7,6 +7,7 @@ import fr.heneriacore.cmd.AuthCommand;
 import fr.heneriacore.premium.NameToUuidResolver;
 import fr.heneriacore.premium.PremiumDetector;
 import fr.heneriacore.premium.SessionProfileResolver;
+import fr.heneriacore.skin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -16,6 +17,8 @@ public final class HeneriaCore extends JavaPlugin {
     private SQLiteManager sqliteManager;
     private AuthManager authManager;
     private PremiumDetector premiumDetector;
+    private TextureCache textureCache;
+    private SkinService skinService;
 
     @Override
     public void onEnable() {
@@ -45,12 +48,24 @@ public final class HeneriaCore extends JavaPlugin {
         AuthCommand authCmd = new AuthCommand(this);
         getCommand("heneria").setExecutor(authCmd);
         getCommand("heneria").setTabCompleter(authCmd);
+
+        long skinTtl = getConfig().getLong("skin.cache-ttl-seconds", 86400L);
+        boolean protoEnable = getConfig().getBoolean("skin.protocollib-enable", true);
+        boolean refreshTablist = getConfig().getBoolean("skin.refresh-tablist", true);
+        textureCache = new TextureCache(this, skinTtl);
+        skinService = new SkinServiceImpl(this, textureCache, protoEnable, refreshTablist);
+        if (getConfig().getBoolean("skin.apply-on-login", true)) {
+            getServer().getPluginManager().registerEvents(new SkinListener(skinService), this);
+        }
     }
 
     @Override
     public void onDisable() {
         if (authManager != null) {
             authManager.shutdown();
+        }
+        if (skinService != null) {
+            skinService.shutdown();
         }
         getLogger().info("HeneriaCore stopped.");
     }

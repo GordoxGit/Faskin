@@ -9,10 +9,10 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
-dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("net.kyori:adventure-api:4.17.0")
-    compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
+    dependencies {
+        compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+        compileOnly("net.kyori:adventure-api:4.17.0")
+        compileOnly("net.kyori:adventure-platform-bukkit:4.3.3")
     // ProtocolLib: activé seulement si -PwithPlib=true (voir plus bas)
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     implementation("org.xerial:sqlite-jdbc:3.46.0.0")
