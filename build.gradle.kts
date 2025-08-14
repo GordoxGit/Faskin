@@ -1,9 +1,7 @@
-plugins {
-    java
-}
+plugins { java }
 
 group = "com.heneria"
-version = "0.1.0"
+version = "0.1.4" // Politique: pas de wrapper généré/commité par Codex
 
 repositories {
     mavenCentral()
@@ -11,79 +9,66 @@ repositories {
 }
 
 dependencies {
-    // API Paper 1.21.x (compileOnly pour éviter d'embarquer l'API)
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    // Option Spigot pur (laisser commenté si non utilisé)
     // compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
+    toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
     withSourcesJar()
 }
 
 tasks.processResources {
-    // Injecte la version Gradle dans plugin.yml
-    filesMatching("plugin.yml") {
-        expand("version" to project.version)
-    }
+    filesMatching("plugin.yml") { expand("version" to project.version) }
 }
 
-tasks.jar {
-    archiveBaseName.set("skinview")
-}
+tasks.jar { archiveBaseName.set("skinview") }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     options.release.set(21)
 }
 
-/* ==== Politique ANTI-BINAIRES (bloquant) ==== */
+/* ====== Anti-binaires (bloquant) — aucune whitelist ====== */
 val forbiddenBinaryExtensions = listOf(
-    "jar","class","war","ear","zip","7z","rar","pdf",
-    "png","jpg","jpeg","gif","webp","ico",
+    "jar","class","war","ear","zip","7z","rar",           // archives/classes
+    "pdf","png","jpg","jpeg","gif","webp","ico","bmp","svg",
     "exe","dll","so","dylib","bin","dat",
-    "mp3","wav","mp4","mov","avi","mkv"
+    "mp3","wav","flac","mp4","mov","avi","mkv","webm"
 )
 
 tasks.register("checkNoBinaries") {
     group = "verification"
-    description = "Echoue si des fichiers binaires sont présents dans le repo."
+    description = "Échoue si des binaires sont présents dans le repo (y compris tout wrapper Gradle)."
     doLast {
         val exts = forbiddenBinaryExtensions.toSet()
-        val tree = fileTree(".") {
-            exclude(".git/**", "build/**", ".gradle/**", ".idea/**", "out/**")
-        }
         val offenders = mutableListOf<File>()
-        tree.files.forEach { f ->
+
+        fileTree(project.rootDir) {
+            exclude(".git/**", ".gradle/**", ".idea/**", "out/**", "build/**", "target/**")
+        }.files.forEach { f ->
             if (!f.isFile) return@forEach
-            val name = f.name.lowercase()
-            val ext = name.substringAfterLast('.', "")
-            if (ext in exts) offenders += f
-            else {
-                // Heuristique binaire (NUL byte dans les 4 Ko initiaux)
+            val ext = f.name.substringAfterLast('.', "").lowercase()
+            val byExt = ext in exts
+            var byHeur = false
+            if (!byExt) {
                 val bytes = f.readBytes()
                 val limit = kotlin.math.min(bytes.size, 4096)
-                var hasNul = false
                 var i = 0
-                while (i < limit) {
-                    if (bytes[i] == 0.toByte()) { hasNul = true; break }
-                    i++
-                }
-                if (hasNul) offenders += f
+                while (i < limit) { if (bytes[i] == 0.toByte()) { byHeur = true; break }; i++ }
             }
+            if (byExt || byHeur) offenders += f
         }
+
         if (offenders.isNotEmpty()) {
             val msg = buildString {
-                appendLine("Interdit: fichiers binaires détectés dans le repository :")
+                appendLine("Interdit: fichiers binaires détectés dans le dépôt :")
                 offenders.sortedBy { it.path }.forEach { appendLine(" - ${it.path}") }
-                appendLine("Supprimez-les. Le dépôt doit rester 100% TEXTE.")
+                appendLine("Politique: dépôt 100% TEXTE. Pas de wrapper généré/commité par Codex.")
+                appendLine("Si un wrapper est nécessaire sur un poste, il doit rester LOCAL et NON versionné.")
             }
             throw GradleException(msg)
         }
     }
 }
-
 tasks.check { dependsOn("checkNoBinaries") }
