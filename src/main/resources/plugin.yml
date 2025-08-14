@@ -1,7 +1,19 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
-version: "0.0.1"
+version: "0.0.2"
 api-version: "1.21"
 description: "HeneriaCore - monolithic plugin (premium auth + auth-local + skins). Skeleton init."
 authors: ["OpenAI"]
 softdepend: []   # ajouter ProtocolLib plus tard en softdepend si nécessaire
+commands:
+  heneria:
+    description: Heneria auth commands
+    usage: /heneria <register|login|logout>
+    permission: heneria.auth
+permissions:
+  heneria.auth:
+    description: Access to basic auth commands
+    default: true
+  heneria.auth.admin:
+    description: Manage other players auth
+    default: op
