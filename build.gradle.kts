@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.4.2" // fix: JsonUtils (échappement regex corrigé)
+version = "0.5.0" // feat: ProtocolLib signed skins applier
 
 repositories {
     mavenCentral()

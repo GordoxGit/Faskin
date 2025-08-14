@@ -42,6 +42,7 @@ Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Spigot 1.21.x.
 
 ### Serveur
 Spigot 1.21 + offline-mode : pour l’apply live des skins, installe ProtocolLib côté serveur.
+L’applier ProtocolLib réécrit le `GameProfile` (textures `value` + `signature`) envoyé aux autres joueurs.
 Le JAR buildé avec `-PwithPlib=true` active automatiquement le chemin ProtocolLib (softdepend), sinon fallback.
 
 ## Plateforme
