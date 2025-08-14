@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+- build: suppression des annotations JetBrains dans `SkinCommand` (compilation CI OK sans dépendance).
+- compat: remplacement de l’appel direct à `Player#setPlayerProfile(...)` par **réflexion** (compile-safe Spigot).
+- doc: README mis à jour (limites Spigot vs Paper pour l’apply live).
+
 ## 0.3.1
 - Spigot 1.21: auto-apply du skin des comptes premium au join (serveur offline)
 - Impl: Listener `SkinAutoApplyJoinListener` (async resolve → main-thread apply via PlayerProfile/PlayerTextures)

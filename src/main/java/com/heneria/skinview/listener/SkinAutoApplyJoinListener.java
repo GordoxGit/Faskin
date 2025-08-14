@@ -56,23 +56,27 @@ public final class SkinAutoApplyJoinListener implements Listener {
                     URL skinUrl = sd.skinUrl().toURL(); // textures.minecraft.net/...
                     textures.setSkin(skinUrl);
                     profile.setTextures(textures);
-                    p.setPlayerProfile(profile);
+                    try {
+                        // Paper: Player#setPlayerProfile(PlayerProfile) — si présent, on l’utilise
+                        java.lang.reflect.Method m = Player.class.getMethod("setPlayerProfile", PlayerProfile.class);
+                        m.invoke(p, profile);
 
-                    // Optionnel : petit refresh léger pour propager aux autres clients (pas de NMS)
-                    if (plugin.getConfig().getBoolean("apply.refresh-tablist", true)) {
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            for (Player viewer : Bukkit.getOnlinePlayers()) {
-                                if (!viewer.equals(p)) viewer.hidePlayer(plugin, p);
-                            }
+                        // Petit refresh visuel facultatif (hide/show) pour forcer la propagation client
+                        if (plugin.getConfig().getBoolean("apply.refresh-tablist", true)) {
                             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                for (Player viewer : Bukkit.getOnlinePlayers()) {
-                                    if (!viewer.equals(p)) viewer.showPlayer(plugin, p);
-                                }
+                                for (Player viewer : Bukkit.getOnlinePlayers()) if (!viewer.equals(p)) viewer.hidePlayer(plugin, p);
+                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                    for (Player viewer : Bukkit.getOnlinePlayers()) if (!viewer.equals(p)) viewer.showPlayer(plugin, p);
+                                }, 2L);
                             }, 2L);
-                        }, 2L);
+                        }
+                        plugin.getLogger().fine("[skinview] Applied premium skin (Paper path)");
+                    } catch (NoSuchMethodException nsme) {
+                        // Spigot path: pas de setPlayerProfile dans l’API → pas d’apply live possible via API
+                        plugin.getLogger().info("[skinview] Spigot runtime: API sans setPlayerProfile — pas d'application live possible (see README).");
+                    } catch (Exception reflectErr) {
+                        plugin.getLogger().log(Level.WARNING, "[skinview] apply failed: " + reflectErr.getMessage(), reflectErr);
                     }
-
-                    plugin.getLogger().fine("[skinview] Applied premium skin to " + name + " (" + sd.model() + ")");
                 } catch (Exception err) {
                     plugin.getLogger().log(Level.WARNING, "[skinview] apply failed for " + name + ": " + err.getMessage(), err);
                 }

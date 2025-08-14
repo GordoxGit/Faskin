@@ -30,6 +30,12 @@ Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Spigot 1.21.x.
 ## Plateforme
 - **Spigot 1.21** (pas Paper). API utilisée : `PlayerProfile` / `PlayerTextures` (aucun NMS).
 
+### Compatibilité API (Spigot vs Paper)
+- Spigot 1.21 fournit `PlayerProfile` + `PlayerTextures#setSkin(URL)` pour manipuler des **profils**, pas le profil du **joueur en ligne**.
+- L’application live du skin sur le joueur en ligne via `Player#setPlayerProfile(...)` est **spécifique à Paper**.
+- Plugin: tente l’apply via **réflexion**. Sur Spigot pur, l’API **ne permet pas** l’apply live → voir Ticket suivant pour un chemin **ProtocolLib/NMS** si nécessaire.
+Réfs: Javadocs Spigot (PlayerTextures) et Paper (Player#setPlayerProfile).
+
 ## Comportement (auto-apply premium au join)
 - Si `apply.update-on-join: true` et que le pseudo du joueur existe chez Mojang,
   le skin est résolu **async** et appliqué **main-thread** via `PlayerProfile`.
