@@ -4,6 +4,8 @@ import fr.heneriacore.db.SQLiteManager;
 import fr.heneriacore.event.AuthLogoutEvent;
 import fr.heneriacore.event.AuthPostLoginEvent;
 import fr.heneriacore.event.AuthPreLoginEvent;
+import fr.heneriacore.premium.GameProfile;
+import fr.heneriacore.premium.PremiumAuthService;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -14,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AuthManager {
+public class AuthManager implements PremiumAuthService {
     private final Plugin plugin;
     private final SQLiteManager db;
     private final PasswordHasher hasher;
@@ -94,6 +96,45 @@ public class AuthManager {
             Bukkit.getScheduler().runTask(plugin, () ->
                     Bukkit.getPluginManager().callEvent(new AuthPostLoginEvent(uuid, username, token)));
             return Optional.of(token);
+        });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> autoLogin(UUID uuid, GameProfile profile) {
+        return db.supplyAsync(conn -> {
+            String exists = "SELECT 1 FROM users WHERE uuid = ?";
+            try (var ps = conn.prepareStatement(exists)) {
+                ps.setString(1, uuid.toString());
+                try (var rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        String insertUser = "INSERT INTO users(uuid, username, password_hash, salt, created_at) VALUES(?,?,?,?,?)";
+                        try (var ins = conn.prepareStatement(insertUser)) {
+                            ins.setString(1, uuid.toString());
+                            ins.setString(2, profile.getName());
+                            ins.setString(3, "");
+                            ins.setString(4, "");
+                            ins.setLong(5, System.currentTimeMillis());
+                            ins.executeUpdate();
+                        }
+                    }
+                }
+            }
+            String token = generateToken();
+            long now = System.currentTimeMillis();
+            long expires = now + sessionTtlMillis;
+            String insert = "INSERT INTO sessions(token, uuid, created_at, expires_at) VALUES(?,?,?,?)";
+            try (var ps = conn.prepareStatement(insert)) {
+                ps.setString(1, token);
+                ps.setString(2, uuid.toString());
+                ps.setLong(3, now);
+                ps.setLong(4, expires);
+                ps.executeUpdate();
+            }
+            tokenToUuid.put(token, uuid);
+            uuidToToken.put(uuid, token);
+            Bukkit.getScheduler().runTask(plugin, () ->
+                    Bukkit.getPluginManager().callEvent(new AuthPostLoginEvent(uuid, profile.getName(), token)));
+            return true;
         });
     }
 

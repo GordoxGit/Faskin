@@ -1,6 +1,6 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
-version: "0.0.2"
+version: "0.0.3"
 api-version: "1.21"
 description: "HeneriaCore - monolithic plugin (premium auth + auth-local + skins). Skeleton init."
 authors: ["OpenAI"]
