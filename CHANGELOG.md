@@ -13,3 +13,7 @@
 ## 0.0.4
 - Add SkinService with ProtocolLib and Paper reflection fallback.
 - Cache signed textures and apply them on AuthPostLoginEvent.
+
+## 0.0.5
+- Add HttpClientWrapper with rate limiter, backoff strategy, circuit breaker and metrics.
+- Expose metrics through DebugInfoProvider and extend configuration.
