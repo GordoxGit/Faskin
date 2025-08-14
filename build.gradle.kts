@@ -2,8 +2,8 @@ import java.io.ByteArrayOutputStream
 
 plugins { java }
 
-group = "com.heneria"
-version = "0.5.3" // URL → signed profile
+group = "fr.tonpackage"
+version = "0.0.1" // URL → signed profile
 
 repositories {
     mavenCentral()
@@ -27,7 +27,7 @@ tasks.processResources {
     filesMatching("plugin.yml") { expand("version" to project.version) }
 }
 
-tasks.jar { archiveBaseName.set("skinview") }
+tasks.jar { archiveBaseName.set("heneriacore") }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

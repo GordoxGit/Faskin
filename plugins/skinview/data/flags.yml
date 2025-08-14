@@ -1,3 +1,0 @@
-# plugins/skinview/data/flags.yml
-# key = UUID (string), value = boolean (optedOut)
-"00000000-0000-0000-0000-000000000000": false

@@ -1,1 +1,1 @@
-rootProject.name = "skinview"
+rootProject.name = "heneriacore"

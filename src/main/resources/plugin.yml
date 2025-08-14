@@ -1,22 +1,5 @@
-name: skinview
-main: com.heneria.skinview.SkinviewPlugin
-version: 0.5.3
+name: HeneriaCore
+main: fr.tonpackage.heneriacore.HeneriaCore
+version: "0.0.1"
 api-version: "1.21"
-author: Heneria
-website: https://heneria.example
-softdepend: [ProtocolLib]
-
-commands:
-  skinview:
-    description: Commande principale du plugin skinview
-    usage: "/skinview help"
-    aliases: [skin, sv]
-    permission: skinview.use
-
-permissions:
-  skinview.use:
-    default: true
-    description: Utiliser /skinview (help)
-  skinview.admin:
-    default: op
-    description: Admin (reload + futures opérations sensibles)
+description: "HeneriaCore initial skeleton."
