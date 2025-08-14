@@ -1,6 +1,6 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
- version: "0.0.6"
+ version: "0.0.7"
 api-version: "1.21"
 description: "HeneriaCore - monolithic plugin (premium auth + auth-local + skins). Skeleton init."
 authors: ["OpenAI"]
@@ -8,7 +8,7 @@ authors: ["OpenAI"]
 commands:
   heneria:
     description: "Authentication and claim commands"
-    usage: "/heneria <register|login|logout|claim>"
+    usage: "/heneria <register|login|logout|claim|optin|optout|prefs|debug>"
     permission: heneria.auth
 permissions:
   heneria.auth:
@@ -31,4 +31,13 @@ permissions:
     default: true
   heneria.claim.admin:
     description: "Admin claim permissions"
+    default: op
+  heneria.opt:
+    description: "Allow optin/optout"
+    default: true
+  heneria.opt.admin:
+    description: "Admin opt preferences"
+    default: op
+  heneria.debug:
+    description: "Use debug command"
     default: op

@@ -18,11 +18,15 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
     private final HeneriaCore plugin;
     private final AuthManager auth;
     private final ClaimCommand claimCommand;
+    private final PreferencesCommand prefsCommand;
+    private final DebugCommand debugCommand;
 
-    public AuthCommand(HeneriaCore plugin, ClaimCommand claimCommand) {
+    public AuthCommand(HeneriaCore plugin, ClaimCommand claimCommand, PreferencesCommand prefsCommand, DebugCommand debugCommand) {
         this.plugin = plugin;
         this.auth = plugin.getAuthManager();
         this.claimCommand = claimCommand;
+        this.prefsCommand = prefsCommand;
+        this.debugCommand = debugCommand;
     }
 
     @Override
@@ -38,6 +42,12 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
         String sub = args[0].toLowerCase();
         if (sub.equals("claim")) {
             return claimCommand.onCommand(sender, command, label, args);
+        }
+        if (sub.equals("optin") || sub.equals("optout") || sub.equals("prefs")) {
+            return prefsCommand.onCommand(sender, command, label, args);
+        }
+        if (sub.equals("debug")) {
+            return debugCommand.onCommand(sender, command, label, args);
         }
         switch (sub) {
             case "register" -> {
@@ -95,10 +105,13 @@ public class AuthCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            return Arrays.asList("register", "login", "logout", "claim");
+            return Arrays.asList("register", "login", "logout", "claim", "optin", "optout", "prefs", "debug");
         }
         if (args.length >= 1 && args[0].equalsIgnoreCase("claim")) {
             return claimCommand.onTabComplete(sender, command, alias, args);
+        }
+        if (args.length >=1 && (args[0].equalsIgnoreCase("prefs") || args[0].equalsIgnoreCase("optin") || args[0].equalsIgnoreCase("optout"))) {
+            return prefsCommand.onTabComplete(sender, command, alias, args);
         }
         return Collections.emptyList();
     }

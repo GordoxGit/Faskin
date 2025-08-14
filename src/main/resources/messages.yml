@@ -7,3 +7,9 @@ claim:
   check-success: "&aClaim verified."
   check-fail: "&cClaim failed."
   cancel: "&eClaim cancelled."
+prefs:
+  optin: "&aYou are now opted-in."
+  optout: "&eYou are now opted-out."
+  status: "&6Prefs: opted_out={opted}, auto_apply_skin={auto}"
+debug:
+  export: "&aDebug exported to {path}"

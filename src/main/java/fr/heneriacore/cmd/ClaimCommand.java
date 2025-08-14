@@ -40,9 +40,23 @@ public class ClaimCommand implements TabCompleter {
                     return true;
                 }
                 String target = args[2];
-                CompletableFuture<ClaimSession> fut = claimManager.startClaim(player.getUniqueId(), target);
-                fut.thenAccept(session -> Bukkit.getScheduler().runTask(plugin, () ->
-                        player.sendMessage("Claim started. Token: " + session.getId())));
+                java.util.UUID requesterUuid = player.getUniqueId();
+                java.util.UUID targetUuid = Bukkit.getOfflinePlayer(target).getUniqueId();
+                plugin.getPreferencesManager().isOptedOut(requesterUuid).thenAccept(out -> {
+                    if (out) {
+                        player.sendMessage("You have opted-out");
+                        return;
+                    }
+                    plugin.getPreferencesManager().isOptedOut(targetUuid).thenAccept(out2 -> {
+                        if (out2 && !player.hasPermission("heneria.opt.admin")) {
+                            player.sendMessage("Target opted-out");
+                            return;
+                        }
+                        CompletableFuture<ClaimSession> fut = claimManager.startClaim(requesterUuid, target);
+                        fut.thenAccept(session -> Bukkit.getScheduler().runTask(plugin, () ->
+                                player.sendMessage("Claim started. Token: " + session.getId())));
+                    });
+                });
             }
             case "check" -> {
                 if (args.length < 3) {
