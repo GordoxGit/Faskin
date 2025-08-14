@@ -42,6 +42,8 @@ public final class SkinviewPlugin extends JavaPlugin {
         final PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(this), this);
         pm.registerEvents(new InteractListener(this), this);
+        // +++ Auto-apply premium skins on join (Spigot)
+        pm.registerEvents(new com.heneria.skinview.listener.SkinAutoApplyJoinListener(this), this);
 
         // Service resolver (async + cache)
         this.resolver = new MojangSkinResolver(this);
