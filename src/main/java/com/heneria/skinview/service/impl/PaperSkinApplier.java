@@ -14,17 +14,17 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 /** Applier basé sur l'API Paper (réflexion). */
-public final class SkinApplierReflection implements SkinApplier {
+public final class PaperSkinApplier implements SkinApplier {
 
     private final SkinviewPlugin plugin;
     private final Method setPlayerProfile;
 
-    public SkinApplierReflection(SkinviewPlugin plugin) {
+    public PaperSkinApplier(SkinviewPlugin plugin) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
         Method m;
         try {
             m = Player.class.getMethod("setPlayerProfile", PlayerProfile.class);
-            plugin.getLogger().info("Using reflection applier (Paper path)");
+            plugin.getLogger().info("[skinview] Applier Paper (reflection)");
         } catch (NoSuchMethodException e) {
             m = null;
             plugin.getLogger().info("Spigot runtime sans ProtocolLib — apply live non disponible");
@@ -49,10 +49,10 @@ public final class SkinApplierReflection implements SkinApplier {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         for (Player viewer : Bukkit.getOnlinePlayers()) if (!viewer.equals(player)) viewer.showPlayer(plugin, player);
                     }, 2L);
-                }, 2L);
-            }
+            }, 2L);
+        }
 
-            plugin.getLogger().fine("[skinview] Applied premium skin (Paper path)");
+        plugin.getLogger().fine("[skinview] Applied premium skin (Paper path)");
         } catch (Exception e) {
             plugin.getLogger().log(Level.WARNING, "[skinview] apply failed: " + e.getMessage(), e);
         }

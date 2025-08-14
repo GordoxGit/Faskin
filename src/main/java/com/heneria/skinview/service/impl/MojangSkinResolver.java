@@ -82,7 +82,7 @@ public final class MojangSkinResolver implements SkinResolver {
             URI u = URI.create(url);
             if (!HOST_TEXTURES.equalsIgnoreCase(u.getHost()))
                 return CompletableFuture.failedFuture(new IllegalArgumentException("Only textures.minecraft.net allowed"));
-            return CompletableFuture.completedFuture(new SkinDescriptor(u, SkinModel.STEVE));
+            return CompletableFuture.completedFuture(new SkinDescriptor(u, SkinModel.STEVE, null, null));
         } catch (Exception e) {
             return CompletableFuture.failedFuture(new IllegalArgumentException("Invalid textures URL", e));
         }
@@ -101,16 +101,26 @@ public final class MojangSkinResolver implements SkinResolver {
                 .thenApply(resp -> {
                     if (resp.statusCode() != 200)
                         throw new CompletionException(new IllegalStateException("Sessionserver failed (" + resp.statusCode() + ")"));
-                      final Optional<String> b64 = JsonUtils.findFirstValuePropertyBase64(resp.body());
-                      if (b64.isEmpty()) throw new CompletionException(new IllegalStateException("textures property missing"));
-                      final Optional<String> sig = JsonUtils.findFirstValuePropertySignature(resp.body());
-                      final String texJson = new String(Base64.getDecoder().decode(b64.get()));
-                      final Optional<String> skinUrl = JsonUtils.findSkinUrl(texJson);
-                      if (skinUrl.isEmpty()) throw new CompletionException(new IllegalStateException("SKIN.url missing"));
-                      final Optional<String> model = JsonUtils.findSkinModel(texJson);
-                      SkinDescriptor sd = new SkinDescriptor(URI.create(skinUrl.get()), SkinModel.fromMetadata(model.orElse(null)), b64.get(), sig.orElse(null));
-                      putUuidSkin(uuidNoDash, sd);
-                      return sd;
+
+                    final String body = resp.body();
+                    final Optional<String> valueB64 = JsonUtils.findFirstValuePropertyBase64(body);
+                    final Optional<String> signature = JsonUtils.findFirstValuePropertySignature(body);
+                    if (valueB64.isEmpty() || signature.isEmpty())
+                        throw new CompletionException(new IllegalStateException("textures value/signature missing"));
+
+                    final String texJson = new String(Base64.getDecoder().decode(valueB64.get()));
+                    final Optional<String> skinUrl = JsonUtils.findSkinUrl(texJson);
+                    if (skinUrl.isEmpty()) throw new CompletionException(new IllegalStateException("SKIN.url missing"));
+                    final Optional<String> model = JsonUtils.findSkinModel(texJson);
+
+                    SkinDescriptor sd = new SkinDescriptor(
+                            URI.create(skinUrl.get()),
+                            SkinModel.fromMetadata(model.orElse(null)),
+                            valueB64.get(),
+                            signature.get()
+                    );
+                    putUuidSkin(uuidNoDash, sd);
+                    return sd;
                 });
     }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.0
+- modèle: `SkinDescriptor` étendu (`textures.value` + `signature`)
+- resolver: extraction value/signature du sessionserver Mojang
+- feature: `SkinApplierProtocolLib` réécrit le `GameProfile` (ProtocolLib, paquets PLAYER_INFO)
+- plugin: sélection d'applier via réflexion (ProtocolLib → Paper → no-op)
+
 ## 0.4.2
 - Fix: `JsonUtils` — chaînes regex corrigées (échappement des guillemets et backslashes en Java). La compilation CI ne plante plus.
 
