@@ -4,6 +4,7 @@
 apply:
   update-on-join: true        # sera utilisé aux tickets suivants
   refresh-tablist: true
+  protocollib-enable: true
 
 cache:
   ttl-seconds: 3600
