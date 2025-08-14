@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.3.1
+- Spigot 1.21: auto-apply du skin des comptes premium au join (serveur offline)
+- Impl: Listener `SkinAutoApplyJoinListener` (async resolve → main-thread apply via PlayerProfile/PlayerTextures)
+- Aucun NMS, tick-safe. Logs FINE/INFO.
+- build.gradle.kts: dépendance `org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT`
+
+How-to (build & test rapide)
+
+Build (Gradle système, Java 21)
+
+```
+gradle clean check
+gradle build
+```
+
+Déposer build/libs/skinview-0.3.1.jar dans plugins/ (serveur Spigot 1.21 en offline-mode).
+
+Tests manuels
+
+1. démarrer le serveur.
+2. Rejoindre avec un pseudo premium réel (existant sur Mojang).
+3. Vérifier côté autres joueurs que le skin apparaît (log plugin Applied premium skin ...).
+4. Tester toggles : apply.update-on-join=false → aucun changement de skin au join.
+
+Perf/stabilité
+
+- Aucune I/O réseau sur le main thread (résolution via service async existant).
+- Application strictement main-thread (Spigot-safe).
+- Pas d’allocation massive / pas de scheduler serré (promesses complétées puis 2×2 ticks pour refresh).
+
 ## 0.2.1
 - build: `checkNoBinariesTracked` remplace `checkNoBinaries` — scan basé sur `git ls-files` (uniquement fichiers versionnés).
 - doc: README mis à jour (wrapper local OK si non commité).

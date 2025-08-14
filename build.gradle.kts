@@ -3,16 +3,17 @@ import java.io.ByteArrayOutputStream
 plugins { java }
 
 group = "com.heneria"
-version = "0.2.1" // fix: scan seulement des fichiers git-trackés
+version = "0.3.1" // Spigot 1.21 - auto-apply premium skins on join
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/") // ok de laisser, mais non utilisé
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    // compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
+    // ===== Spigot 1.21 (PAS Paper) =====
+    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    // (supprimer toute dépendance paper-api si présente)
 }
 
 java {

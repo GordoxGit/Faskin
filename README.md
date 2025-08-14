@@ -1,6 +1,6 @@
 # skinview (Heneria)
 
-Plugin Paper/Spigot **1.21** (Java 21) — gestion future de skins pour serveurs offline/cracked.
+Plugin Spigot **1.21** (Java 21) — gestion future de skins pour serveurs offline/cracked.
 
 ## Politique dépôt
 - Dépôt **100% TEXTE** : la tâche `checkNoBinariesTracked` scanne uniquement les fichiers *versionnés* (via `git ls-files`).
@@ -25,7 +25,24 @@ gradle wrapper --gradle-version 8.10.2
 Important : ne pousse aucun des fichiers du wrapper (`gradle/`, `gradlew`, `gradlew.bat`, `gradle-wrapper.jar`). `.gitignore` les ignore et `checkNoBinariesTracked` échouera si un binaire arrive quand même.
 
 ## Installation
-Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Paper/Spigot 1.21.x.
+Copier build/libs/skinview-*.jar dans plugins/ puis démarrer Spigot 1.21.x.
+
+## Plateforme
+- **Spigot 1.21** (pas Paper). API utilisée : `PlayerProfile` / `PlayerTextures` (aucun NMS).
+
+## Comportement (auto-apply premium au join)
+- Si `apply.update-on-join: true` et que le pseudo du joueur existe chez Mojang,
+  le skin est résolu **async** et appliqué **main-thread** via `PlayerProfile`.
+- Option `apply.refresh-tablist: true` pour un léger hide/show (meilleure propagation client).
+
+## Config (extrait pertinent)
+```yaml
+apply:
+  update-on-join: true
+  refresh-tablist: true
+lookups:
+  allow-premium-name: true
+```
 
 ## Résolution de skins
 Service interne `SkinResolver` : résolution Mojang (pseudo premium) ou URL `textures.minecraft.net`.
