@@ -43,3 +43,11 @@
 ### Changed
 - `AccountRepository` : API session (`getSessionMeta`, `updateLastLoginAndIp`).
 - Implémentations RAM/SQLite mises à jour.
+
+## [0.0.6] - 2025-08-15
+### Added
+- Listener **PreAuthGuardListener**: blocage mouvement, chat, commandes (whitelist), interactions,
+  inventaire, drop/pickup, swap main/offhand, dégâts (vers/de), faim.
+- Config `preauth.*` avec toggles fins et whitelist de commandes.
+### Notes
+- Respect strict des règles thread Bukkit: pas d'appel API depuis des threads async.

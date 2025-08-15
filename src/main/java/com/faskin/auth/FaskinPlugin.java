@@ -9,6 +9,7 @@ import com.faskin.auth.db.SqliteAccountRepository;
 import com.faskin.auth.i18n.Messages;
 import com.faskin.auth.security.Pbkdf2Hasher;
 import com.faskin.auth.listeners.JoinQuitListener;
+import com.faskin.auth.listeners.PreAuthGuardListener;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,6 +57,7 @@ public final class FaskinPlugin extends JavaPlugin {
 
         // Listeners
         getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
+        getServer().getPluginManager().registerEvents(new PreAuthGuardListener(this), this);
 
         // Commands
         bind("faskin", new AdminCommand(this));

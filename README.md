@@ -4,7 +4,11 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.5` — Sessions IP (auto-login TTL) + state machine côté runtime.
+`0.0.6` — Gardien **pré-auth** (blocage global avant authentification) + whitelist de commandes.
+
+## Configuration (pré-auth)
+Clés `preauth.block.*` pour activer/désactiver mouvement/chat/commandes/interactions, etc.
+Liste blanche: `preauth.commands.whitelist` (toujours inclut `register`/`login` en plus).
 
 ## Dépendances incluses (shaded)
 - `org.xerial:sqlite-jdbc:3.50.3.0` (inclus dans le JAR via Shadow).
