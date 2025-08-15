@@ -98,7 +98,7 @@ public final class SqliteAccountRepository implements AccountRepository {
     }
 
     @Override public void updateLastLoginAndIp(String usernameLower, String ip, long epochSeconds) {
-        String sql = "UPDATE accounts SET last_ip=?, last_login=? WHERE username_ci=?";
+        String sql = "UPDATE accounts SET last_ip=?, last_login=?, failed_count=0, locked_until=NULL WHERE username_ci=?";
         try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, ip);
             ps.setLong(2, epochSeconds);
@@ -123,27 +123,53 @@ public final class SqliteAccountRepository implements AccountRepository {
         }
     }
 
-    // Hooks anti-bruteforce (utilisés TICKET-106)
-    public void registerFailedAttempt(String usernameLower, int max, long lockSeconds) {
+    @Override public boolean isLocked(String usernameLower) {
+        String sql = "SELECT 1 FROM accounts WHERE username_ci=? AND locked_until IS NOT NULL AND locked_until > strftime('%s','now')";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, usernameLower);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next(); }
+        } catch (SQLException e) {
+            log.warning("[Faskin] isLocked() error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override public void registerFailedAttempt(String usernameLower, int max, long lockSeconds) {
         String failSql = """
             UPDATE accounts
                SET failed_count = COALESCE(failed_count,0) + 1,
-                   locked_until = CASE WHEN failed_count + 1 >= ? THEN strftime('%s','now') + ? ELSE locked_until END
+                   locked_until = CASE WHEN failed_count + 1 >= ? THEN strftime('%s','now') + ? ELSE locked_until END,
+                   failed_count = CASE WHEN failed_count + 1 >= ? THEN 0 ELSE failed_count + 1 END
              WHERE username_ci=?""";
         try (Connection c = get(); PreparedStatement ps = c.prepareStatement(failSql)) {
-            ps.setInt(1, max); ps.setLong(2, lockSeconds); ps.setString(3, usernameLower);
+            ps.setInt(1, max); ps.setLong(2, lockSeconds); ps.setInt(3, max); ps.setString(4, usernameLower);
             ps.executeUpdate();
         } catch (SQLException e) {
             log.warning("[Faskin] registerFailedAttempt() error: " + e.getMessage());
         }
     }
-    public void resetFailures(String usernameLower) {
+
+    @Override public void resetFailures(String usernameLower) {
         String sql = "UPDATE accounts SET failed_count=0, locked_until=NULL WHERE username_ci=?";
         try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, usernameLower);
-            ps.executeUpdate();
+            ps.setString(1, usernameLower); ps.executeUpdate();
         } catch (SQLException e) {
             log.warning("[Faskin] resetFailures() error: " + e.getMessage());
+        }
+    }
+
+    @Override public long lockRemainingSeconds(String usernameLower) {
+        String sql = "SELECT locked_until - strftime('%s','now') AS rem FROM accounts WHERE username_ci=? AND locked_until IS NOT NULL";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, usernameLower);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return 0L;
+                long rem = rs.getLong(1);
+                return Math.max(0L, rem);
+            }
+        } catch (SQLException e) {
+            log.warning("[Faskin] lockRemainingSeconds() error: " + e.getMessage());
+            return 0L;
         }
     }
 }

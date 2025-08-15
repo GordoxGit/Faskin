@@ -8,7 +8,7 @@
 - [x] TICKET-103: State machine & sessions IP
 - [x] TICKET-104: Restrictions pré-auth (blocages + whitelist)
 - [x] TICKET-105: UX commandes + messages + i18n (prefix/couleurs, actionbar, rate-limit)
-- [ ] TICKET-106: Timeout & anti-bruteforce (lock, captcha léger)
+- [x] TICKET-106: Timeout & anti-bruteforce (lock, cooldown)
 - [ ] TICKET-107: Admin (/faskin reload|status)
 - [ ] TICKET-108: CI release
 

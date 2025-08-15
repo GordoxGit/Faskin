@@ -11,6 +11,7 @@ import com.faskin.auth.security.Pbkdf2Hasher;
 import com.faskin.auth.listeners.JoinQuitListener;
 import com.faskin.auth.listeners.PreAuthGuardListener;
 import com.faskin.auth.tasks.AuthReminderTask;
+import com.faskin.auth.tasks.LoginTimeoutManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,6 +25,7 @@ public final class FaskinPlugin extends JavaPlugin {
     private Messages messages;
     private AuthServiceRegistry services;
     private BukkitTask reminderTask;
+    private LoginTimeoutManager timeouts;
 
     @Override
     public void onEnable() {
@@ -47,6 +49,7 @@ public final class FaskinPlugin extends JavaPlugin {
         };
 
         this.services = new AuthServiceRegistry(repo);
+        this.timeouts = new LoginTimeoutManager(this);
 
         getLogger().info("Faskin " + getDescription().getVersion() + " starting...");
         getLogger().info("API: " + java.util.Optional.ofNullable(getDescription().getAPIVersion()).orElse("unknown"));
@@ -91,10 +94,12 @@ public final class FaskinPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (reminderTask != null) reminderTask.cancel();
+        if (timeouts != null) timeouts.cancelAll();
         getLogger().info("Faskin shutting down.");
     }
 
     public ConfigManager configs() { return configManager; }
     public Messages messages() { return messages; }
     public AuthServiceRegistry services() { return services; }
+    public LoginTimeoutManager getTimeouts() { return timeouts; }
 }

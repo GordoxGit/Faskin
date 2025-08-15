@@ -24,7 +24,6 @@ public final class JoinQuitListener implements Listener {
         final InetSocketAddress sock = p.getAddress();
         final String ip = (sock != null && sock.getAddress() != null) ? sock.getAddress().getHostAddress() : "unknown";
 
-        // État par défaut avant check
         plugin.services().setState(p.getUniqueId(), PlayerAuthState.UNREGISTERED);
 
         final boolean allow = plugin.configs().allowIpSession();
@@ -38,6 +37,7 @@ public final class JoinQuitListener implements Listener {
             if (!exists) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
+                    plugin.getTimeouts().schedule(p);
                     p.sendMessage(plugin.messages().prefixed("must_register"));
                 });
                 return;
@@ -61,10 +61,10 @@ public final class JoinQuitListener implements Listener {
                 }
             }
 
-            // Compte existe mais pas d'auto-login
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
                 plugin.services().setState(p.getUniqueId(), PlayerAuthState.REGISTERED_UNAUTH);
+                plugin.getTimeouts().schedule(p);
                 p.sendMessage(plugin.messages().prefixed("must_login"));
             });
         });
@@ -73,6 +73,6 @@ public final class JoinQuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         plugin.services().clearState(e.getPlayer().getUniqueId());
+        plugin.getTimeouts().cancel(e.getPlayer().getUniqueId());
     }
 }
-

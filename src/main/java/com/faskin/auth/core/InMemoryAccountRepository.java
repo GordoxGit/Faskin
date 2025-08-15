@@ -7,6 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class InMemoryAccountRepository implements AccountRepository {
     private final Map<String, StoredAccount> store = new ConcurrentHashMap<>();
     private final Map<String, SessionMeta> meta = new ConcurrentHashMap<>();
+    private final Map<String, Integer> fails = new ConcurrentHashMap<>();
+    private final Map<String, Long> locked = new ConcurrentHashMap<>();
+
     private final com.faskin.auth.security.Pbkdf2Hasher hasher;
 
     public InMemoryAccountRepository(com.faskin.auth.security.Pbkdf2Hasher hasher) {
@@ -19,6 +22,7 @@ public final class InMemoryAccountRepository implements AccountRepository {
 
     @Override public void create(String usernameLower, byte[] salt, byte[] hash) {
         store.put(usernameLower, new StoredAccount(usernameLower, salt, hash));
+        fails.remove(usernameLower); locked.remove(usernameLower);
     }
 
     @Override public Optional<StoredAccount> find(String usernameLower) {
@@ -37,7 +41,32 @@ public final class InMemoryAccountRepository implements AccountRepository {
         return Optional.ofNullable(meta.get(usernameLower));
     }
 
-    // Utilitaire pour tests
+    @Override public boolean isLocked(String usernameLower) {
+        long until = locked.getOrDefault(usernameLower, 0L);
+        return until > (System.currentTimeMillis() / 1000L);
+    }
+
+    @Override public void registerFailedAttempt(String usernameLower, int max, long lockSeconds) {
+        int f = fails.getOrDefault(usernameLower, 0) + 1;
+        fails.put(usernameLower, f);
+        if (f >= max) {
+            long until = (System.currentTimeMillis() / 1000L) + lockSeconds;
+            locked.put(usernameLower, until);
+            fails.put(usernameLower, 0);
+        }
+    }
+
+    @Override public void resetFailures(String usernameLower) {
+        fails.remove(usernameLower); locked.remove(usernameLower);
+    }
+
+    @Override public long lockRemainingSeconds(String usernameLower) {
+        long until = locked.getOrDefault(usernameLower, 0L);
+        long now = System.currentTimeMillis() / 1000L;
+        return Math.max(0L, until - now);
+    }
+
+    // Utilitaire tests
     public boolean verify(String usernameLower, char[] raw) {
         var opt = find(usernameLower);
         if (opt.isEmpty()) return false;

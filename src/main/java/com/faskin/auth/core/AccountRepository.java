@@ -12,6 +12,12 @@ public interface AccountRepository {
     void updateLastLoginAndIp(String usernameLower, String ip, long epochSeconds);
     Optional<SessionMeta> getSessionMeta(String usernameLower);
 
+    // Anti-bruteforce
+    boolean isLocked(String usernameLower);
+    void registerFailedAttempt(String usernameLower, int max, long lockSeconds);
+    void resetFailures(String usernameLower);
+    long lockRemainingSeconds(String usernameLower); // 0 si pas lock
+
     final class StoredAccount {
         public final String usernameLower;
         public final byte[] salt;
