@@ -18,12 +18,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+      - name: Clean
+        run: gradle clean --no-daemon
 
-      - name: Build
-        run: gradle clean build --no-daemon
+      - name: Build (shadow)
+        run: gradle build --no-daemon
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Faskin-0.0.1-jar
+          name: Faskin-0.0.4-jar
           path: build/libs/*.jar
