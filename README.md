@@ -37,3 +37,7 @@ HC-06 introduces a simple claim system to prove ownership of a Mojang account. U
 ### Preferences and debug
 
 HC-07 adds per-player opt-in/out preferences controlling automatic skin application and claim flows. Players can use `/heneria optout`, `/heneria optin` and `/heneria prefs`. Admins can inspect runtime state with `/heneria debug`.
+
+### Troubleshooting
+
+If Spigot or Paper refuses to load the plugin, ensure `plugin.yml` is UTF-8 with LF line endings and contains no tab characters.

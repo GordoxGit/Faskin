@@ -31,3 +31,6 @@
 - Add production and release documentation.
 - Introduce release-with-plib workflow to bundle ProtocolLib.
 - Update version to 0.0.8 and provide release checklist.
+
+## 0.0.8.1 (Hotfix)
+- Fix: Invalid plugin.yml (tabs/BOM/CRLF/indent) causing InvalidDescriptionException on load.

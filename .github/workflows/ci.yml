@@ -28,5 +28,17 @@ jobs:
       - name: Show gradle version
         run: gradle --version
 
+      - name: Validate plugin.yml (encoding/format)
+        run: |
+          file -bi src/main/resources/plugin.yml | grep -qi 'charset=utf-8' || { echo "plugin.yml not UTF-8"; exit 1; }
+          grep -nP '\\t' src/main/resources/plugin.yml && { echo "Tabs found in plugin.yml"; exit 1; } || true
+          python - <<'PY'
+import yaml
+with open('src/main/resources/plugin.yml', 'rb') as f:
+    data = f.read().lstrip(b"\xef\xbb\xbf")
+    yaml.safe_load(data.decode('utf-8'))
+print('YAML OK')
+PY
+
       - name: Build
         run: gradle clean build --no-daemon -Dorg.gradle.jvmargs="-Xmx2g"
