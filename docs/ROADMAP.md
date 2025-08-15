@@ -6,9 +6,9 @@
 - [x] TICKET-102: DAO + schéma SQLite + PBKDF2
 - [x] TICKET-102-HOTFIX: Build Gradle 9 (Shadow 9) + CI clean
 - [x] TICKET-103: State machine & sessions IP
-- [ ] TICKET-104: Restrictions pré-auth
-- [ ] TICKET-105: Commandes register/login/logout/changepassword
-- [ ] TICKET-106: Timeout & anti-bruteforce
+- [x] TICKET-104: Restrictions pré-auth (blocages + whitelist)
+- [ ] TICKET-105: UX commandes + messages + i18n
+- [ ] TICKET-106: Timeout & anti-bruteforce (lock, captcha léger)
 - [ ] TICKET-107: Admin (/faskin reload|status)
 - [ ] TICKET-108: CI release
 
