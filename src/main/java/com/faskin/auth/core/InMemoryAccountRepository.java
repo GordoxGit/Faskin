@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class InMemoryAccountRepository implements AccountRepository {
     private final Map<String, StoredAccount> store = new ConcurrentHashMap<>();
+    private final Map<String, SessionMeta> meta = new ConcurrentHashMap<>();
     private final com.faskin.auth.security.Pbkdf2Hasher hasher;
 
     public InMemoryAccountRepository(com.faskin.auth.security.Pbkdf2Hasher hasher) {
@@ -26,6 +27,14 @@ public final class InMemoryAccountRepository implements AccountRepository {
 
     @Override public void updatePassword(String usernameLower, byte[] newSalt, byte[] newHash) {
         store.computeIfPresent(usernameLower, (k, v) -> new StoredAccount(k, newSalt, newHash));
+    }
+
+    @Override public void updateLastLoginAndIp(String usernameLower, String ip, long epochSeconds) {
+        meta.put(usernameLower, new SessionMeta(ip, epochSeconds));
+    }
+
+    @Override public Optional<SessionMeta> getSessionMeta(String usernameLower) {
+        return Optional.ofNullable(meta.get(usernameLower));
     }
 
     // Utilitaire pour tests

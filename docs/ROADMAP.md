@@ -5,7 +5,7 @@
 - [x] TICKET-101: Core + bootstrap plugin (services, commandes, logs)
 - [x] TICKET-102: DAO + schéma SQLite + PBKDF2
 - [x] TICKET-102-HOTFIX: Build Gradle 9 (Shadow 9) + CI clean
-- [ ] TICKET-103: State machine & sessions IP
+- [x] TICKET-103: State machine & sessions IP
 - [ ] TICKET-104: Restrictions pré-auth
 - [ ] TICKET-105: Commandes register/login/logout/changepassword
 - [ ] TICKET-106: Timeout & anti-bruteforce

@@ -16,10 +16,11 @@ public final class AuthServiceRegistry {
 
     public PlayerAuthState getState(UUID uuid) {
         return states.getOrDefault(uuid, PlayerAuthState.UNREGISTERED);
-        // Noter : l’état réel dépendra de l’existence du compte (TICKET-102)
     }
 
     public void setState(UUID uuid, PlayerAuthState state) {
         states.put(uuid, state);
     }
+
+    public void clearState(UUID uuid) { states.remove(uuid); }
 }

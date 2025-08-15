@@ -34,3 +34,12 @@
 ### Notes
 - Gradle 9 requiert Java 17+, conforme à notre toolchain Java 21.
 - Shadow 8.x présente des soucis avec Gradle 9 ; migration recommandée par les mainteneurs.
+
+## [0.0.5] - 2025-08-15
+### Added
+- Auto-login par **session IP** (TTL) côté `PlayerJoinEvent`.
+- Mise à jour `last_ip` / `last_login` sur login réussi.
+- Listener `JoinQuitListener` + purge état sur quit.
+### Changed
+- `AccountRepository` : API session (`getSessionMeta`, `updateLastLoginAndIp`).
+- Implémentations RAM/SQLite mises à jour.

@@ -2,13 +2,15 @@ package com.faskin.auth;
 
 import com.faskin.auth.commands.*;
 import com.faskin.auth.config.ConfigManager;
-import com.faskin.auth.core.AccountRepository;
 import com.faskin.auth.core.AuthServiceRegistry;
 import com.faskin.auth.core.InMemoryAccountRepository;
+import com.faskin.auth.core.AccountRepository;
 import com.faskin.auth.db.SqliteAccountRepository;
 import com.faskin.auth.i18n.Messages;
 import com.faskin.auth.security.Pbkdf2Hasher;
+import com.faskin.auth.listeners.JoinQuitListener;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -52,6 +54,10 @@ public final class FaskinPlugin extends JavaPlugin {
             }
         }
 
+        // Listeners
+        getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
+
+        // Commands
         bind("faskin", new AdminCommand(this));
         bind("register", new RegisterCommand(this));
         bind("login", new LoginCommand(this));
@@ -62,7 +68,7 @@ public final class FaskinPlugin extends JavaPlugin {
     }
 
     private void bind(String name, Object executor) {
-        var cmd = getCommand(name);
+        PluginCommand cmd = getCommand(name);
         if (cmd == null) {
             getLogger().severe("Commande '" + name + "' introuvable (plugin.yml).");
             return;
