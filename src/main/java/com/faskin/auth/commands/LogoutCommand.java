@@ -12,7 +12,7 @@ public final class LogoutCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof org.bukkit.entity.Player p)) { sender.sendMessage("[Faskin] In-game uniquement."); return true; }
         plugin.services().setState(p.getUniqueId(), PlayerAuthState.REGISTERED_UNAUTH);
-        p.sendMessage("[Faskin] Déconnecté.");
+        p.sendMessage(plugin.messages().prefixed("logout_ok"));
         return true;
     }
 }

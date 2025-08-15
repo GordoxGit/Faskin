@@ -7,7 +7,7 @@
 - [x] TICKET-102-HOTFIX: Build Gradle 9 (Shadow 9) + CI clean
 - [x] TICKET-103: State machine & sessions IP
 - [x] TICKET-104: Restrictions pré-auth (blocages + whitelist)
-- [ ] TICKET-105: UX commandes + messages + i18n
+- [x] TICKET-105: UX commandes + messages + i18n (prefix/couleurs, actionbar, rate-limit)
 - [ ] TICKET-106: Timeout & anti-bruteforce (lock, captcha léger)
 - [ ] TICKET-107: Admin (/faskin reload|status)
 - [ ] TICKET-108: CI release

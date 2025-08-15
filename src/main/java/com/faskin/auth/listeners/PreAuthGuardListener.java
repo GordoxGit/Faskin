@@ -14,9 +14,11 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.Locale;
+import com.faskin.auth.util.RateLimiter;
 
 public final class PreAuthGuardListener implements Listener {
     private final FaskinPlugin plugin;
+    private final RateLimiter limiter = new RateLimiter();
 
     public PreAuthGuardListener(FaskinPlugin plugin) {
         this.plugin = plugin;
@@ -44,8 +46,10 @@ public final class PreAuthGuardListener implements Listener {
         Player p = e.getPlayer();
         if (isProtected(p)) {
             e.setCancelled(true);
-            Bukkit.getScheduler().runTask(plugin, () ->
-                    p.sendMessage(plugin.messages().raw("blocked_chat")));
+            if (limiter.shouldNotify(p.getUniqueId(), "chat", 1500)) {
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        p.sendMessage(plugin.messages().prefixed("blocked_chat")));
+            }
         }
     }
 
@@ -62,8 +66,15 @@ public final class PreAuthGuardListener implements Listener {
 
         if (!plugin.configs().preauthCommandWhitelist().contains(base)) {
             e.setCancelled(true);
-            p.sendMessage(plugin.messages().raw("blocked_command"));
+            if (limiter.shouldNotify(p.getUniqueId(), "cmd", 1000)) {
+                p.sendMessage(plugin.messages().prefixed("blocked_command"));
+            }
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        limiter.clear(e.getPlayer().getUniqueId());
     }
 
     // Interactions (clics droit/gauche sur blocs/air)

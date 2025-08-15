@@ -29,7 +29,7 @@ public final class LoginCommand implements CommandExecutor {
 
             var opt = repo.find(key);
             if (opt.isEmpty()) {
-                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().raw("must_register")));
+                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().prefixed("must_register")));
                 return;
             }
             var acc = opt.get();
@@ -37,7 +37,7 @@ public final class LoginCommand implements CommandExecutor {
             boolean ok = hasher.verify(pass.toCharArray(), acc.salt, acc.hash);
 
             if (!ok) {
-                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().raw("bad_credentials")));
+                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().prefixed("bad_credentials")));
                 return;
             }
 
@@ -45,7 +45,7 @@ public final class LoginCommand implements CommandExecutor {
             repo.updateLastLoginAndIp(key, ip, now);
             Bukkit.getScheduler().runTask(plugin, () -> {
                 plugin.services().setState(p.getUniqueId(), PlayerAuthState.AUTHENTICATED);
-                p.sendMessage(plugin.messages().raw("login_ok"));
+                p.sendMessage(plugin.messages().prefixed("login_ok"));
             });
         });
         return true;

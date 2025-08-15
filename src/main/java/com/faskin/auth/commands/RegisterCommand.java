@@ -28,7 +28,7 @@ public final class RegisterCommand implements CommandExecutor {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             AccountRepository repo = plugin.services().accounts();
             if (repo.exists(key)) {
-                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage("[Faskin] Compte déjà enregistré. Faites /login <mdp>."));
+                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().prefixed("must_login")));
                 return;
             }
             var hasher = new com.faskin.auth.security.Pbkdf2Hasher();
@@ -38,8 +38,8 @@ public final class RegisterCommand implements CommandExecutor {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 plugin.services().setState(p.getUniqueId(), PlayerAuthState.REGISTERED_UNAUTH);
-                p.sendMessage(plugin.messages().raw("registered_ok"));
-                p.sendMessage(plugin.messages().raw("must_login"));
+                p.sendMessage(plugin.messages().prefixed("registered_ok"));
+                p.sendMessage(plugin.messages().prefixed("must_login"));
             });
         });
         return true;

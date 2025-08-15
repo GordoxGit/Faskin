@@ -51,3 +51,12 @@
 - Config `preauth.*` avec toggles fins et whitelist de commandes.
 ### Notes
 - Respect strict des règles thread Bukkit: pas d'appel API depuis des threads async.
+
+## [0.0.7] - 2025-08-15
+### Added
+- i18n (fallback par locale), **prefix** et **couleurs &** pour les messages.
+- Rappels périodiques d’auth (ActionBar/Chat) tant que non AUTHENTICATED.
+- **Rate-limit** des messages de blocage (chat/command).
+- `/faskin help` + alias `/l` et `/reg`.
+### Changed
+- Unifie l’envoi de messages via `messages.prefixed(key)`.
