@@ -4,10 +4,16 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.4` — Hotfix build Gradle 9 : migration **Shadow 9** + CI clean.
+`0.0.5` — Sessions IP (auto-login TTL) + state machine côté runtime.
 
 ## Dépendances incluses (shaded)
 - `org.xerial:sqlite-jdbc:3.50.3.0` (inclus dans le JAR via Shadow).
+
+## Fonctionnement session
+- Si `login.allow_ip_session=true` et `session_minutes>0` :
+  - même IP + dernier login < TTL ⇒ auto-auth.
+  - sinon ⇒ `/login` requis.
+- L’IP provient de `Player#getAddress()` (Spigot API). :contentReference[oaicite:4]{index=4}
 
 ## Build (sans wrapper)
 - Gradle local : `gradle clean build --no-daemon`
