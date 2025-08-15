@@ -4,7 +4,12 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.8` — Timeout d’auth + anti-bruteforce (cooldown, compteur d’échecs, lock DB).
+`0.0.9` — Console admin `/faskin` (status, unlock, stats).
+
+## Admin
+- `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
+- `/faskin unlock <player>` : reset `failed_count` + `locked_until`.
+- `/faskin stats` : comptes totaux, locks actifs, online AUTH / non-AUTH.
 
 ## i18n & couleurs
 - `messages_locale` ou `messages.locale` pour choisir la langue (fichiers `messages.yml` / `messages_<locale>.yml`).

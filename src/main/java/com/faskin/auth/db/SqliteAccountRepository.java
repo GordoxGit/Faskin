@@ -172,5 +172,31 @@ public final class SqliteAccountRepository implements AccountRepository {
             return 0L;
         }
     }
+
+    @Override public int countAccounts() {
+        String sql = "SELECT COUNT(*) FROM accounts";
+        try (Connection c = get(); Statement st = c.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) { log.warning("[Faskin] countAccounts() error: " + e.getMessage()); return 0; }
+    }
+
+    @Override public int countLockedActive(long nowEpochSeconds) {
+        String sql = "SELECT COUNT(*) FROM accounts WHERE locked_until IS NOT NULL AND locked_until > ?";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, nowEpochSeconds);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? rs.getInt(1) : 0; }
+        } catch (SQLException e) { log.warning("[Faskin] countLockedActive() error: " + e.getMessage()); return 0; }
+    }
+
+    @Override public Optional<AdminInfo> adminInfo(String usernameLower) {
+        String sql = "SELECT last_ip, last_login, failed_count, COALESCE(locked_until,0) FROM accounts WHERE username_ci=? LIMIT 1";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, usernameLower);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return Optional.of(new AdminInfo(false, null, 0L, 0, 0L));
+                return Optional.of(new AdminInfo(true, rs.getString(1), rs.getLong(2), rs.getInt(3), rs.getLong(4)));
+            }
+        } catch (SQLException e) { log.warning("[Faskin] adminInfo() error: " + e.getMessage()); return Optional.of(new AdminInfo(false, null, 0L, 0, 0L)); }
+    }
 }
 
