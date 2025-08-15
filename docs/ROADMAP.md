@@ -3,7 +3,7 @@
 
 ## Étape 1 — Auth offline
 - [x] TICKET-101: Core + bootstrap plugin (services, commandes, logs)
-- [ ] TICKET-102: DAO + schéma SQLite + PBKDF2
+- [x] TICKET-102: DAO + schéma SQLite + PBKDF2
 - [ ] TICKET-103: State machine & sessions IP
 - [ ] TICKET-104: Restrictions pré-auth
 - [ ] TICKET-105: Commandes register/login/logout/changepassword

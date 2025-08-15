@@ -4,11 +4,13 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.2` — Noyau + commandes + services in-memory (Étape 1, pré-DAO).
+`0.0.3` — Persistance **SQLite** + hash **PBKDF2**, commandes async.
 
-## Build
-- Gradle local (sans wrapper) : `gradle clean build`
-- CI : `gradle/actions/setup-gradle` (cache & init automatiques, pas de wrapper).
+## Dépendances incluses (shaded)
+- `org.xerial:sqlite-jdbc:3.50.3.0` (inclus dans le JAR via Shadow).
+
+## Build (sans wrapper)
+- Installer Gradle localement, puis `gradle clean build` (CI via setup-gradle).
 
 ## Politique doc
 - À **CHAQUE ticket** : mettre à jour **README**, **docs/ROADMAP.md**, **CHANGELOG.md**, fichiers build et toute doc impactée.

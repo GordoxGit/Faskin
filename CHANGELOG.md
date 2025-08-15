@@ -18,3 +18,11 @@
 - Messages: suppression de MiniMessage, envoi en String (compat Spigot).
 ### Notes
 - Persistance SQLite arrive TICKET-102.
+
+## [0.0.3] - 2025-08-15
+### Added
+- Persistance **SQLite** (`SqliteAccountRepository`) avec création auto du schéma.
+- Exécution **async** des commandes sensibles (DB hors main-thread).
+- Intégration **Shadow** pour embarquer `sqlite-jdbc` dans le JAR.
+### Changed
+- Sélection du backend via `storage.driver` (SQLITE | SQLITE_INMEMORY | INMEMORY).

@@ -2,13 +2,16 @@ package com.faskin.auth;
 
 import com.faskin.auth.commands.*;
 import com.faskin.auth.config.ConfigManager;
+import com.faskin.auth.core.AccountRepository;
 import com.faskin.auth.core.AuthServiceRegistry;
 import com.faskin.auth.core.InMemoryAccountRepository;
+import com.faskin.auth.db.SqliteAccountRepository;
 import com.faskin.auth.i18n.Messages;
 import com.faskin.auth.security.Pbkdf2Hasher;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public final class FaskinPlugin extends JavaPlugin {
 
@@ -23,13 +26,24 @@ public final class FaskinPlugin extends JavaPlugin {
 
         this.configManager = new ConfigManager(this);
         this.messages = new Messages(this);
-        this.services = new AuthServiceRegistry(
-                new InMemoryAccountRepository(new Pbkdf2Hasher())
-        );
+
+        AccountRepository repo = switch (configManager.storageDriver()) {
+            case "SQLITE", "SQLITE_INMEMORY" -> {
+                File folder = getDataFolder();
+                if (!folder.exists() && !folder.mkdirs()) {
+                    getLogger().warning("Impossible de créer le dossier plugin: " + folder);
+                }
+                File db = new File(folder, "faskin.db");
+                boolean inMem = "SQLITE_INMEMORY".equalsIgnoreCase(configManager.storageDriver());
+                yield new SqliteAccountRepository(db, inMem, getLogger());
+            }
+            default -> new InMemoryAccountRepository(new Pbkdf2Hasher());
+        };
+
+        this.services = new AuthServiceRegistry(repo);
 
         getLogger().info("Faskin " + getDescription().getVersion() + " starting...");
-        String api = getDescription().getAPIVersion();
-        getLogger().info("API: " + (api != null ? api : "unknown"));
+        getLogger().info("API: " + java.util.Optional.ofNullable(getDescription().getAPIVersion()).orElse("unknown"));
 
         if (configManager.isTeleportMode()) {
             String world = configManager.getSpawnWorld();
@@ -38,7 +52,6 @@ public final class FaskinPlugin extends JavaPlugin {
             }
         }
 
-        // Register commands (NPE-safe)
         bind("faskin", new AdminCommand(this));
         bind("register", new RegisterCommand(this));
         bind("login", new LoginCommand(this));
@@ -49,7 +62,7 @@ public final class FaskinPlugin extends JavaPlugin {
     }
 
     private void bind(String name, Object executor) {
-        PluginCommand cmd = getCommand(name);
+        var cmd = getCommand(name);
         if (cmd == null) {
             getLogger().severe("Commande '" + name + "' introuvable (plugin.yml).");
             return;

@@ -19,4 +19,5 @@ public final class ConfigManager {
     public int passwordMinLength() { return cfg.getInt("password.min_length", 8); }
     public boolean requireDigit() { return cfg.getBoolean("password.require_digit", true); }
     public boolean requireLetter() { return cfg.getBoolean("password.require_letter", true); }
+    public String storageDriver() { return cfg.getString("storage.driver", "SQLITE"); }
 }
