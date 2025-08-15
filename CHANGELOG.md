@@ -34,3 +34,7 @@
 
 ## 0.0.8.1 (Hotfix)
 - Fix: Invalid plugin.yml (tabs/BOM/CRLF/indent) causing InvalidDescriptionException on load.
+
+## 0.0.8.2 (Hotfix)
+- Fix NPE on enable caused by missing command declaration in plugin.yml.
+- Add null-safe command binding and CI guard for command declarations.

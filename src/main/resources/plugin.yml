@@ -1,10 +1,28 @@
 name: HeneriaCore
 main: fr.heneriacore.HeneriaCore
-version: "0.0.8.1"
+version: "0.0.8.2"
 api-version: "1.21"
-description: "HeneriaCore - core auth/premium/skins"
-authors:
-  - "Heneria"
+description: "HeneriaCore - auth/premium/skins"
+authors: ["Heneria"]
 softdepend: [ProtocolLib]
-commands: {}
-permissions: {}
+
+commands:
+  heneria:
+    description: "HeneriaCore root command"
+    usage: "/heneria help"
+    aliases: [hc]
+    permission: "heneria.use"
+
+permissions:
+  heneria.use:
+    default: true
+  heneria.auth:
+    default: true
+  heneria.auth.admin:
+    default: op
+  heneria.claim:
+    default: true
+  heneria.claim.admin:
+    default: op
+  heneria.debug:
+    default: op

@@ -40,5 +40,18 @@ with open('src/main/resources/plugin.yml', 'rb') as f:
 print('YAML OK')
 PY
 
+      - name: Validate commands presence
+        run: |
+          set -e
+          CMDS=$( { grep -R --line-number 'getCommand("' src/main/java || true; grep -R --line-number 'bind("' src/main/java || true; } | sed -E 's/.*(getCommand|bind)\("([^"]+)".*/\2/' | sort -u )
+          echo "Code expects commands: $CMDS"
+          for c in $CMDS; do
+            if ! awk '/^commands:/{f=1;next} f&&/^[^[:space:]]/{f=0} f{print}' src/main/resources/plugin.yml | grep -qE "^[[:space:]]+$c:" ; then
+              echo "::error::Command '$c' not declared under 'commands:' in plugin.yml"
+              exit 1
+            fi
+          done
+          echo "Commands validation OK"
+
       - name: Build
         run: gradle clean build --no-daemon -Dorg.gradle.jvmargs="-Xmx2g"
