@@ -1,40 +1,10 @@
-## 0.0.1
-- Init: skeleton HeneriaCore (main class, plugin.yml, config.yml, CI).
+# Changelog
 
-## 0.0.2
-- Add SQLite database layer and AuthManager with sessions.
-- Implement PBKDF2 password hashing and auth commands.
-- Fix CI to use gradle/gradle-build-action@v3.
-
-## 0.0.3
-- Add PremiumDetector (sessionserver probe) with rate limiting and backoff.
-- Integrate auto-login via PremiumAuthService and PremiumLoginEvent.
-
-## 0.0.4
-- Add SkinService with ProtocolLib and Paper reflection fallback.
-- Cache signed textures and apply them on AuthPostLoginEvent.
-
-## 0.0.5
-- Add HttpClientWrapper with rate limiter, backoff strategy, circuit breaker and metrics.
-- Expose metrics through DebugInfoProvider and extend configuration.
-
-## 0.0.6
-- Introduce claim flow with tokenized skin verification.
-- Add ClaimManager, commands and configuration.
-
-## 0.0.7
-- Add per-player opt-in/out preferences stored in SQLite.
-- Implement `/heneria optin`, `/heneria optout`, `/heneria prefs` and admin `/heneria debug`.
-- Skip auto skin apply, auto-login and claim flows when players opt out.
-
-## 0.0.8
-- Add production and release documentation.
-- Introduce release-with-plib workflow to bundle ProtocolLib.
-- Update version to 0.0.8 and provide release checklist.
-
-## 0.0.8.1 (Hotfix)
-- Fix: Invalid plugin.yml (tabs/BOM/CRLF/indent) causing InvalidDescriptionException on load.
-
-## 0.0.8.2 (Hotfix)
-- Fix NPE on enable caused by missing command declaration in plugin.yml.
-- Add null-safe command binding and CI guard for command declarations.
+## [0.0.1] - 2025-08-15
+### Added
+- Bootstrap projet Gradle (Java 21), Spigot API 1.21.
+- CI GitHub Actions (build + artefact).
+- Squelette plugin: FaskinPlugin + Config/Messages.
+- Docs initiales: ROADMAP, ARCHITECTURE, TICKETING.
+### Note
+- **Aucun gradle-wrapper** n'est committé. Le wrapper pourra être généré plus tard si nécessaire.

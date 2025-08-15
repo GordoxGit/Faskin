@@ -1,54 +1,33 @@
-# HeneriaCore configuration (squelette)
-general:
-  require-auth: false
-premium:
-  enable: true
-  probe:
-    timeout-ms: 3000
-    rate:
-      requests_per_minute: 120
-      burst: 20
-  fetch-signature: true
-  autoLogin: true
-  log-level: INFO
-auth:
-  db: "data/heneria.db"
-  hash: "pbkdf2"
-  salt-length: 16
-  session-ttl-seconds: 86400
-  autoLoginAfterRegister: true
-  maxFailedAttempts: 5
-  lockDurationSeconds: 300
-  executor-threads: 2
-  skin:
-    protocollib-enable: true
-    cache-ttl-seconds: 86400
-    apply-on-login: true
-    refresh-tablist: true
-    storage:
-      type: sqlite # or yaml
-      file: data/heneria_skins.db
-mojang:
-  rate:
-    requests_per_minute: 120
-    burst: 20
-  retries:
-    max_retries: 5
-    base_delay_ms: 500
-    max_delay_ms: 30000
-    jitter: 0.2
-  circuit:
-    failure_threshold: 5
-    open_duration_ms: 60000
-    half_open_probe_count: 2
-claim:
-  ttl-seconds: 900
-  image-size: 64
-  max-attempts: 3
+spawn:
+  mode: FREEZE
+  world: world
+  x: 0.5
+  y: 64.0
+  z: 0.5
 
-preferences:
-  default_auto_apply_skin: true
-  optout_default: false
-debug:
-  export_enabled: true
-  export_dir: "plugins/HeneriaCore/debug"
+login:
+  timeout_seconds: 45
+  allow_ip_session: true
+  session_minutes: 30
+  max_failed_attempts: 5
+  lock_minutes: 15
+
+password:
+  min_length: 8
+  require_digit: true
+  require_letter: true
+
+storage:
+  driver: SQLITE
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: faskin
+    user: faskin
+    password: "change_me"
+
+whitelist_commands:
+  - /register
+  - /login
+
+messages_locale: fr

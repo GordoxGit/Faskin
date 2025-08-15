@@ -1,28 +1,34 @@
-name: HeneriaCore
-main: fr.heneriacore.HeneriaCore
-version: "0.0.8.2"
-api-version: "1.21"
-description: "HeneriaCore - auth/premium/skins"
-authors: ["Heneria"]
-softdepend: [ProtocolLib]
-
+name: Faskin
+main: com.faskin.auth.FaskinPlugin
+version: 0.0.1
+api-version: '1.21'
+authors: [ 'GordoxGit' ]
+website: 'https://github.com/GordoxGit/Faskin'
+description: 'Authentification offline (étape 1), auto-login premium (étape 2), skins premium en offline (étape 3).'
 commands:
-  heneria:
-    description: "HeneriaCore root command"
-    usage: "/heneria help"
-    aliases: [hc]
-    permission: "heneria.use"
-
+  register:
+    description: 'Créer un compte Faskin'
+    usage: '/register <password> <confirm>'
+    permission: 'faskin.register'
+  login:
+    description: 'Se connecter à Faskin'
+    usage: '/login <password>'
+    permission: 'faskin.login'
+  logout:
+    description: 'Se déconnecter'
+    usage: '/logout'
+    permission: 'faskin.logout'
+  changepassword:
+    description: 'Changer le mot de passe'
+    usage: '/changepassword <old> <new> <confirm>'
+    permission: 'faskin.changepassword'
+  faskin:
+    description: 'Commande admin Faskin'
+    usage: '/faskin reload|status [player]'
+    permission: 'faskin.admin'
 permissions:
-  heneria.use:
-    default: true
-  heneria.auth:
-    default: true
-  heneria.auth.admin:
-    default: op
-  heneria.claim:
-    default: true
-  heneria.claim.admin:
-    default: op
-  heneria.debug:
-    default: op
+  faskin.register: { default: true }
+  faskin.login: { default: true }
+  faskin.logout: { default: true }
+  faskin.changepassword: { default: true }
+  faskin.admin: { default: op }
