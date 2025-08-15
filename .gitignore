@@ -17,6 +17,13 @@ Thumbs.db
 *.log
 *.tmp
 
+# Plugin data / databases
+plugins/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
 # IMPORTANT: pas de gradle-wrapper dans le dépôt
 gradlew
 gradlew.bat

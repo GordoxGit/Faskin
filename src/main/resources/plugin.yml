@@ -1,10 +1,14 @@
 name: Faskin
 main: com.faskin.auth.FaskinPlugin
-version: 0.0.2
+version: 0.0.3
 api-version: '1.21'
 authors: [ 'GordoxGit' ]
 website: 'https://github.com/GordoxGit/Faskin'
 description: 'Auth offline (étape 1), auto-login premium (étape 2), skins premium offline (étape 3).'
+# Optimisation Paper (si serveur Paper, ça télécharge la lib automatiquement)
+# Spigot ignorera cette clé.
+libraries:
+  - org.xerial:sqlite-jdbc:3.50.3.0
 commands:
   register:
     description: 'Créer un compte Faskin'
