@@ -16,7 +16,6 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("net.kyori:adventure-text-minimessage:4.24.0")
 }
 
 tasks.withType<Jar> {
