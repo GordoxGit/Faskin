@@ -1,15 +1,9 @@
-# placeholder messages (Adventure support to be added later)
-prefix: "&7[Heneria]&r "
-skin:
-  applier-missing: "&cNo skin applier available; texture stored"
-claim:
-  start: "&aClaim started. Token: {id}"
-  check-success: "&aClaim verified."
-  check-fail: "&cClaim failed."
-  cancel: "&eClaim cancelled."
-prefs:
-  optin: "&aYou are now opted-in."
-  optout: "&eYou are now opted-out."
-  status: "&6Prefs: opted_out={opted}, auto_apply_skin={auto}"
-debug:
-  export: "&aDebug exported to {path}"
+prefix: "<gray>[<aqua>Faskin</aqua>] </gray>"
+must_register: "<red>Inscrivez-vous : /register <mdp> <mdp></red>"
+must_login: "<red>Connectez-vous : /login <mdp></red>"
+registered_ok: "<green>Compte créé. Connectez-vous : /login <mdp></green>"
+login_ok: "<green>Authentifié.</green>"
+bad_credentials: "<red>Identifiants invalides.</red>"
+locked: "<red>Trop d'essais. Réessayez dans {minutes} min.</red>"
+timeout_kick: "Délai de connexion écoulé."
+reloaded: "<green>Configuration rechargée.</green>"

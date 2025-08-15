@@ -1,25 +1,23 @@
-# Build & caches
-.build/
+# Build/Gradle
 .gradle/
 build/
 out/
-target/
+bin/
 
 # IDE
 .idea/
 *.iml
-.classpath
-.project
-.settings/
-
-# Wrapper Gradle — autorisé en local mais INTERDIT au repo
-gradlew
-gradlew.bat
-gradle/wrapper/gradle-wrapper.jar
+.vscode/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# libs locaux (non versionnés) pour builds optionnels
-local-libs/
+# Logs/temp
+*.log
+*.tmp
+
+# IMPORTANT: pas de gradle-wrapper dans le dépôt
+gradlew
+gradlew.bat
+gradle/wrapper/

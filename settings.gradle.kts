@@ -1,1 +1,1 @@
-rootProject.name = "heneriacore"
+rootProject.name = "Faskin"
