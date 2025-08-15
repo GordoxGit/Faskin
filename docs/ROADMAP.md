@@ -2,7 +2,7 @@
 > Règle : **ajouter uniquement**, ne rien supprimer une fois publié.
 
 ## Étape 1 — Auth offline
-- [ ] TICKET-101: Core + bootstrap plugin
+- [x] TICKET-101: Core + bootstrap plugin (services, commandes, logs)
 - [ ] TICKET-102: DAO + schéma SQLite + PBKDF2
 - [ ] TICKET-103: State machine & sessions IP
 - [ ] TICKET-104: Restrictions pré-auth
