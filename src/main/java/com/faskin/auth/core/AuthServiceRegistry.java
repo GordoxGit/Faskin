@@ -1,5 +1,6 @@
 package com.faskin.auth.core;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,4 +24,10 @@ public final class AuthServiceRegistry {
     }
 
     public void clearState(UUID uuid) { states.remove(uuid); }
+
+    public Map<PlayerAuthState,Integer> countStates() {
+        Map<PlayerAuthState,Integer> m = new EnumMap<>(PlayerAuthState.class);
+        for (var st : states.values()) m.put(st, m.getOrDefault(st, 0) + 1);
+        return m;
+    }
 }

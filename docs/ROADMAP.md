@@ -9,7 +9,7 @@
 - [x] TICKET-104: Restrictions pré-auth (blocages + whitelist)
 - [x] TICKET-105: UX commandes + messages + i18n (prefix/couleurs, actionbar, rate-limit)
 - [x] TICKET-106: Timeout & anti-bruteforce (lock, cooldown)
-- [ ] TICKET-107: Admin (/faskin reload|status)
+- [x] TICKET-107: Admin (/faskin reload|status|unlock|stats)
 - [ ] TICKET-108: CI release
 
 ## Étape 2 — Auto-login premium

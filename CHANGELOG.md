@@ -69,3 +69,11 @@
 ### Changed
 - `LoginCommand`: vérifie lock/cooldown, reset les échecs sur succès, maj session.
 - `JoinQuitListener`: planifie/cancel le timeout selon l’état.
+
+## [0.0.9] - 2025-08-15
+### Added
+- Commande admin: `/faskin status [player]`, `/faskin unlock <player>`, `/faskin stats`.
+- API repository: `countAccounts`, `countLockedActive`, `adminInfo`.
+- `AuthServiceRegistry#countStates()` pour compter les états online.
+### Changed
+- Messages i18n: clés admin_* pour rendu formaté.
