@@ -14,6 +14,10 @@ import fr.heneriacore.premium.PremiumDetector;
 import fr.heneriacore.premium.SessionProfileResolver;
 import fr.heneriacore.skin.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -71,8 +75,7 @@ public final class HeneriaCore extends JavaPlugin {
         PreferencesCommand prefsCmd = new PreferencesCommand(this, preferencesManager);
         DebugCommand debugCmd = new DebugCommand(this, sqliteManager, preferencesManager, skinService, textureCache);
         AuthCommand authCmd = new AuthCommand(this, claimCmd, prefsCmd, debugCmd);
-        getCommand("heneria").setExecutor(authCmd);
-        getCommand("heneria").setTabCompleter(authCmd);
+        bind("heneria", authCmd, authCmd);
         getServer().getScheduler().runTaskTimerAsynchronously(this, claimManager::cleanupExpired, 20L, 20L * 60);
     }
 
@@ -92,4 +95,16 @@ public final class HeneriaCore extends JavaPlugin {
     public ClaimManager getClaimManager() { return claimManager; }
 
     public PreferencesManager getPreferencesManager() { return preferencesManager; }
+
+    private void bind(String cmd, CommandExecutor exec, @Nullable TabCompleter tab) {
+        PluginCommand c = getCommand(cmd);
+        if (c == null) {
+            getLogger().severe("Missing command in plugin.yml: " + cmd);
+            return;
+        }
+        c.setExecutor(exec);
+        if (tab != null) {
+            c.setTabCompleter(tab);
+        }
+    }
 }
