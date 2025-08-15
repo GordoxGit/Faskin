@@ -60,3 +60,12 @@
 - `/faskin help` + alias `/l` et `/reg`.
 ### Changed
 - Unifie l’envoi de messages via `messages.prefixed(key)`.
+
+## [0.0.8] - 2025-08-15
+### Added
+- Timeout d’authentification: kick/message après `login.timeout_seconds`.
+- Anti-bruteforce: cooldown tentatives, compteur d’échecs, verrou `locked_until`.
+- Repository API: `isLocked`, `registerFailedAttempt`, `resetFailures`, `lockRemainingSeconds`.
+### Changed
+- `LoginCommand`: vérifie lock/cooldown, reset les échecs sur succès, maj session.
+- `JoinQuitListener`: planifie/cancel le timeout selon l’état.

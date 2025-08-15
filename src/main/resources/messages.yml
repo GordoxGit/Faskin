@@ -20,3 +20,8 @@ help_lines:
   - "&f/logout &7: se déconnecter"
   - "&f/changepassword <old> <new> <confirm> &7: changer le mot de passe"
   - "&f/faskin reload|status [player] &7: admin"
+locked_generic: "&cTrop d'essais. Réessayez plus tard."
+locked_with_time: "&cTrop d'essais. Réessayez dans &f{MIN}m {SEC}s&c."
+too_fast: "&ePatientez &f{SEC}s &eavant une nouvelle tentative."
+timeout_kick: "&cTemps d'authentification dépassé. Rejoignez et faites &f/login <mdp>&c."
+timeout_chat: "&cTemps d'auth atteint. Authentifiez-vous avec &f/login <mdp>&c."

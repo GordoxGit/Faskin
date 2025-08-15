@@ -4,11 +4,16 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.7` — UX améliorée : i18n (FR/EN), prefix + couleurs, rappels action bar, rate-limit.
+`0.0.8` — Timeout d’auth + anti-bruteforce (cooldown, compteur d’échecs, lock DB).
 
 ## i18n & couleurs
 - `messages_locale` ou `messages.locale` pour choisir la langue (fichiers `messages.yml` / `messages_<locale>.yml`).
 - Codes couleur `&` convertis via `ChatColor.translateAlternateColorCodes`. :contentReference[oaicite:4]{index=4}
+
+## Anti-bruteforce
+- Cooldown local par joueur (`min_seconds_between_attempts`).
+- Compteur d’échecs et **lock** (`max_failed_attempts`, `lock_minutes`) stockés en DB.
+- Kick automatique si non authentifié après `timeout_seconds` (configurable).
 
 ## Rappels d’auth
 - Tâche périodique qui envoie un **ActionBar** aux joueurs non authentifiés. Implémenté via `Player.Spigot#sendMessage(ChatMessageType.ACTION_BAR, ...)`. :contentReference[oaicite:5]{index=5}
@@ -38,3 +43,7 @@ Liste blanche: `preauth.commands.whitelist` (toujours inclut `register`/`login` 
 
 ## Dépendance
 `org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT` (repo Spigot).
+
+## API
+- `BukkitScheduler` pour timers (sync). :contentReference[oaicite:10]{index=10}
+- `Player#kickPlayer(String)` pour le kick. :contentReference[oaicite:11]{index=11}

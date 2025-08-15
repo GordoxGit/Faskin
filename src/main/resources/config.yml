@@ -6,10 +6,15 @@ spawn:
   world: world
 
 login:
-  timeout_seconds: 45
+  timeout_seconds: 45              # kick si non-auth après ce délai
   # Session IP (TICKET-103)
   allow_ip_session: true
   session_minutes: 30
+  # Anti-bruteforce
+  max_failed_attempts: 5           # après N échecs -> lock
+  lock_minutes: 15                 # durée du lock
+  min_seconds_between_attempts: 2  # cooldown local par joueur
+  kick_on_timeout: true            # true => kick; false => message périodique
 
 password:
   min_length: 8

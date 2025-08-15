@@ -19,15 +19,21 @@ public final class ConfigManager {
     }
     public String getSpawnWorld() { return cfg.getString("spawn.world", "world"); }
 
+    // Login / sessions / bruteforce / timeout
     public int loginTimeoutSeconds() { return cfg.getInt("login.timeout_seconds", 45); }
+    public boolean kickOnTimeout() { return cfg.getBoolean("login.kick_on_timeout", true); }
+    public boolean allowIpSession() { return cfg.getBoolean("login.allow_ip_session", true); }
+    public int sessionMinutes() { return cfg.getInt("login.session_minutes", 30); }
+    public int maxFailedAttempts() { return cfg.getInt("login.max_failed_attempts", 5); }
+    public int lockMinutes() { return cfg.getInt("login.lock_minutes", 15); }
+    public int minSecondsBetweenAttempts() { return cfg.getInt("login.min_seconds_between_attempts", 2); }
 
+    // Password rules
     public int passwordMinLength() { return cfg.getInt("password.min_length", 8); }
     public boolean requireDigit() { return cfg.getBoolean("password.require_digit", true); }
     public boolean requireLetter() { return cfg.getBoolean("password.require_letter", true); }
 
-    public boolean allowIpSession() { return cfg.getBoolean("login.allow_ip_session", true); }
-    public int sessionMinutes() { return cfg.getInt("login.session_minutes", 30); }
-
+    // Storage
     public String storageDriver() { return cfg.getString("storage.driver", "SQLITE"); }
 
     // --- Pré-auth: toggles ---
