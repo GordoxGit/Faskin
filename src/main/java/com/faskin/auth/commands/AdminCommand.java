@@ -16,19 +16,22 @@ public final class AdminCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!sender.hasPermission("faskin.admin")) {
-            sender.sendMessage("[Faskin] Permission manquante.");
+        if (args.length == 0 || "help".equalsIgnoreCase(args[0])) {
+            sender.sendMessage(plugin.messages().prefixed("help_header"));
+            for (String line : plugin.messages().raw("help_lines").split("\\n")) {
+                sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', line));
+            }
             return true;
         }
-        if (args.length == 0) {
-            sender.sendMessage("[Faskin] Usage: /faskin reload|status [player]");
+        if (!sender.hasPermission("faskin.admin")) {
+            sender.sendMessage("[Faskin] Permission manquante.");
             return true;
         }
         switch (args[0].toLowerCase()) {
             case "reload" -> {
                 plugin.reloadConfig();
                 plugin.messages().reload();
-                sender.sendMessage("[Faskin] Configuration rechargée.");
+                sender.sendMessage(plugin.messages().prefixed("reloaded"));
                 return true;
             }
             case "status" -> {
@@ -37,16 +40,13 @@ public final class AdminCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 Player p = Bukkit.getPlayerExact(args[1]);
-                if (p == null) {
-                    sender.sendMessage("[Faskin] Joueur hors ligne.");
-                    return true;
-                }
+                if (p == null) { sender.sendMessage("[Faskin] Joueur hors ligne."); return true; }
                 PlayerAuthState st = plugin.services().getState(p.getUniqueId());
                 sender.sendMessage("[Faskin] " + p.getName() + " => " + st);
                 return true;
             }
             default -> {
-                sender.sendMessage("[Faskin] Usage: /faskin reload|status [player]");
+                sender.sendMessage("[Faskin] Usage: /faskin reload|status [player] | help");
                 return true;
             }
         }
@@ -56,8 +56,9 @@ public final class AdminCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender s, Command c, String a, String[] args) {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
-            if ("reload".startsWith(args[0].toLowerCase())) out.add("reload");
-            if ("status".startsWith(args[0].toLowerCase())) out.add("status");
+            for (String opt : new String[]{"help","reload","status"}) {
+                if (opt.startsWith(args[0].toLowerCase())) out.add(opt);
+            }
         } else if (args.length == 2 && "status".equalsIgnoreCase(args[0])) {
             for (Player p : Bukkit.getOnlinePlayers()) out.add(p.getName());
         }

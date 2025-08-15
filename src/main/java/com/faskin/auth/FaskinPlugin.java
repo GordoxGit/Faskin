@@ -10,9 +10,11 @@ import com.faskin.auth.i18n.Messages;
 import com.faskin.auth.security.Pbkdf2Hasher;
 import com.faskin.auth.listeners.JoinQuitListener;
 import com.faskin.auth.listeners.PreAuthGuardListener;
+import com.faskin.auth.tasks.AuthReminderTask;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 
@@ -21,6 +23,7 @@ public final class FaskinPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private Messages messages;
     private AuthServiceRegistry services;
+    private BukkitTask reminderTask;
 
     @Override
     public void onEnable() {
@@ -66,6 +69,12 @@ public final class FaskinPlugin extends JavaPlugin {
         bind("logout", new LogoutCommand(this));
         bind("changepassword", new ChangePasswordCommand(this));
 
+        // Rappel périodique (ActionBar/Chat)
+        if (getConfig().getBoolean("reminder.enabled", true)) {
+            int seconds = Math.max(5, getConfig().getInt("reminder.interval_seconds", 15));
+            this.reminderTask = new AuthReminderTask(this).runTaskTimer(this, 20L * seconds, 20L * seconds);
+        }
+
         getLogger().info("Faskin ready in " + (System.currentTimeMillis() - start) + "ms.");
     }
 
@@ -81,6 +90,7 @@ public final class FaskinPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (reminderTask != null) reminderTask.cancel();
         getLogger().info("Faskin shutting down.");
     }
 

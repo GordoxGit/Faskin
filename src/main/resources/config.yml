@@ -42,3 +42,18 @@ preauth:
       - r
       - help
 
+# i18n
+messages_locale: fr        # support existant
+messages:
+  locale: fr               # nouveau champ supporté en plus de messages_locale
+  color_codes: true        # activer les codes '&' -> couleurs
+  use_prefix: true         # préfixer tous les messages
+# prefix défini dans messages.yml (clé 'prefix')
+
+# Rappels d'auth (actionbar / chat)
+reminder:
+  enabled: true
+  interval_seconds: 15
+  actionbar: true
+  chat_on_join: false
+

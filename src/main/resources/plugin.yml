@@ -1,6 +1,6 @@
 name: Faskin
 main: com.faskin.auth.FaskinPlugin
-version: 0.0.6
+version: 0.0.7
 api-version: '1.21'
 authors: [ 'GordoxGit' ]
 website: 'https://github.com/GordoxGit/Faskin'
@@ -12,10 +12,12 @@ commands:
     description: 'Créer un compte Faskin'
     usage: '/register <password> <confirm>'
     permission: 'faskin.register'
+    aliases: [ reg ]
   login:
     description: 'Se connecter à Faskin'
     usage: '/login <password>'
     permission: 'faskin.login'
+    aliases: [ l ]
   logout:
     description: 'Se déconnecter'
     usage: '/logout'

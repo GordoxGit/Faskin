@@ -29,13 +29,17 @@ public final class JoinQuitListener implements Listener {
 
         final boolean allow = plugin.configs().allowIpSession();
         final int ttlMin = plugin.configs().sessionMinutes();
+        final boolean chatOnJoin = plugin.getConfig().getBoolean("reminder.chat_on_join", false);
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             var repo = plugin.services().accounts();
             boolean exists = repo.exists(user);
 
             if (!exists) {
-                Bukkit.getScheduler().runTask(plugin, () -> p.sendMessage(plugin.messages().raw("must_register")));
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
+                    p.sendMessage(plugin.messages().prefixed("must_register"));
+                });
                 return;
             }
 
@@ -50,7 +54,7 @@ public final class JoinQuitListener implements Listener {
                     if (ipMatch && within) {
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             plugin.services().setState(p.getUniqueId(), PlayerAuthState.AUTHENTICATED);
-                            p.sendMessage(plugin.messages().raw("login_ok"));
+                            p.sendMessage(plugin.messages().prefixed("login_ok"));
                         });
                         return;
                     }
@@ -59,8 +63,9 @@ public final class JoinQuitListener implements Listener {
 
             // Compte existe mais pas d'auto-login
             Bukkit.getScheduler().runTask(plugin, () -> {
+                if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
                 plugin.services().setState(p.getUniqueId(), PlayerAuthState.REGISTERED_UNAUTH);
-                p.sendMessage(plugin.messages().raw("must_login"));
+                p.sendMessage(plugin.messages().prefixed("must_login"));
             });
         });
     }

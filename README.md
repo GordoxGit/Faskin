@@ -4,7 +4,15 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.6` — Gardien **pré-auth** (blocage global avant authentification) + whitelist de commandes.
+`0.0.7` — UX améliorée : i18n (FR/EN), prefix + couleurs, rappels action bar, rate-limit.
+
+## i18n & couleurs
+- `messages_locale` ou `messages.locale` pour choisir la langue (fichiers `messages.yml` / `messages_<locale>.yml`).
+- Codes couleur `&` convertis via `ChatColor.translateAlternateColorCodes`. :contentReference[oaicite:4]{index=4}
+
+## Rappels d’auth
+- Tâche périodique qui envoie un **ActionBar** aux joueurs non authentifiés. Implémenté via `Player.Spigot#sendMessage(ChatMessageType.ACTION_BAR, ...)`. :contentReference[oaicite:5]{index=5}
+- Config : `reminder.enabled`, `reminder.interval_seconds`, `reminder.actionbar`, `reminder.chat_on_join`.
 
 ## Configuration (pré-auth)
 Clés `preauth.block.*` pour activer/désactiver mouvement/chat/commandes/interactions, etc.

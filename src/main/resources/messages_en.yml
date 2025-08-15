@@ -1,0 +1,22 @@
+prefix: "&7[&bFaskin&7] "
+must_register: "&cPlease register: &f/register <password> <confirm>"
+must_login: "&cPlease login: &f/login <password>"
+registered_ok: "&aAccount created. Now &f/login <password>"
+login_ok: "&aAuthenticated."
+logout_ok: "&aLogged out."
+bad_credentials: "&cInvalid credentials."
+reloaded: "&aConfiguration reloaded."
+
+blocked_chat: "&cYou must be authenticated to chat."
+blocked_command: "&cCommand blocked until you authenticate."
+blocked_action: "&cAction blocked until you authenticate."
+
+reminder_actionbar: "&eLogin with &f/login <password>"
+reminder_chat: "&eTip: use &f/login <password> &eto authenticate."
+help_header: "&bFaskin &7- Help"
+help_lines:
+  - "&f/register <password> <confirm> &7: create an account"
+  - "&f/login <password> &7: log in"
+  - "&f/logout &7: log out"
+  - "&f/changepassword <old> <new> <confirm> &7: change password"
+  - "&f/faskin reload|status [player] &7: admin"
