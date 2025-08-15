@@ -26,3 +26,11 @@
 - Intégration **Shadow** pour embarquer `sqlite-jdbc` dans le JAR.
 ### Changed
 - Sélection du backend via `storage.driver` (SQLITE | SQLITE_INMEMORY | INMEMORY).
+
+## [0.0.4] - 2025-08-15
+### Fixed
+- Échec `:shadowJar` sous Gradle 9 corrigé par migration vers **Shadow 9.0.2** (`com.gradleup.shadow`).
+- CI : étape `Clean` dédiée avant `Build` pour un pipeline déterministe.
+### Notes
+- Gradle 9 requiert Java 17+, conforme à notre toolchain Java 21.
+- Shadow 8.x présente des soucis avec Gradle 9 ; migration recommandée par les mainteneurs.

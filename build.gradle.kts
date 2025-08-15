@@ -1,16 +1,10 @@
 plugins {
     java
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.0.2" // Shadow 9, compatible Gradle 9
 }
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
-tasks.withType<JavaCompile> {
-    options.release.set(17)
+    toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
 }
 
 repositories {
@@ -24,6 +18,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.50.3.0")
 }
 
+// JAR classique (manifest)
 tasks.withType<Jar> {
     archiveBaseName.set("Faskin")
     archiveVersion.set(project.version.toString())
@@ -33,10 +28,13 @@ tasks.withType<Jar> {
     }
 }
 
-// Fat jar + relocation pour éviter conflits de classes
-tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    archiveClassifier.set("") // remplace le jar normal
+// Shadow 9: configuration Kotlin DSL idiomatique
+tasks.shadowJar {
+    // remplace le jar normal
+    archiveClassifier.set("")
+    // relocation pour éviter conflits si Paper charge la lib (plugin.yml:libraries)
     relocate("org.sqlite", "com.faskin.libs.sqlite")
 }
 
+// build = shadowJar
 tasks.build { dependsOn(tasks.shadowJar) }
