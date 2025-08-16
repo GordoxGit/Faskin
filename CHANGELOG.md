@@ -6,6 +6,7 @@
 - Services squelettes (PremiumDetector, AuthBypassService) et listeners.
 - Config/messages: blocs `premium.*`.
 - CI: artefact `Faskin-0.1.0-SNAPSHOT.jar`.
+- Détection premium via forwarding (UUID + textures) — sans bypass.
 ### Changed
 - Bump version plugin à `0.1.0`.
 

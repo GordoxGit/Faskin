@@ -4,7 +4,7 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.1.0` — Étape 2 amorcée : ossature auto-login premium.
+`0.1.0-SNAPSHOT` — Étape 2 amorcée : ossature auto-login premium.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
@@ -34,6 +34,19 @@ Plugin unifié Spigot 1.21 / Java 21 :
 
 ## Mode PROXY_SAFE recommandé
 Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela permet de transmettre UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [Velocity](https://docs.papermc.io/velocity/player-information-forwarding/).
+
+## Pré-requis Étape 2 (PROXY_SAFE)
+Pour prouver qu'un joueur est premium, le proxy doit transférer son identité complète au backend.
+
+```toml
+# velocity.toml
+player-info-forwarding-mode = "modern"
+forwarding-secret = "<secret>"
+```
+
+Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin ne réalise aucune détection premium.
+
+L'API Paper 1.21 expose `Player#getPlayerProfile()` et `PlayerProfile#getTextures()` afin de récupérer les textures signées (skin). Toute modification manuelle invalide ces attributs signés.
 
 ## Build local (sans wrapper)
 ```bash

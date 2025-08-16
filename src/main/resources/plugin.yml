@@ -1,6 +1,6 @@
 name: Faskin
 main: com.faskin.auth.FaskinPlugin
-version: 0.1.0
+version: 0.1.0-SNAPSHOT
 api-version: '1.21'
 authors: [ 'GordoxGit' ]
 website: 'https://github.com/GordoxGit/Faskin'
