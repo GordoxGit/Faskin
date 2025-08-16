@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import com.faskin.auth.premium.PremiumMode;
 
 public final class ConfigManager {
     private final FileConfiguration cfg;
@@ -58,5 +59,16 @@ public final class ConfigManager {
         out.add("login");
         return out;
     }
+
+    // Premium
+    public boolean premiumEnabled() { return cfg.getBoolean("premium.enabled", true); }
+    public PremiumMode premiumMode() {
+        String mode = cfg.getString("premium.mode", "PROXY_SAFE");
+        try { return PremiumMode.valueOf(mode.toUpperCase(Locale.ROOT)); }
+        catch (IllegalArgumentException e) { return PremiumMode.PROXY_SAFE; }
+    }
+    public boolean premiumSkipPassword() { return cfg.getBoolean("premium.skip_password", true); }
+    public boolean premiumAutoRegister() { return cfg.getBoolean("premium.auto_register", true); }
+    public boolean premiumRequireIpForwarding() { return cfg.getBoolean("premium.require_ip_forwarding", true); }
 }
 

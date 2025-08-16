@@ -116,3 +116,4 @@ _Notes sources_ :
 ## Prochaines étapes
 - Créer **tickets d’implémentation Étape 2** (T2.1 → T2.6) alignés sur la checklist ci-dessus (sans toucher à l’Étape 1).
 - Mettre à jour `README.md` avec un encart **“Mode PROXY_SAFE recommandé”** + extrait de config Velocity (`player-info-forwarding`) pour éviter les faux positifs et sécuriser le bypass.
+- [ ] T2.1 — Base auto-login premium (En cours)

@@ -62,3 +62,10 @@ reminder:
   actionbar: true
   chat_on_join: false
 
+premium:
+  enabled: true
+  mode: PROXY_SAFE
+  skip_password: true
+  auto_register: true
+  require_ip_forwarding: true
+

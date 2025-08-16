@@ -9,6 +9,7 @@ public final class InMemoryAccountRepository implements AccountRepository {
     private final Map<String, SessionMeta> meta = new ConcurrentHashMap<>();
     private final Map<String, Integer> fails = new ConcurrentHashMap<>();
     private final Map<String, Long> locked = new ConcurrentHashMap<>();
+    private final Map<String, PremiumInfo> premium = new ConcurrentHashMap<>();
     private final com.faskin.auth.security.Pbkdf2Hasher hasher;
 
     public InMemoryAccountRepository(com.faskin.auth.security.Pbkdf2Hasher hasher) { this.hasher = hasher; }
@@ -74,6 +75,12 @@ public final class InMemoryAccountRepository implements AccountRepository {
         long last = m != null ? m.lastLoginEpoch : 0L;
         return Optional.of(new AdminInfo(ex, ip, last, f, lock));
     }
+
+    @Override public void updatePremiumInfo(String usernameLower, boolean isPremium, String uuidOnline, String premiumMode, long verifiedAtEpoch) {
+        premium.put(usernameLower, new PremiumInfo(isPremium, uuidOnline, verifiedAtEpoch, premiumMode));
+    }
+
+    @Override public Optional<PremiumInfo> getPremiumInfo(String usernameLower) { return Optional.ofNullable(premium.get(usernameLower)); }
 
     // Utilitaire tests
     public boolean verify(String usernameLower, char[] raw) {

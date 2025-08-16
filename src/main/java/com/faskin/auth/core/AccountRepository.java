@@ -23,6 +23,10 @@ public interface AccountRepository {
     int countLockedActive(long nowEpochSeconds);
     Optional<AdminInfo> adminInfo(String usernameLower);
 
+    // Premium
+    void updatePremiumInfo(String usernameLower, boolean isPremium, String uuidOnline, String premiumMode, long verifiedAtEpoch);
+    Optional<PremiumInfo> getPremiumInfo(String usernameLower);
+
     final class StoredAccount {
         public final String usernameLower; public final byte[] salt; public final byte[] hash;
         public StoredAccount(String u, byte[] s, byte[] h) { this.usernameLower = u; this.salt = s; this.hash = h; }
@@ -39,6 +43,16 @@ public interface AccountRepository {
         public final long lockedUntilEpoch;
         public AdminInfo(boolean ex, String ip, long last, int fails, long lock) {
             this.exists = ex; this.lastIp = ip; this.lastLoginEpoch = last; this.failedCount = fails; this.lockedUntilEpoch = lock;
+        }
+    }
+
+    final class PremiumInfo {
+        public final boolean isPremium;
+        public final String uuidOnline;
+        public final long verifiedAtEpoch;
+        public final String premiumMode;
+        public PremiumInfo(boolean p, String uuid, long ts, String mode) {
+            this.isPremium = p; this.uuidOnline = uuid; this.verifiedAtEpoch = ts; this.premiumMode = mode;
         }
     }
 }

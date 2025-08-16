@@ -41,3 +41,8 @@ admin_stats_lines:
   - "&7Locked active: &f{LOCKED}"
   - "&7Online AUTH: &f{ONLINE_AUTH}"
   - "&7Online non-AUTH: &f{ONLINE_NONAUTH}"
+
+premium:
+  bypass-ok: "&aConnexion premium vérifiée. Authentifié automatiquement."
+  bypass-refused: "&cBypass premium refusé: {reason}."
+  unlink-ok: "&eTon compte premium est dissocié. Mot de passe requis au prochain login."
