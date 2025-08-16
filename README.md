@@ -32,10 +32,10 @@ Plugin unifié Spigot 1.21 / Java 21 :
 ## Sessions par IP
 - Voir `login.allow_ip_session` et `session_minutes`.
 
-## Activer le bypass premium (Étape 2)
-Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela permet de transmettre UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [Velocity](https://docs.papermc.io/velocity/player-information-forwarding/).
+## Configurer le proxy (requis pour l’auto-login premium)
+Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela transmet UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [discussion MITM](https://github.com/TuxCoding/FastLogin/discussions/1180).
 
-Exemple **Velocity** :
+Exemple **Velocity** :
 
 ```toml
 # velocity.toml
@@ -43,9 +43,9 @@ player-info-forwarding-mode = "modern"
 forwarding-secret = "<secret>"
 ```
 
-Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin ne réalise aucune détection premium.
+Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin refuse le bypass.
 
-L'API Paper 1.21 expose `Player#getPlayerProfile()` et `PlayerProfile#getTextures()` afin de récupérer les textures signées (skin). Toute modification manuelle invalide ces attributs signés.
+Côté backend Paper, les skins sont lus via `Player#getPlayerProfile().getTextures()`. Toute modification manuelle invalide les attributs signés transmis par le proxy.
 
 ## Build local (sans wrapper)
 ```bash

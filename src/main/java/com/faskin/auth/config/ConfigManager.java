@@ -70,5 +70,7 @@ public final class ConfigManager {
     public boolean premiumSkipPassword() { return cfg.getBoolean("premium.skip_password", true); }
     public boolean premiumAutoRegister() { return cfg.getBoolean("premium.auto_register", true); }
     public boolean premiumRequireIpForwarding() { return cfg.getBoolean("premium.require_ip_forwarding", true); }
+    public boolean premiumMetrics() { return cfg.getBoolean("premium.metrics", true); }
+    public boolean premiumDebug() { return cfg.getBoolean("premium.debug", false); }
 }
 

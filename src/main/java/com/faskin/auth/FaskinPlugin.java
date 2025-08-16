@@ -28,6 +28,7 @@ public final class FaskinPlugin extends JavaPlugin {
     private AuthServiceRegistry services;
     private BukkitTask reminderTask;
     private LoginTimeoutManager timeouts;
+    private com.faskin.auth.premium.PremiumMetrics premiumMetrics;
 
     @Override
     public void onEnable() {
@@ -52,6 +53,7 @@ public final class FaskinPlugin extends JavaPlugin {
 
         var bypass = new com.faskin.auth.auth.impl.AuthBypassServiceImpl(this, repo);
         var detector = new com.faskin.auth.premium.impl.ProxyForwardingPremiumDetector(this);
+        this.premiumMetrics = new com.faskin.auth.premium.PremiumMetrics();
         this.services = new AuthServiceRegistry(repo, detector, bypass);
         this.timeouts = new LoginTimeoutManager(this);
 
@@ -102,6 +104,15 @@ public final class FaskinPlugin extends JavaPlugin {
     public void onDisable() {
         if (reminderTask != null) reminderTask.cancel();
         if (timeouts != null) timeouts.cancelAll();
+        if (configs().premiumMetrics()) {
+            getLogger().info("[Faskin/Premium] metrics bypass_ok_total=" + premiumMetrics.bypassOkTotal()
+                    + " bypass_refused_total=" + premiumMetrics.bypassRefusedTotal()
+                    + " forwarding_missing=" + premiumMetrics.bypassRefusedForwarding()
+                    + " no_textures=" + premiumMetrics.bypassRefusedNoTextures()
+                    + " fallback_mode=" + premiumMetrics.bypassRefusedFallbackMode()
+                    + " preauth_avg_ms=" + premiumMetrics.preAuthMsAvg()
+                    + " preauth_p95_ms=" + premiumMetrics.preAuthMsP95());
+        }
         getLogger().info("Faskin shutting down.");
     }
 
@@ -109,4 +120,5 @@ public final class FaskinPlugin extends JavaPlugin {
     public Messages messages() { return messages; }
     public AuthServiceRegistry services() { return services; }
     public LoginTimeoutManager getTimeouts() { return timeouts; }
+    public com.faskin.auth.premium.PremiumMetrics metrics() { return premiumMetrics; }
 }

@@ -41,11 +41,22 @@ admin_stats_lines:
   - "&7Locked active: &f{LOCKED}"
   - "&7Online AUTH: &f{ONLINE_AUTH}"
   - "&7Online non-AUTH: &f{ONLINE_NONAUTH}"
+admin_stats_premium_header: "&b[Faskin] Stats Premium"
+admin_stats_premium_lines:
+  - "&7Bypass ok: &f{OK}"
+  - "&7Bypass refused: &f{REFUSED}"
+  - "&7Refused forwarding: &f{FWD}"
+  - "&7Refused textures: &f{TEXTURES}"
+  - "&7Refused fallback: &f{FALLBACK}"
+  - "&7PreAuth avg: &f{AVG}ms &7p95: &f{P95}ms"
 
 premium:
-  bypass-start: "&7Vérification du statut premium..."
-  bypass-ok: "&aConnexion premium vérifiée. Authentifié automatiquement."
+  checking: "&7Vérification du statut premium..."
+  bypass-ok: "&aPremium vérifié: authentification automatique réussie."
   bypass-refused: "&cBypass premium refusé: {reason}."
+  reason:
+    forwarding-missing: "proxy mal configuré (player-info-forwarding)."
+    no-textures: "profil sans textures signées (skins non transmis)."
+    fallback-mode: "mode SPIGOT_FALLBACK: bypass désactivé."
+    unknown: "identité premium non prouvée."
   unlink-ok: "&eTon compte premium est dissocié. Mot de passe requis au prochain login."
-  need-forwarding: "&cProxy mal configuré (player-info-forwarding)."
-  no-textures: "&eProfil premium non prouvé (textures absentes)."

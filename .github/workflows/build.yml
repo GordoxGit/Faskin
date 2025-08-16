@@ -25,10 +25,10 @@ jobs:
         run: gradle build --no-daemon
 
       - name: Show version
-        run: echo "Building Faskin 0.1.0-SNAPSHOT"
+        run: echo "Building Faskin 0.1.0-T2.4-SNAPSHOT"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Faskin-0.1.0-SNAPSHOT.jar
+          name: Faskin-0.1.0-T2.4-SNAPSHOT.jar
           path: build/libs/*.jar

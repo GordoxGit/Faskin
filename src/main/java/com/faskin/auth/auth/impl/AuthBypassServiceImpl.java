@@ -44,7 +44,9 @@ public final class AuthBypassServiceImpl implements AuthBypassService {
             }
         });
 
-        String shortUuid = uuidOnline != null && uuidOnline.length() >= 8 ? uuidOnline.substring(0, 8) : "unknown";
-        plugin.getLogger().info("Premium bypass OK: " + name + " " + shortUuid + " (mode=" + mode + ")");
+        if (plugin.configs().premiumDebug()) {
+            String shortUuid = uuidOnline != null && uuidOnline.length() >= 8 ? uuidOnline.substring(0, 8) : "unknown";
+            plugin.getLogger().info("[Faskin/Premium] debug bypass service name=" + name + " uuid=" + shortUuid + " mode=" + mode + ")");
+        }
     }
 }
