@@ -20,3 +20,11 @@ help_lines:
   - "&f/logout &7: log out"
   - "&f/changepassword <old> <new> <confirm> &7: change password"
   - "&f/faskin reload|status [player] &7: admin"
+
+premium:
+  bypass-start: "&7Checking premium status..."
+  bypass-ok: "&aPremium login verified. Auto-authenticated."
+  bypass-refused: "&cPremium bypass refused: {reason}."
+  unlink-ok: "&eYour premium account is unlinked. Password required next login."
+  need-forwarding: "&cProxy misconfigured (player-info-forwarding)."
+  no-textures: "&ePremium profile not proven (textures missing)."

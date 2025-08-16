@@ -32,6 +32,8 @@ Permettre aux comptes **premium vérifiés** d’entrer **sans mot de passe**, t
    - Sinon → `LOGIN_REQUIRED` (flux Étape 1)
 3) `AUTHENTICATED` (création/renouvellement session IP si activée)
 
+Flux simplifié : `JOINING → PRE_AUTH → (PREMIUM_SAFE ? BYPASS : LOGIN_REQUIRED) → AUTHENTICATED`.
+
 ### Détection premium (règles)
 - Source: données de forwarding du proxy (UUID online + properties).
 - Inspection de `PlayerProfile#getTextures()` au `PlayerJoinEvent` : absence de skin ou profil non signé ⇒ pas de preuve premium.
@@ -119,4 +121,4 @@ _Notes sources_ :
 - Mettre à jour `README.md` avec un encart **“Mode PROXY_SAFE recommandé”** + extrait de config Velocity (`player-info-forwarding`) pour éviter les faux positifs et sécuriser le bypass.
 - [x] T2.1 — Base auto-login premium
 - [x] T2.2 — Détection premium via forwarding (UUID + textures)
-- [ ] T2.3 — Intégration bypass `/login`
+- [x] T2.3 — Intégration bypass `/login`

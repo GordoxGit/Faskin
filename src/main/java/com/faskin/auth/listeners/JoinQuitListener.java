@@ -36,6 +36,7 @@ public final class JoinQuitListener implements Listener {
 
             if (!exists) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (plugin.services().getState(p.getUniqueId()) == PlayerAuthState.AUTHENTICATED) return;
                     if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
                     plugin.getTimeouts().schedule(p);
                     p.sendMessage(plugin.messages().prefixed("must_register"));
@@ -53,6 +54,7 @@ public final class JoinQuitListener implements Listener {
 
                     if (ipMatch && within) {
                         Bukkit.getScheduler().runTask(plugin, () -> {
+                            if (plugin.services().getState(p.getUniqueId()) == PlayerAuthState.AUTHENTICATED) return;
                             plugin.services().setState(p.getUniqueId(), PlayerAuthState.AUTHENTICATED);
                             p.sendMessage(plugin.messages().prefixed("login_ok"));
                         });
@@ -62,6 +64,7 @@ public final class JoinQuitListener implements Listener {
             }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
+                if (plugin.services().getState(p.getUniqueId()) == PlayerAuthState.AUTHENTICATED) return;
                 if (chatOnJoin) p.sendMessage(plugin.messages().prefixed("reminder_chat"));
                 plugin.services().setState(p.getUniqueId(), PlayerAuthState.REGISTERED_UNAUTH);
                 plugin.getTimeouts().schedule(p);

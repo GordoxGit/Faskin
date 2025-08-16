@@ -32,11 +32,10 @@ Plugin unifié Spigot 1.21 / Java 21 :
 ## Sessions par IP
 - Voir `login.allow_ip_session` et `session_minutes`.
 
-## Mode PROXY_SAFE recommandé
+## Activer le bypass premium (Étape 2)
 Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela permet de transmettre UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [Velocity](https://docs.papermc.io/velocity/player-information-forwarding/).
 
-## Pré-requis Étape 2 (PROXY_SAFE)
-Pour prouver qu'un joueur est premium, le proxy doit transférer son identité complète au backend.
+Exemple **Velocity** :
 
 ```toml
 # velocity.toml

@@ -7,8 +7,9 @@
 - Config/messages: blocs `premium.*`.
 - CI: artefact `Faskin-0.1.0-SNAPSHOT.jar`.
 - Détection premium via forwarding (UUID + textures) — sans bypass.
+- T2.3: Bypass /login pour comptes premium (PROXY_SAFE), sessions & états, logs/guards.
 ### Changed
-- Bump version plugin à `0.1.0`.
+- Bump version plugin à `0.1.0-SNAPSHOT`.
 
 ## [0.0.10] - 2025-08-16
 ### Added
