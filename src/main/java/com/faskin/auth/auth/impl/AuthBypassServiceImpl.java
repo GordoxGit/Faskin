@@ -22,6 +22,16 @@ public final class AuthBypassServiceImpl implements AuthBypassService {
 
     @Override
     public void markAuthenticated(UUID playerId, String name, @Nullable String uuidOnline, PremiumMode mode) {
+        var player = Bukkit.getPlayer(playerId);
+        String ip = null;
+        if (player != null && player.getAddress() != null && player.getAddress().getAddress() != null) {
+            ip = player.getAddress().getAddress().getHostAddress();
+        }
+
+        plugin.getTimeouts().cancel(playerId);
+        plugin.services().setState(playerId, PlayerAuthState.AUTHENTICATED);
+
+        String finalIp = ip;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             String key = name.toLowerCase();
             long now = Instant.now().getEpochSecond();
@@ -29,7 +39,12 @@ public final class AuthBypassServiceImpl implements AuthBypassService {
                 repo.create(key, new byte[0], new byte[0]);
             }
             repo.updatePremiumInfo(key, true, uuidOnline, mode.name(), now);
-            plugin.services().setState(playerId, PlayerAuthState.AUTHENTICATED);
+            if (plugin.configs().allowIpSession() && plugin.configs().sessionMinutes() > 0 && finalIp != null) {
+                repo.updateLastLoginAndIp(key, finalIp, now);
+            }
         });
+
+        String shortUuid = uuidOnline != null && uuidOnline.length() >= 8 ? uuidOnline.substring(0, 8) : "unknown";
+        plugin.getLogger().info("Premium bypass OK: " + name + " " + shortUuid + " (mode=" + mode + ")");
     }
 }

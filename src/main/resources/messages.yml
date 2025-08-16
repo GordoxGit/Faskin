@@ -43,8 +43,9 @@ admin_stats_lines:
   - "&7Online non-AUTH: &f{ONLINE_NONAUTH}"
 
 premium:
+  bypass-start: "&7Vérification du statut premium..."
   bypass-ok: "&aConnexion premium vérifiée. Authentifié automatiquement."
   bypass-refused: "&cBypass premium refusé: {reason}."
   unlink-ok: "&eTon compte premium est dissocié. Mot de passe requis au prochain login."
-  forwarding-missing: "&cProxy mal configuré (player-info-forwarding). Bypass premium indisponible."
+  need-forwarding: "&cProxy mal configuré (player-info-forwarding)."
   no-textures: "&eProfil premium non prouvé (textures absentes)."
