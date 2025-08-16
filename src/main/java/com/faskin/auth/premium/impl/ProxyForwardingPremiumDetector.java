@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
+import java.nio.charset.StandardCharsets;
 
 import java.time.Duration;
 import java.util.Map;
@@ -26,36 +27,46 @@ public final class ProxyForwardingPremiumDetector implements PremiumDetector {
 
     @Override
     public PremiumEvaluation evaluatePreLogin(AsyncPlayerPreLoginEvent e) {
-        if (!plugin.configs().premiumEnabled()) return PremiumEvaluation.NOT_PREMIUM;
-        if (plugin.configs().premiumMode() != PremiumMode.PROXY_SAFE) return PremiumEvaluation.NOT_PREMIUM;
+        if (!plugin.configs().premiumEnabled()) return PremiumEvaluation.NOT_PREMIUM_UNKNOWN;
+        if (plugin.configs().premiumMode() != PremiumMode.PROXY_SAFE) return PremiumEvaluation.NOT_PREMIUM_FALLBACK_MODE;
 
         long now = System.currentTimeMillis();
         cleanup(now);
         UUID id = e.getUniqueId();
         String ip = e.getAddress() != null ? e.getAddress().getHostAddress() : null;
-        pending.put(id, new Entry(id, e.getName(), ip, now + TTL_MILLIS));
-        return PremiumEvaluation.UNKNOWN;
+        UUID offline = UUID.nameUUIDFromBytes(("OfflinePlayer:" + e.getName()).getBytes(StandardCharsets.UTF_8));
+        PremiumEvaluation eval = PremiumEvaluation.UNKNOWN;
+        if (plugin.configs().premiumRequireIpForwarding() && offline.equals(id)) {
+            eval = PremiumEvaluation.NOT_PREMIUM_FORWARDING_MISSING;
+        }
+        pending.put(id, new Entry(id, e.getName(), ip, now + TTL_MILLIS, eval));
+        return eval;
     }
 
     @Override
     public PremiumEvaluation evaluateJoin(Player player) {
-        if (!plugin.configs().premiumEnabled()) return PremiumEvaluation.NOT_PREMIUM;
-        if (plugin.configs().premiumMode() != PremiumMode.PROXY_SAFE) return PremiumEvaluation.NOT_PREMIUM;
+        if (!plugin.configs().premiumEnabled()) return PremiumEvaluation.NOT_PREMIUM_UNKNOWN;
+        if (plugin.configs().premiumMode() != PremiumMode.PROXY_SAFE) return PremiumEvaluation.NOT_PREMIUM_FALLBACK_MODE;
 
         long now = System.currentTimeMillis();
         cleanup(now);
         Entry data = pending.remove(player.getUniqueId());
         if (data == null || data.expiresAt < now) {
-            return PremiumEvaluation.NOT_PREMIUM;
+            return plugin.configs().premiumRequireIpForwarding()
+                    ? PremiumEvaluation.NOT_PREMIUM_FORWARDING_MISSING
+                    : PremiumEvaluation.NOT_PREMIUM_UNKNOWN;
+        }
+        if (data.evaluation != PremiumEvaluation.UNKNOWN) {
+            return data.evaluation;
         }
 
         PlayerProfile profile = player.getPlayerProfile();
         PlayerTextures textures = profile.getTextures();
         if (textures == null || textures.getSkin() == null) {
-            return PremiumEvaluation.NOT_PREMIUM;
+            return PremiumEvaluation.NOT_PREMIUM_NO_TEXTURES;
         }
         try {
-            if (!textures.isSigned()) return PremiumEvaluation.NOT_PREMIUM;
+            if (!textures.isSigned()) return PremiumEvaluation.NOT_PREMIUM_NO_TEXTURES;
         } catch (NoSuchMethodError ignored) {
             // older API without isSigned: assume valid
         }
@@ -66,6 +77,6 @@ public final class ProxyForwardingPremiumDetector implements PremiumDetector {
         pending.values().removeIf(e -> e.expiresAt < now);
     }
 
-    private record Entry(UUID uuid, String name, String ip, long expiresAt) {}
+    private record Entry(UUID uuid, String name, String ip, long expiresAt, PremiumEvaluation evaluation) {}
 }
 

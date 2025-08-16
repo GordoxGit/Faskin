@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0] - T2.4
+- UX/i18n: messages premium complets (forwarding/skins/fallback)
+- Metrics: compteurs bypass & raisons, temps PRE_AUTH
+- Logs: succès/refus structurés + mode debug
+- Garde-fous: refus si forwarding manquant, textures absentes, mode fallback
+- Docs: README proxy Velocity, ROADMAP
+
 ## [0.1.0] - 2025-08-16
 ### Added
 - Migration DB `002_step2_premium.sql` pour champs premium.

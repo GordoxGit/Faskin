@@ -14,6 +14,14 @@ public final class PremiumAsyncPreLoginListener implements Listener {
 
     @EventHandler
     public void onAsyncPreLogin(AsyncPlayerPreLoginEvent e) {
-        plugin.services().premiumDetector().evaluatePreLogin(e);
+        long start = System.nanoTime();
+        var eval = plugin.services().premiumDetector().evaluatePreLogin(e);
+        long ms = (System.nanoTime() - start) / 1_000_000L;
+        if (plugin.configs().premiumMetrics()) {
+            plugin.metrics().recordPreAuth(ms);
+        }
+        if (plugin.configs().premiumDebug()) {
+            plugin.getLogger().info("[Faskin/Premium] prelogin name=" + e.getName() + " eval=" + eval + " time=" + ms + "ms");
+        }
     }
 }

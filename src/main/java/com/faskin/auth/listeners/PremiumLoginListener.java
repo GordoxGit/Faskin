@@ -21,18 +21,29 @@ public final class PremiumLoginListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         var player = e.getPlayer();
+        player.sendMessage(plugin.messages().prefixed("premium.checking"));
         PremiumEvaluation eval = plugin.services().premiumDetector().evaluateJoin(player);
         plugin.getServer().getPluginManager().callEvent(new PremiumEvaluatedEvent(player, eval));
-
+        if (plugin.configs().premiumMetrics()) {
+            plugin.metrics().recordEvaluation(eval);
+        }
         if (eval == PremiumEvaluation.PREMIUM_SAFE && plugin.configs().premiumSkipPassword()) {
-            player.sendMessage(plugin.messages().prefixed("premium.bypass-start"));
             plugin.services().authBypass().markAuthenticated(player.getUniqueId(), player.getName(), player.getUniqueId().toString(), plugin.configs().premiumMode());
             player.sendMessage(plugin.messages().prefixed("premium.bypass-ok"));
-        } else if (plugin.configs().premiumRequireIpForwarding()) {
-            String reason = plugin.messages().raw("premium.need-forwarding");
-            player.sendMessage(plugin.messages().prefixed("premium.need-forwarding"));
+            plugin.getLogger().info("[Faskin/Premium] bypass ok name=" + player.getName() + " uuidOnline=" + player.getUniqueId().toString().substring(0, 8) + " mode=" + plugin.configs().premiumMode());
+        } else {
+            String reasonKey = switch (eval) {
+                case NOT_PREMIUM_FORWARDING_MISSING -> "forwarding-missing";
+                case NOT_PREMIUM_NO_TEXTURES -> "no-textures";
+                case NOT_PREMIUM_FALLBACK_MODE -> "fallback-mode";
+                case NOT_PREMIUM_UNKNOWN, UNKNOWN, PREMIUM_SAFE -> "unknown";
+            };
+            String reason = plugin.messages().raw("premium.reason." + reasonKey);
             player.sendMessage(plugin.messages().prefixed("premium.bypass-refused").replace("{reason}", reason));
-            plugin.getLogger().warning("Premium bypass refused for " + player.getName() + ": need-forwarding");
+            plugin.getLogger().warning("[Faskin/Premium] bypass refused reason=" + reasonKey + " name=" + player.getName());
+        }
+        if (plugin.configs().premiumDebug()) {
+            plugin.getLogger().info("[Faskin/Premium] debug join name=" + player.getName() + " eval=" + eval);
         }
     }
 }

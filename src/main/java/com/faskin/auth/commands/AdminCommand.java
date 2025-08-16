@@ -112,6 +112,14 @@ public final class AdminCommand implements CommandExecutor, TabCompleter {
                     for (var e : map.entrySet())
                         if (e.getKey() != PlayerAuthState.AUTHENTICATED) tmp += e.getValue();
                     final int onlineNonAuth = tmp;
+                    var pm = plugin.metrics();
+                    final long ok = pm.bypassOkTotal();
+                    final long refused = pm.bypassRefusedTotal();
+                    final long fwd = pm.bypassRefusedForwarding();
+                    final long tex = pm.bypassRefusedNoTextures();
+                    final long fall = pm.bypassRefusedFallbackMode();
+                    final long avg = pm.preAuthMsAvg();
+                    final long p95 = pm.preAuthMsP95();
 
                     Bukkit.getScheduler().runTask(plugin, () -> {
                         sender.sendMessage(plugin.messages().prefixed("admin_stats_header"));
@@ -121,6 +129,19 @@ public final class AdminCommand implements CommandExecutor, TabCompleter {
                                     .replace("{ONLINE_AUTH}", String.valueOf(onlineAuth))
                                     .replace("{ONLINE_NONAUTH}", String.valueOf(onlineNonAuth));
                             sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', line));
+                        }
+                        if (plugin.configs().premiumMetrics()) {
+                            sender.sendMessage(plugin.messages().prefixed("admin_stats_premium_header"));
+                            for (String line : plugin.messages().raw("admin_stats_premium_lines").split("\\n")) {
+                                line = line.replace("{OK}", String.valueOf(ok))
+                                        .replace("{REFUSED}", String.valueOf(refused))
+                                        .replace("{FWD}", String.valueOf(fwd))
+                                        .replace("{TEXTURES}", String.valueOf(tex))
+                                        .replace("{FALLBACK}", String.valueOf(fall))
+                                        .replace("{AVG}", String.valueOf(avg))
+                                        .replace("{P95}", String.valueOf(p95));
+                                sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', line));
+                            }
                         }
                     });
                 });

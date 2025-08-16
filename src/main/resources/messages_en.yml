@@ -22,9 +22,20 @@ help_lines:
   - "&f/faskin reload|status [player] &7: admin"
 
 premium:
-  bypass-start: "&7Checking premium status..."
-  bypass-ok: "&aPremium login verified. Auto-authenticated."
+  checking: "&7Checking premium status..."
+  bypass-ok: "&aPremium verified: auto-authentication succeeded."
   bypass-refused: "&cPremium bypass refused: {reason}."
+  reason:
+    forwarding-missing: "proxy misconfigured (player-info-forwarding)."
+    no-textures: "profile without signed textures (skins not forwarded)."
+    fallback-mode: "SPIGOT_FALLBACK mode: bypass disabled."
+    unknown: "premium identity not proven."
   unlink-ok: "&eYour premium account is unlinked. Password required next login."
-  need-forwarding: "&cProxy misconfigured (player-info-forwarding)."
-  no-textures: "&ePremium profile not proven (textures missing)."
+admin_stats_premium_header: "&b[Faskin] Premium Stats"
+admin_stats_premium_lines:
+  - "&7Bypass ok: &f{OK}"
+  - "&7Bypass refused: &f{REFUSED}"
+  - "&7Refused forwarding: &f{FWD}"
+  - "&7Refused textures: &f{TEXTURES}"
+  - "&7Refused fallback: &f{FALLBACK}"
+  - "&7PreAuth avg: &f{AVG}ms &7p95: &f{P95}ms"

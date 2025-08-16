@@ -102,12 +102,22 @@ session:
 * Déconnexions en PRE_AUTH → cleanup sessions
 * Double connexion concurrente → une seule session active (Étape 1)
 
-_Notes sources_ :  
+_Notes sources_ :
 - **Forwarding/UUID/skins via proxy** (Velocity → backend) : Paper/Velocity docs.  
 - **Vérif IP & sécurité FastLogin** (risque MITM si pas d’IP-forwarding) : discussions/README du projet.  
 - **Auth offline (sessions/2FA) — référence de bonnes pratiques** : AuthMe Reloaded.  
 - **API 1.21 profils/textures** : `PlayerProfile.update()` et `PlayerTextures`.  
 - **Skins offline & compat 1.21** : SkinsRestorer (site & release récente).
+
+### T2.4 — Finitions Étape 2
+
+* [ ] Messages i18n premium complets (checking/ok/refus + raisons).
+* [ ] Garde-fous forwarding/textures/fallback câblés.
+* [ ] Métriques & logs structurés (+ /faskin stats étendu).
+* [ ] README (section proxy Velocity + exemples).
+* [ ] CHANGELOG renseigné.
+* [ ] CI (artefact versionné).
+* [ ] Aucune régression Étape 1.
 
 ## Étape 3 — Skins premium en offline (Backlog)
 - [ ] Récup textures signées + application (Paper API / ProtocolLib en option)
@@ -122,3 +132,4 @@ _Notes sources_ :
 - [x] T2.1 — Base auto-login premium
 - [x] T2.2 — Détection premium via forwarding (UUID + textures)
 - [x] T2.3 — Intégration bypass `/login`
+- [ ] T2.4 — Finitions Étape 2 (UX, métriques, garde-fous)
