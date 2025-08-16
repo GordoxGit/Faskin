@@ -46,3 +46,5 @@ premium:
   bypass-ok: "&aConnexion premium vérifiée. Authentifié automatiquement."
   bypass-refused: "&cBypass premium refusé: {reason}."
   unlink-ok: "&eTon compte premium est dissocié. Mot de passe requis au prochain login."
+  forwarding-missing: "&cProxy mal configuré (player-info-forwarding). Bypass premium indisponible."
+  no-textures: "&eProfil premium non prouvé (textures absentes)."

@@ -20,9 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class FaskinPlugin extends JavaPlugin {
 
@@ -31,7 +28,6 @@ public final class FaskinPlugin extends JavaPlugin {
     private AuthServiceRegistry services;
     private BukkitTask reminderTask;
     private LoginTimeoutManager timeouts;
-    private final Map<UUID, com.faskin.auth.premium.PremiumEvaluation> premiumEvaluations = new ConcurrentHashMap<>();
 
     @Override
     public void onEnable() {
@@ -113,5 +109,4 @@ public final class FaskinPlugin extends JavaPlugin {
     public Messages messages() { return messages; }
     public AuthServiceRegistry services() { return services; }
     public LoginTimeoutManager getTimeouts() { return timeouts; }
-    public Map<UUID, com.faskin.auth.premium.PremiumEvaluation> premiumCache() { return premiumEvaluations; }
 }
