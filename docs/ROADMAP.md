@@ -1,19 +1,21 @@
-# ROADMAP — Faskin
-> Règle : **ajouter uniquement**, ne rien supprimer une fois publié.
+# Roadmap Faskin
 
-## Étape 1 — Auth offline
-- [x] TICKET-101: Core + bootstrap plugin (services, commandes, logs)
-- [x] TICKET-102: DAO + schéma SQLite + PBKDF2
-- [x] TICKET-102-HOTFIX: Build Gradle 9 (Shadow 9) + CI clean
-- [x] TICKET-103: State machine & sessions IP
-- [x] TICKET-104: Restrictions pré-auth (blocages + whitelist)
-- [x] TICKET-105: UX commandes + messages + i18n (prefix/couleurs, actionbar, rate-limit)
-- [x] TICKET-106: Timeout & anti-bruteforce (lock, cooldown)
-- [x] TICKET-107: Admin (/faskin reload|status|unlock|stats)
-- [ ] TICKET-108: CI release
+## Étape 1 — Auth offline (DONE ✅)
+- [x] `/register`, `/login`, stockage sécurisé (hash + salt), timeout, blocages pré-auth
+- [x] Anti-bruteforce (cooldown, locks), rappels ActionBar/chat
+- [x] Commandes admin (`/faskin status|unlock|stats`)
+- [x] CI build (main) + **CI release taggée** (ce ticket) ✅
 
-## Étape 2 — Auto-login premium
-- [ ] Détection premium + bypass auth (toggle)
+## Étape 2 — Auto-login premium (Backlog)
+- [ ] Détection premium asynchrone (profil Mojang) + cache
+- [ ] Bypass login si premium vérifié, sinon flux Étape 1
+- [ ] Paramètres de sûreté (timeouts, retries, circuit breaker HTTP)
+- [ ] Hooks d’événements (join/quit) idempotents et tick-safe
+- [ ] Journalisation & métriques (req/s, taux premium, erreurs API)
 
-## Étape 3 — Skins premium en offline
-- [ ] Récupération/apply skins (toggle)
+## Étape 3 — Skins premium en offline (Backlog)
+- [ ] Récup textures signées + application (Paper API / ProtocolLib en option)
+- [ ] Opt-in joueur + préférences
+- [ ] Compat packs de ressources, schemas de reset arène (si multi-jeux)
+
+> Rappel : on **ajoute** seulement des items; on ne supprime rien.

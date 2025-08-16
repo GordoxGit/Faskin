@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.0.10] - 2025-08-16
+### Added
+- Pipeline **release** taggée (`.github/workflows/release.yml`): build clean + shadowJar, SHA256, publication Release GitHub avec artefacts (softprops/action-gh-release).
+### Changed
+- Bump version plugin à `0.0.10`.
+- README: section "Publier une release".
+- RELEASE_CHECKLIST mis à jour.
+- ROADMAP: Étape 1 marquée 100% (done), backlog Étape 2 enrichi.
+
 ## [0.0.1] - 2025-08-15
 ### Added
 - Bootstrap projet Gradle (Java 21), Spigot API 1.21.

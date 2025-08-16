@@ -4,51 +4,73 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.9` — Console admin `/faskin` (status, unlock, stats).
+`0.0.10` — Étape 1 stabilisée + pipeline de release taggée.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
-- `/faskin unlock <player>` : reset `failed_count` + `locked_until`.
+- `/faskin unlock <player>` : reset failed_count + locked_until.
 - `/faskin stats` : comptes totaux, locks actifs, online AUTH / non-AUTH.
 
 ## i18n & couleurs
-- `messages_locale` ou `messages.locale` pour choisir la langue (fichiers `messages.yml` / `messages_<locale>.yml`).
-- Codes couleur `&` convertis via `ChatColor.translateAlternateColorCodes`. :contentReference[oaicite:4]{index=4}
+- `messages_locale` ou `messages.locale` pour choisir la langue (`messages.yml` / `messages_<locale>.yml`).
+- Codes couleur `&` convertis via l’API Spigot.
 
 ## Anti-bruteforce
 - Cooldown local par joueur (`min_seconds_between_attempts`).
-- Compteur d’échecs et **lock** (`max_failed_attempts`, `lock_minutes`) stockés en DB.
-- Kick automatique si non authentifié après `timeout_seconds` (configurable).
+- Compteur d’échecs + lock (`max_failed_attempts`, `lock_minutes`) persistés.
+- Kick si non authentifié après `timeout_seconds`.
 
 ## Rappels d’auth
-- Tâche périodique qui envoie un **ActionBar** aux joueurs non authentifiés. Implémenté via `Player.Spigot#sendMessage(ChatMessageType.ACTION_BAR, ...)`. :contentReference[oaicite:5]{index=5}
-- Config : `reminder.enabled`, `reminder.interval_seconds`, `reminder.actionbar`, `reminder.chat_on_join`.
+- Tâche périodique (ActionBar + chat) configurable : `reminder.*`.
 
-## Configuration (pré-auth)
-Clés `preauth.block.*` pour activer/désactiver mouvement/chat/commandes/interactions, etc.
-Liste blanche: `preauth.commands.whitelist` (toujours inclut `register`/`login` en plus).
+## Pré-auth (blocages)
+- `preauth.block.*` + liste blanche `preauth.commands.whitelist` (inclut toujours `register` / `login`).
 
-## Dépendances incluses (shaded)
-- `org.xerial:sqlite-jdbc:3.50.3.0` (inclus dans le JAR via Shadow).
+## Dépendances shaded
+- `org.xerial:sqlite-jdbc:3.50.3.0` (inclus via Shadow).
 
-## Fonctionnement session
-- Si `login.allow_ip_session=true` et `session_minutes>0` :
-  - même IP + dernier login < TTL ⇒ auto-auth.
-  - sinon ⇒ `/login` requis.
-- L’IP provient de `Player#getAddress()` (Spigot API). :contentReference[oaicite:4]{index=4}
+## Sessions par IP
+- Voir `login.allow_ip_session` et `session_minutes`.
 
-## Build (sans wrapper)
-- Gradle local : `gradle clean build --no-daemon`
-- CI : `gradle/actions/setup-gradle` (aucun wrapper requis)
-- Plugin Shadow : `com.gradleup.shadow: 9.0.2` (compatible Gradle 9).
+## Build local (sans wrapper)
+```bash
+gradle clean build --no-daemon
+```
+
+## CI
+
+* GitHub Actions avec **setup-java@v4** (cache Gradle) et **Gradle 9.0.0** installé à la volée.
+* Le job **clean** puis **build shadowJar** pour éviter le bug `META-INF` connu sur Shadow en CI.
+  Réfs : guide Gradle sur Actions, cache Gradle et setup-java. ([GitHub Docs][2], [GitHub][1])
+
+## Publier une release
+
+1. Choisir la version plugin dans `gradle.properties` (ex: `0.0.10`), commit & push.
+2. **Tag local** puis push:
+
+   ```bash
+   git tag v0.0.10
+   git push origin v0.0.10
+   ```
+
+   *ou* lancer le workflow **Release** en `workflow_dispatch` avec `tag = v0.0.10`.
+3. Le workflow crée/maj la **Release GitHub** avec:
+
+   * `Faskin-<version>.jar`
+   * `SHA256SUMS.txt` (SHA-256)
+   * Notes de release générées
+
+> Le runner installe Gradle, pas de wrapper requis. Installer de nouveaux paquets via `apt`/scripts est supporté par Actions. ([GitHub Docs][3])
 
 ## Politique doc
-- À **CHAQUE ticket** : mettre à jour **README**, **docs/ROADMAP.md**, **CHANGELOG.md**, fichiers build et toute doc impactée.
-- **Roadmap** non destructive : on **ajoute**, on ne **supprime** pas d’items.
 
-## Dépendance
-`org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT` (repo Spigot).
+* À CHAQUE ticket : README, docs/ROADMAP.md, CHANGELOG.md, build & workflows **mis à jour**.
+* La **roadmap n’est jamais nettoyée** : on ajoute seulement.
 
-## API
-- `BukkitScheduler` pour timers (sync). :contentReference[oaicite:10]{index=10}
-- `Player#kickPlayer(String)` pour le kick. :contentReference[oaicite:11]{index=11}
+## Licence
+
+MIT
+
+[1]: https://github.com/actions/setup-java
+[2]: https://docs.github.com/en/actions/tutorials/building-and-testing-java-with-gradle
+[3]: https://docs.github.com/actions/using-github-hosted-runners/customizing-github-hosted-runners
