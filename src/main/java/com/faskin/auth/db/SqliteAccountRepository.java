@@ -37,10 +37,16 @@ public final class SqliteAccountRepository implements AccountRepository {
                   last_ip     TEXT,
                   last_login  INTEGER,
                   failed_count INTEGER DEFAULT 0,
-                  locked_until INTEGER
+                  locked_until INTEGER,
+                  is_premium  INTEGER DEFAULT 0,
+                  uuid_online TEXT,
+                  premium_verified_at INTEGER,
+                  premium_mode TEXT
                 );
             """);
             st.execute("CREATE INDEX IF NOT EXISTS idx_accounts_locked ON accounts(locked_until);");
+            st.execute("CREATE INDEX IF NOT EXISTS idx_accounts_uuid_online ON accounts(uuid_online);");
+            st.execute("CREATE INDEX IF NOT EXISTS idx_accounts_is_premium ON accounts(is_premium);");
         } catch (SQLException e) {
             log.severe("[Faskin] SQLite init failed: " + e.getMessage());
             throw new IllegalStateException("SQLite init failed", e);
@@ -197,6 +203,38 @@ public final class SqliteAccountRepository implements AccountRepository {
                 return Optional.of(new AdminInfo(true, rs.getString(1), rs.getLong(2), rs.getInt(3), rs.getLong(4)));
             }
         } catch (SQLException e) { log.warning("[Faskin] adminInfo() error: " + e.getMessage()); return Optional.of(new AdminInfo(false, null, 0L, 0, 0L)); }
+    }
+
+    @Override public void updatePremiumInfo(String usernameLower, boolean isPremium, String uuidOnline, String premiumMode, long verifiedAtEpoch) {
+        String sql = "UPDATE accounts SET is_premium=?, uuid_online=?, premium_verified_at=?, premium_mode=? WHERE username_ci=?";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, isPremium ? 1 : 0);
+            if (uuidOnline != null) ps.setString(2, uuidOnline); else ps.setNull(2, Types.VARCHAR);
+            ps.setLong(3, verifiedAtEpoch);
+            ps.setString(4, premiumMode);
+            ps.setString(5, usernameLower);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            log.warning("[Faskin] updatePremiumInfo() error: " + e.getMessage());
+        }
+    }
+
+    @Override public Optional<PremiumInfo> getPremiumInfo(String usernameLower) {
+        String sql = "SELECT is_premium, uuid_online, premium_verified_at, premium_mode FROM accounts WHERE username_ci=? LIMIT 1";
+        try (Connection c = get(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, usernameLower);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) return Optional.empty();
+                boolean prem = rs.getInt(1) == 1;
+                String uuid = rs.getString(2);
+                long ts = rs.getLong(3);
+                String mode = rs.getString(4);
+                return Optional.of(new PremiumInfo(prem, uuid, ts, mode));
+            }
+        } catch (SQLException e) {
+            log.warning("[Faskin] getPremiumInfo() error: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 }
 

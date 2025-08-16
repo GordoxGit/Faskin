@@ -10,6 +10,8 @@ import com.faskin.auth.i18n.Messages;
 import com.faskin.auth.security.Pbkdf2Hasher;
 import com.faskin.auth.listeners.JoinQuitListener;
 import com.faskin.auth.listeners.PreAuthGuardListener;
+import com.faskin.auth.listeners.PremiumAsyncPreLoginListener;
+import com.faskin.auth.listeners.PremiumLoginListener;
 import com.faskin.auth.tasks.AuthReminderTask;
 import com.faskin.auth.tasks.LoginTimeoutManager;
 import org.bukkit.Bukkit;
@@ -18,6 +20,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class FaskinPlugin extends JavaPlugin {
 
@@ -26,6 +31,7 @@ public final class FaskinPlugin extends JavaPlugin {
     private AuthServiceRegistry services;
     private BukkitTask reminderTask;
     private LoginTimeoutManager timeouts;
+    private final Map<UUID, com.faskin.auth.premium.PremiumEvaluation> premiumEvaluations = new ConcurrentHashMap<>();
 
     @Override
     public void onEnable() {
@@ -48,11 +54,14 @@ public final class FaskinPlugin extends JavaPlugin {
             default -> new InMemoryAccountRepository(new Pbkdf2Hasher());
         };
 
-        this.services = new AuthServiceRegistry(repo);
+        var bypass = new com.faskin.auth.auth.impl.AuthBypassServiceImpl(this, repo);
+        var detector = new com.faskin.auth.premium.impl.ProxyForwardingPremiumDetector(this);
+        this.services = new AuthServiceRegistry(repo, detector, bypass);
         this.timeouts = new LoginTimeoutManager(this);
 
         getLogger().info("Faskin " + getDescription().getVersion() + " starting...");
         getLogger().info("API: " + java.util.Optional.ofNullable(getDescription().getAPIVersion()).orElse("unknown"));
+        getLogger().info("Premium mode=" + configManager.premiumMode() + ", enabled=" + configManager.premiumEnabled() + ", require_ip_forwarding=" + configManager.premiumRequireIpForwarding());
 
         if (configManager.isTeleportMode()) {
             String world = configManager.getSpawnWorld();
@@ -64,6 +73,8 @@ public final class FaskinPlugin extends JavaPlugin {
         // Listeners
         getServer().getPluginManager().registerEvents(new JoinQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new PreAuthGuardListener(this), this);
+        getServer().getPluginManager().registerEvents(new PremiumAsyncPreLoginListener(this), this);
+        getServer().getPluginManager().registerEvents(new PremiumLoginListener(this), this);
 
         // Commands
         bind("faskin", new AdminCommand(this));
@@ -102,4 +113,5 @@ public final class FaskinPlugin extends JavaPlugin {
     public Messages messages() { return messages; }
     public AuthServiceRegistry services() { return services; }
     public LoginTimeoutManager getTimeouts() { return timeouts; }
+    public Map<UUID, com.faskin.auth.premium.PremiumEvaluation> premiumCache() { return premiumEvaluations; }
 }

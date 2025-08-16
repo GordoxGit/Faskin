@@ -4,7 +4,7 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.0.10` — Étape 1 stabilisée + pipeline de release taggée.
+`0.1.0` — Étape 2 amorcée : ossature auto-login premium.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
@@ -31,6 +31,9 @@ Plugin unifié Spigot 1.21 / Java 21 :
 
 ## Sessions par IP
 - Voir `login.allow_ip_session` et `session_minutes`.
+
+## Mode PROXY_SAFE recommandé
+Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela permet de transmettre UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [Velocity](https://docs.papermc.io/velocity/player-information-forwarding/).
 
 ## Build local (sans wrapper)
 ```bash

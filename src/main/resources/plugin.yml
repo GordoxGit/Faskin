@@ -1,6 +1,6 @@
 name: Faskin
 main: com.faskin.auth.FaskinPlugin
-version: 0.0.9
+version: 0.1.0
 api-version: '1.21'
 authors: [ 'GordoxGit' ]
 website: 'https://github.com/GordoxGit/Faskin'
@@ -30,10 +30,17 @@ commands:
     description: 'Commande admin Faskin'
     usage: '/faskin reload|status [player] | unlock <player> | stats | help'
     permission: 'faskin.admin'
+  premium:
+    description: 'Commande premium'
+    usage: '/premium status|unlink [player]'
+    permission: 'faskin.premium'
 permissions:
   faskin.register: { default: true }
   faskin.login: { default: true }
   faskin.logout: { default: true }
   faskin.changepassword: { default: true }
   faskin.admin: { default: op }
+  faskin.premium: { default: op }
+  faskin.premium.status: { default: op }
+  faskin.premium.unlink: { default: op }
 

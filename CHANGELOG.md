@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.0] - 2025-08-16
+### Added
+- Migration DB `002_step2_premium.sql` pour champs premium.
+- Services squelettes (PremiumDetector, AuthBypassService) et listeners.
+- Config/messages: blocs `premium.*`.
+- CI: artefact `Faskin-0.1.0-SNAPSHOT.jar`.
+### Changed
+- Bump version plugin à `0.1.0`.
+
 ## [0.0.10] - 2025-08-16
 ### Added
 - Pipeline **release** taggée (`.github/workflows/release.yml`): build clean + shadowJar, SHA256, publication Release GitHub avec artefacts (softprops/action-gh-release).
