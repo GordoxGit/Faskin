@@ -52,7 +52,7 @@ admin_stats_premium_lines:
 
 premium:
   checking: "&7Vérification du statut premium..."
-  bypass-ok: "&aPremium vérifié: authentification automatique réussie."
+  bypass-ok: "&aConnexion premium vérifiée. Authentifié automatiquement."
   bypass-refused: "&cBypass premium refusé: {reason}."
   reason:
     forwarding-missing: "proxy mal configuré (player-info-forwarding)."
