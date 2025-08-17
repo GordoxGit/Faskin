@@ -65,9 +65,9 @@ reminder:
 premium:
   enabled: true
   mode: PROXY_SAFE            # PROXY_SAFE | SPIGOT_FALLBACK (pas de bypass en fallback)
-  skip_password: true         # bypass /login si PREMIUM_SAFE
+  skip_password: true         # bypass /login si PREMIUM_SAFE (doit rester true pour l'auto-login)
   auto_register: true         # création compte si absent lors d'un PREMIUM_SAFE
-  require_ip_forwarding: true # refuse bypass si le proxy ne transmet pas UUID/IP/skins
+  require_ip_forwarding: true # recommandé true ; sinon pas de bypass (proxy doit transmettre UUID/IP/skins)
   metrics: true               # expose métriques internes (log & /faskin stats)
   debug: false                # logs détaillés (à n'activer qu'en test)
 # Forwarding modern recommandé : Velocity `player-info-forwarding-mode="modern"`.

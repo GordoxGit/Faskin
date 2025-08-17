@@ -30,7 +30,19 @@ premium:
     no-textures: "profile without signed textures (skins not forwarded)."
     fallback-mode: "SPIGOT_FALLBACK mode: bypass disabled."
     unknown: "premium identity not proven."
-  unlink-ok: "&eYour premium account is unlinked. Password required next login."
+  status-self:
+    - "&7Premium: &e{is_premium}&7 | Mode: &e{mode}"
+    - "&7UUID online: &e{uuid_online}&7 | Verified: &e{verified_at}"
+    - "&7IP session: &e{session}&7 (TTL: &e{ttl}&7)"
+  status-other:
+    - "&7{player}: premium=&e{is_premium}&7, mode=&e{mode}&7, uuid=&e{uuid_online}"
+  unlink:
+    self-ok: "&ePremium link removed. Password required next login."
+    other-ok: "&e{player} premium link removed."
+    not-premium: "&7Nothing to unlink: account is not premium."
+  error:
+    no-target: "&cPlayer not found."
+    no-permission: "&cInsufficient permission."
 admin_stats_premium_header: "&b[Faskin] Premium Stats"
 admin_stats_premium_lines:
   - "&7Bypass ok: &f{OK}"

@@ -11,6 +11,14 @@ Plugin unifié Spigot 1.21 / Java 21 :
 - `/faskin unlock <player>` : reset failed_count + locked_until.
 - `/faskin stats` : comptes totaux, locks actifs, online AUTH / non-AUTH.
 
+## Commandes premium
+- `/premium status [player]` : statut premium (self/admin). Perms : `faskin.premium.status`, `faskin.premium.status.other`.
+- `/premium unlink [player]` : dissocie le mode premium → retour au mot de passe. Perms : `faskin.premium.unlink.self`, `faskin.premium.unlink.other`.
+  *Tab-complete propose joueurs en ligne et derniers comptes premium vus.*
+
+### Pré-requis proxy
+Le bypass premium n’existe que si le proxy est en **online-mode** avec **player-info-forwarding** (`modern`) et secret partagé. Sans cela, Faskin n’accorde aucun bypass.
+
 ## i18n & couleurs
 - `messages_locale` ou `messages.locale` pour choisir la langue (`messages.yml` / `messages_<locale>.yml`).
 - Codes couleur `&` convertis via l’API Spigot.

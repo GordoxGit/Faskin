@@ -1,6 +1,8 @@
 package com.faskin.auth;
 
 import com.faskin.auth.commands.*;
+import com.faskin.auth.command.PremiumCommand;
+import com.faskin.auth.tab.PremiumTabCompleter;
 import com.faskin.auth.config.ConfigManager;
 import com.faskin.auth.core.AuthServiceRegistry;
 import com.faskin.auth.core.InMemoryAccountRepository;
@@ -80,6 +82,9 @@ public final class FaskinPlugin extends JavaPlugin {
         bind("login", new LoginCommand(this));
         bind("logout", new LogoutCommand(this));
         bind("changepassword", new ChangePasswordCommand(this));
+        bind("premium", new PremiumCommand(this));
+        PluginCommand pc = getCommand("premium");
+        if (pc != null) pc.setTabCompleter(new PremiumTabCompleter());
 
         // Rappel périodique (ActionBar/Chat)
         if (getConfig().getBoolean("reminder.enabled", true)) {
