@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.0] - T2.5
+- Commandes premium (status/unlink), tab-complete, i18n, DB async
+
 ## [0.1.0] - T2.4
 - UX/i18n: messages premium complets (forwarding/skins/fallback)
 - Metrics: compteurs bypass & raisons, temps PRE_AUTH

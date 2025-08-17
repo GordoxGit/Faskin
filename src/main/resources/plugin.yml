@@ -31,16 +31,19 @@ commands:
     usage: '/faskin reload|status [player] | unlock <player> | stats | help'
     permission: 'faskin.admin'
   premium:
-    description: 'Commande premium'
-    usage: '/premium status|unlink [player]'
-    permission: 'faskin.premium'
+    description: 'Outils premium (status/unlink)'
+    usage: '/premium <status|unlink> [player]'
+    aliases: [ prem ]
+    permission: 'faskin.premium.base'
 permissions:
   faskin.register: { default: true }
   faskin.login: { default: true }
   faskin.logout: { default: true }
   faskin.changepassword: { default: true }
   faskin.admin: { default: op }
-  faskin.premium: { default: op }
-  faskin.premium.status: { default: op }
-  faskin.premium.unlink: { default: op }
+  faskin.premium.base: { default: true }
+  faskin.premium.status: { default: true }
+  faskin.premium.status.other: { default: op }
+  faskin.premium.unlink.self: { default: true }
+  faskin.premium.unlink.other: { default: op }
 

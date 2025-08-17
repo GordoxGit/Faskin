@@ -81,7 +81,7 @@ session:
 * [ ] `AuthBypassService` (marque AUTHENTICATED, crée session si besoin)
 * [ ] Listeners `AsyncPlayerPreLoginEvent`/`PlayerLoginEvent` (intégration)
 * [ ] Config & messages (nouveaux blocs YAML + i18n)
-* [ ] Commandes `/premium status|unlink` (+ tab-complete, perms)
+* [x] Commandes `/premium status|unlink` (+ tab-complete, perms)
 * [ ] Logs & métriques
 * [ ] Doc README: guide proxy (online-mode, forwarding) + exemples
 * [ ] Tests manuels (voir Validation)
@@ -132,4 +132,6 @@ _Notes sources_ :
 - [x] T2.1 — Base auto-login premium
 - [x] T2.2 — Détection premium via forwarding (UUID + textures)
 - [x] T2.3 — Intégration bypass `/login`
-- [ ] T2.4 — Finitions Étape 2 (UX, métriques, garde-fous)
+- [x] T2.4 — Finitions Étape 2 (UX, métriques, garde-fous)
+- [x] T2.5 — Commandes premium (status/unlink, perms)
+- [ ] T2.6 — Validation finale & sécurité
