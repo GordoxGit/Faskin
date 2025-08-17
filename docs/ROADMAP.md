@@ -6,7 +6,7 @@
 - [x] Commandes admin (`/faskin status|unlock|stats`)
 - [x] CI build (main) + **CI release taggée** (ce ticket) ✅
 
-## Étape 2 — Auto-login Premium (version 0.1.0)
+## Étape 2 — Auto-login Premium (DONE ✅ — version 0.1.0)
 
 ### Objectif
 Permettre aux comptes **premium vérifiés** d’entrer **sans mot de passe**, tout en préservant l’authentification `/register` + `/login` pour les joueurs **crack** (Étape 1 intacte).
@@ -76,23 +76,23 @@ session:
 
 ### Tâches (checklist)
 
-* [ ] Migration DB `002_step2_premium.sql` (champs + index)
-* [ ] Service `PremiumDetector` (évalue `PREMIUM_SAFE | NOT_PREMIUM`)
-* [ ] `AuthBypassService` (marque AUTHENTICATED, crée session si besoin)
-* [ ] Listeners `AsyncPlayerPreLoginEvent`/`PlayerLoginEvent` (intégration)
-* [ ] Config & messages (nouveaux blocs YAML + i18n)
+* [x] Migration DB `002_step2_premium.sql` (champs + index)
+* [x] Service `PremiumDetector` (évalue `PREMIUM_SAFE | NOT_PREMIUM`)
+* [x] `AuthBypassService` (marque AUTHENTICATED, crée session si besoin)
+* [x] Listeners `AsyncPlayerPreLoginEvent`/`PlayerLoginEvent` (intégration)
+* [x] Config & messages (nouveaux blocs YAML + i18n)
 * [x] Commandes `/premium status|unlink` (+ tab-complete, perms)
-* [ ] Logs & métriques
-* [ ] Doc README: guide proxy (online-mode, forwarding) + exemples
-* [ ] Tests manuels (voir Validation)
+* [x] Logs & métriques
+* [x] Doc README: guide proxy (online-mode, forwarding) + exemples
+* [x] Tests manuels (voir Validation)
 
 ### Critères d’acceptation (AC)
 
-* [ ] Premium via proxy SAFE → entrée directe **sans `/login`** ; `accounts.is_premium=1`, `uuid_online` enregistré
-* [ ] Joueur crack → ne peut **jamais** bypass `/login`
-* [ ] Proxy mal configuré (pas de forwarding/properties) → **pas de bypass** et message explicite
-* [ ] Aucun blocage du **tick** (I/O async), P95 PRE_AUTH < 100 ms
-* [ ] Étape 1 inchangée fonctionnellement (aucune régression)
+* [x] Premium via proxy SAFE → entrée directe **sans `/login`** ; `accounts.is_premium=1`, `uuid_online` enregistré
+* [x] Joueur crack → ne peut **jamais** bypass `/login`
+* [x] Proxy mal configuré (pas de forwarding/properties) → **pas de bypass** et message explicite
+* [x] Aucun blocage du **tick** (I/O async), P95 PRE_AUTH < 100 ms
+* [x] Étape 1 inchangée fonctionnellement (aucune régression)
 
 ### Validation (tests manuels)
 
@@ -111,13 +111,13 @@ _Notes sources_ :
 
 ### T2.4 — Finitions Étape 2
 
-* [ ] Messages i18n premium complets (checking/ok/refus + raisons).
-* [ ] Garde-fous forwarding/textures/fallback câblés.
-* [ ] Métriques & logs structurés (+ /faskin stats étendu).
-* [ ] README (section proxy Velocity + exemples).
-* [ ] CHANGELOG renseigné.
-* [ ] CI (artefact versionné).
-* [ ] Aucune régression Étape 1.
+* [x] Messages i18n premium complets (checking/ok/refus + raisons).
+* [x] Garde-fous forwarding/textures/fallback câblés.
+* [x] Métriques & logs structurés (+ /faskin stats étendu).
+* [x] README (section proxy Velocity + exemples).
+* [x] CHANGELOG renseigné.
+* [x] CI (artefact versionné).
+* [x] Aucune régression Étape 1.
 
 ## Étape 3 — Skins premium en offline (Backlog)
 - [ ] Récup textures signées + application (Paper API / ProtocolLib en option)
@@ -133,5 +133,5 @@ _Notes sources_ :
 - [x] T2.2 — Détection premium via forwarding (UUID + textures)
 - [x] T2.3 — Intégration bypass `/login`
 - [x] T2.4 — Finitions Étape 2 (UX, métriques, garde-fous)
-- [x] T2.5 — Commandes premium (status/unlink, perms)
-- [ ] T2.6 — Validation finale & sécurité
+ - [x] T2.5 — Commandes premium (status/unlink, perms)
+ - [x] T2.6 — Validation finale & sécurité
