@@ -135,3 +135,4 @@ _Notes sources_ :
 - [x] T2.4 — Finitions Étape 2 (UX, métriques, garde-fous)
  - [x] T2.5 — Commandes premium (status/unlink, perms)
  - [x] T2.6 — Validation finale & sécurité
+  - [x] T2.HF — Auto-migrations SQLite

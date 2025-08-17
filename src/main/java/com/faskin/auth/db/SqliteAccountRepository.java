@@ -16,6 +16,7 @@ public final class SqliteAccountRepository implements AccountRepository {
         this.log = logger;
         this.jdbcUrl = inMemory ? "jdbc:sqlite:file:faskin_mem?mode=memory&cache=shared"
                                 : "jdbc:sqlite:" + dbFile.getAbsolutePath();
+        MigrationRunner.run(this.jdbcUrl, this.log);
         init();
     }
 
