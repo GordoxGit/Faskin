@@ -55,6 +55,6 @@ forwarding-secret = "secret-unique"
 - [ ] Aucune régression Étape 1 : cracks bloqués sans `/login`
 - [ ] Forwarding mal configuré ⇒ refus explicite
 - [ ] Perf : PRE_AUTH P95 < 100 ms, TPS stable
-- [ ] CI verte, artefact `Faskin-0.1.0-T2.6-SNAPSHOT.jar`
+- [ ] CI verte, artefact `Faskin-0.1.1-hotfix.jar`
 - [ ] README/ROADMAP/CHANGELOG/Gradle à jour
 

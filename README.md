@@ -4,7 +4,7 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.1.0-SNAPSHOT` — Étape 2 verrouillée : auto-login premium sécurisé.
+`0.1.1` — hotfix auto-migrations SQLite Étape 2.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
@@ -63,6 +63,24 @@ gradle clean build --no-daemon
 * GitHub Actions avec **setup-java@v4** (cache Gradle) et **Gradle 9.0.0** installé à la volée.
 * Le job **clean** puis **build shadowJar** pour éviter le bug `META-INF` connu sur Shadow en CI.
   Réfs : guide Gradle sur Actions, cache Gradle et setup-java. ([GitHub Docs][2], [GitHub][1])
+
+## Dépannage : `no such column`
+
+Si la base SQLite existante ne possède pas les colonnes premium (schéma Étape 1), Faskin applique maintenant les migrations automatiquement au démarrage.
+
+Inspecter le schéma :
+
+```bash
+sqlite3 plugins/Faskin/faskin.db "PRAGMA table_info('accounts');"
+```
+
+Appliquer manuellement le script :
+
+```bash
+sqlite3 plugins/Faskin/faskin.db < plugins/Faskin/migrations/002_step2_premium.sql
+```
+
+`PRAGMA table_info` détaille les colonnes d'une table et `PRAGMA user_version` trace la version du schéma.
 
 ## Publier une release
 

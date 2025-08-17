@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.1] - hotfix
+- Auto-migrations SQLite Étape 2 exécutées au démarrage (ajout colonnes `uuid_online`, `is_premium`, `premium_verified_at`, `premium_mode`).
+- README : section dépannage `no such column`.
+- CI : artefact `Faskin-0.1.1-hotfix.jar`.
+
 ## [0.1.0] - T2.6
 - Validation finale Étape 2 (tests, sécurité, perf, docs & CI)
 - Nouvelle doc `VALIDATION_STEP2.md`

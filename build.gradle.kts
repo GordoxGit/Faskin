@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "9.0.2" // Shadow 9, compatible Gradle 9
 }
 
-version = "0.1.0-SNAPSHOT"
+version = "0.1.1"
 
 java {
     toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }

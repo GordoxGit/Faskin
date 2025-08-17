@@ -52,8 +52,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist
-          cp build/libs/Faskin-*.jar dist/
-          (cd dist && sha256sum Faskin-*.jar > SHA256SUMS.txt)
+          cp build/libs/Faskin-*.jar dist/Faskin-0.1.1-hotfix.jar
+          (cd dist && sha256sum Faskin-0.1.1-hotfix.jar > SHA256SUMS.txt)
           echo "Artifacts:"
           ls -l dist
 
