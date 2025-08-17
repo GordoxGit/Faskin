@@ -4,7 +4,7 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.1.0-SNAPSHOT` — Étape 2 amorcée : ossature auto-login premium.
+`0.1.0-SNAPSHOT` — Étape 2 verrouillée : auto-login premium sécurisé.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
@@ -16,8 +16,21 @@ Plugin unifié Spigot 1.21 / Java 21 :
 - `/premium unlink [player]` : dissocie le mode premium → retour au mot de passe. Perms : `faskin.premium.unlink.self`, `faskin.premium.unlink.other`.
   *Tab-complete propose joueurs en ligne et derniers comptes premium vus.*
 
-### Pré-requis proxy
-Le bypass premium n’existe que si le proxy est en **online-mode** avec **player-info-forwarding** (`modern`) et secret partagé. Sans cela, Faskin n’accorde aucun bypass.
+## Auto-login premium (Étape 2)
+Le bypass premium n’existe que si le proxy est en **online-mode** avec **player-info-forwarding** (`modern`) et un **secret** partagé. Sans cela, Faskin n’accorde aucun bypass.
+
+### Configurer le proxy
+Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela transmet UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [discussion MITM](https://github.com/TuxCoding/FastLogin/discussions/1180).
+
+Exemple **Velocity** :
+
+```toml
+# velocity.toml
+player-info-forwarding-mode = "modern"
+forwarding-secret = "<secret>"
+```
+
+Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin refuse le bypass. Toute modification manuelle des textures via l’API `PlayerProfile.setTextures(...)` invalide la signature et désactive le mode `PROXY_SAFE`.
 
 ## i18n & couleurs
 - `messages_locale` ou `messages.locale` pour choisir la langue (`messages.yml` / `messages_<locale>.yml`).
@@ -39,21 +52,6 @@ Le bypass premium n’existe que si le proxy est en **online-mode** avec **playe
 
 ## Sessions par IP
 - Voir `login.allow_ip_session` et `session_minutes`.
-
-## Configurer le proxy (requis pour l’auto-login premium)
-Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela transmet UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [discussion MITM](https://github.com/TuxCoding/FastLogin/discussions/1180).
-
-Exemple **Velocity** :
-
-```toml
-# velocity.toml
-player-info-forwarding-mode = "modern"
-forwarding-secret = "<secret>"
-```
-
-Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin refuse le bypass.
-
-Côté backend Paper, les skins sont lus via `Player#getPlayerProfile().getTextures()`. Toute modification manuelle invalide les attributs signés transmis par le proxy.
 
 ## Build local (sans wrapper)
 ```bash

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0] - T2.6
+- Validation finale Étape 2 (tests, sécurité, perf, docs & CI)
+- Nouvelle doc `VALIDATION_STEP2.md`
+- README : section auto-login premium (forwarding modern + textures)
+- ROADMAP : Étape 2 marquée DONE
+- CI : artefact `Faskin-0.1.0-T2.6-SNAPSHOT.jar`
+
 ## [0.1.0] - T2.5
 - Commandes premium (status/unlink), tab-complete, i18n, DB async
 
