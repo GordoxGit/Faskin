@@ -4,7 +4,7 @@ Plugin unifié Spigot 1.21 / Java 21 :
 1) Auth offline (Étape 1), 2) Auto-login premium (Étape 2), 3) Skins premium en offline (Étape 3).
 
 ## Version
-`0.1.1` — hotfix auto-migrations SQLite Étape 2.
+`0.1.1` — hotfix: forwarding + messages.yml.
 
 ## Admin
 - `/faskin status [player]` : état runtime + méta compte (IP, lastLogin, compteur d’échecs, lock).
@@ -19,18 +19,50 @@ Plugin unifié Spigot 1.21 / Java 21 :
 ## Auto-login premium (Étape 2)
 Le bypass premium n’existe que si le proxy est en **online-mode** avec **player-info-forwarding** (`modern`) et un **secret** partagé. Sans cela, Faskin n’accorde aucun bypass.
 
-### Configurer le proxy
-Faskin privilégie un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) activé. Cela transmet UUID, IP et propriétés signées pour un auto-login premium sécurisé. Sans forwarding, aucun bypass n'est effectué. Réfs : [FastLogin](https://www.spigotmc.org/resources/fastlogin.14153/), [discussion MITM](https://github.com/TuxCoding/FastLogin/discussions/1180).
+### Configurer Velocity/Waterfall pour l’auto-login premium
+Faskin nécessite un proxy en **online-mode** avec [player information forwarding](https://docs.papermc.io/velocity/player-information-forwarding/) pour transmettre UUID, IP et textures signées. Sans forwarding, aucun bypass n'est accordé (raison `forwarding-missing`).
 
-Exemple **Velocity** :
+#### Velocity (recommandé)
 
 ```toml
 # velocity.toml
+online-mode = true
 player-info-forwarding-mode = "modern"
-forwarding-secret = "<secret>"
+forwarding-secret-file = "forwarding.secret"
 ```
 
-Le même secret doit être défini côté backend (`velocity.toml` de Paper/Waterfall). Sans forwarding **IP/UUID/properties**, Faskin refuse le bypass. Toute modification manuelle des textures via l’API `PlayerProfile.setTextures(...)` invalide la signature et désactive le mode `PROXY_SAFE`.
+Backend Paper (`config/paper-global.yml`) :
+
+```yaml
+proxies:
+  velocity:
+    enabled: true
+    online-mode: true
+    secret: "COLLER_Ici_LE_CONTENU_DU_fwd_secret"
+```
+
+* `spigot.yml` : `settings.bungeecord: false`
+* `server.properties` : `online-mode=false`
+* Redémarrer **proxy puis backend**
+* Bonus : firewall → bloquer l’accès direct au port backend
+
+#### Waterfall/BungeeCord
+
+```yaml
+# config.yml (proxy)
+ip_forward: true
+
+# spigot.yml (backend)
+settings:
+  bungeecord: true
+
+# server.properties (backend)
+online-mode=false
+```
+
+Redémarrer le proxy et le backend.
+
+Le secret de forwarding doit être identique des deux côtés. Toute modification manuelle des textures via l’API `PlayerProfile.setTextures(...)` invalide la signature et désactive le mode `PROXY_SAFE`.
 
 ## i18n & couleurs
 - `messages_locale` ou `messages.locale` pour choisir la langue (`messages.yml` / `messages_<locale>.yml`).

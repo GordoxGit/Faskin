@@ -1,9 +1,10 @@
 # Changelog
 
-## [0.1.1] - hotfix
+## [0.1.1] - hotfix: forwarding + messages.yml
 - Auto-migrations SQLite Étape 2 exécutées au démarrage (ajout colonnes `uuid_online`, `is_premium`, `premium_verified_at`, `premium_mode`).
+- Guide proxy forwarding (Velocity/Waterfall) et messages premium complétés.
 - README : section dépannage `no such column`.
-- CI : artefact `Faskin-0.1.1-hotfix.jar`.
+- CI : artefact `Faskin-0.1.1-forwarding-hotfix.jar`.
 
 ## [0.1.0] - T2.6
 - Validation finale Étape 2 (tests, sécurité, perf, docs & CI)

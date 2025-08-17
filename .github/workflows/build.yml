@@ -24,11 +24,11 @@ jobs:
       - name: Build (shadow)
         run: gradle build --no-daemon
 
-      - name: Show version
-        run: echo "Building Faskin 0.1.1-hotfix"
+        - name: Show version
+          run: echo "Building Faskin 0.1.1-forwarding-hotfix"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Faskin-0.1.1-hotfix.jar
-          path: build/libs/*.jar
+        - name: Upload artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: Faskin-0.1.1-forwarding-hotfix.jar
+            path: build/libs/*.jar
