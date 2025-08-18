@@ -1,49 +1,5 @@
 name: Faskin
-main: com.faskin.auth.FaskinPlugin
-version: 0.1.1
+version: 0.0.1
+main: fr.projetserveur.faskin.FaskinPlugin
 api-version: '1.21'
-authors: [ 'GordoxGit' ]
-website: 'https://github.com/GordoxGit/Faskin'
-description: 'Auth offline (étape 1), auto-login premium (étape 2), skins premium offline (étape 3).'
-libraries:
-  - org.xerial:sqlite-jdbc:3.50.3.0
-commands:
-  register:
-    description: 'Créer un compte Faskin'
-    usage: '/register <password> <confirm>'
-    permission: 'faskin.register'
-    aliases: [ reg ]
-  login:
-    description: 'Se connecter à Faskin'
-    usage: '/login <password>'
-    permission: 'faskin.login'
-    aliases: [ l ]
-  logout:
-    description: 'Se déconnecter'
-    usage: '/logout'
-    permission: 'faskin.logout'
-  changepassword:
-    description: 'Changer le mot de passe'
-    usage: '/changepassword <old> <new> <confirm>'
-    permission: 'faskin.changepassword'
-  faskin:
-    description: 'Commande admin Faskin'
-    usage: '/faskin reload|status [player] | unlock <player> | stats | help'
-    permission: 'faskin.admin'
-  premium:
-    description: 'Outils premium (status/unlink)'
-    usage: '/premium <status|unlink> [player]'
-    aliases: [ prem ]
-    permission: 'faskin.premium.base'
-permissions:
-  faskin.register: { default: true }
-  faskin.login: { default: true }
-  faskin.logout: { default: true }
-  faskin.changepassword: { default: true }
-  faskin.admin: { default: op }
-  faskin.premium.base: { default: true }
-  faskin.premium.status: { default: true }
-  faskin.premium.status.other: { default: op }
-  faskin.premium.unlink.self: { default: true }
-  faskin.premium.unlink.other: { default: op }
-
+author: ProjetServeur
