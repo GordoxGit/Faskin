@@ -1,31 +1,4 @@
-# Build/Gradle
-.gradle/
-build/
-out/
-bin/
-
-# IDE
-.idea/
+/target/
+/.idea/
+/.vscode/
 *.iml
-.vscode/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs/temp
-*.log
-*.tmp
-
-# Plugin data / databases
-plugins/
-*.db
-*.db-journal
-*.db-wal
-*.db-shm
-
-# IMPORTANT: pas de gradle-wrapper dans le dépôt
-gradlew
-gradlew.bat
-gradle/wrapper/
-gradle/wrapper/gradle-wrapper.jar
