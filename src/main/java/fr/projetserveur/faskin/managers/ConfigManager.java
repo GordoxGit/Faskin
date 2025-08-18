@@ -55,6 +55,24 @@ public class ConfigManager {
     }
 
     /**
+     * Provides direct access to the messages configuration.
+     *
+     * @return loaded messages.yml configuration
+     */
+    public FileConfiguration getMessages() {
+        return messages;
+    }
+
+    /**
+     * Retrieves the formatted prefix defined in messages.yml.
+     *
+     * @return colorised prefix string
+     */
+    public String getPrefix() {
+        return prefix;
+    }
+
+    /**
      * Retrieves a message from messages.yml with the prefix applied
      * and color codes translated.
      *
