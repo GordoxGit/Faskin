@@ -1,5 +1,7 @@
 name: Faskin
-version: 0.0.1
-main: fr.projetserveur.faskin.FaskinPlugin
+version: '${project.version}'
+main: com.monprojet.faskin.Faskin
 api-version: '1.21'
 author: ProjetServeur
+description: Une solution d'authentification tout-en-un pour les serveurs Spigot.
+depend: [ProtocolLib]
