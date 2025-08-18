@@ -3,7 +3,10 @@ package com.monprojet.faskin.database;
 import com.monprojet.faskin.Faskin;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class MySQLManager {
@@ -52,6 +55,32 @@ public class MySQLManager {
                 plugin.getLogger().severe("Erreur lors de la déconnexion de la base de données.");
                 e.printStackTrace();
             }
+        }
+    }
+
+    public boolean isPlayerRegistered(UUID uuid) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT id FROM players WHERE uuid = ?")) {
+            statement.setString(1, uuid.toString());
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Erreur lors de la vérification de l'enregistrement du joueur.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void registerPlayer(UUID uuid, String username, String hashedPassword, String ipAddress) {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "INSERT INTO players (uuid, username, password_hash, last_ip, registration_timestamp) VALUES (?, ?, ?, ?, NOW())")) {
+            statement.setString(1, uuid.toString());
+            statement.setString(2, username);
+            statement.setString(3, hashedPassword);
+            statement.setString(4, ipAddress);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Erreur lors de l'enregistrement du joueur.");
+            e.printStackTrace();
         }
     }
 }

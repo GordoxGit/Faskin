@@ -4,4 +4,9 @@ main: com.monprojet.faskin.Faskin
 api-version: '1.21'
 author: ProjetServeur
 description: Une solution d'authentification tout-en-un pour les serveurs Spigot.
-depend: [ProtocolLib]
+depend: [] # ProtocolLib a été retiré
+
+commands:
+  register:
+    description: Permet de s'enregistrer sur le serveur.
+    usage: "/register <motdepasse> <confirmation>"
