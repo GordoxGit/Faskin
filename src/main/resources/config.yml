@@ -1,0 +1,25 @@
+# Configuration file for Faskin
+#
+# database: settings for database connection
+# session: session handling options
+# restrictions: options controlling usage limits
+
+# Database settings
+# These options will be used for future database integrations
+# such as storing player data.
+database:
+  host: localhost
+  port: 3306
+  name: faskin
+  username: root
+  password: ""
+
+# Session settings
+session:
+  timeout: 300
+
+# Restrictions settings
+# Future restriction options will be added here.
+restrictions:
+  # placeholder for future options
+  enabled: false
