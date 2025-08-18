@@ -1,0 +1,8 @@
+# Configuration de la base de données pour Faskin
+database:
+  host: "51.75.125.229"
+  port: 3306
+  database: "faskin_data"
+  username: "root"
+  password: "CHANGER_MOT_DE_PASSE"
+
